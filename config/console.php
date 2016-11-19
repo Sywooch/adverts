@@ -8,6 +8,15 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'fishvision\migrate\controllers\MigrateController',
+            'autoDiscover' => true,
+            'migrationPaths' => [
+                '@app/modules/users',
+            ],
+        ],
+    ],
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
