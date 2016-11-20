@@ -42,7 +42,6 @@ class m161118_200032_create_main_tables extends Migration
             'geography_id'          => 'INT(11)',
             'content'               => 'TEXT DEFAULT NULL',
             'status'                => 'ENUM("'.implode('","', Advert::getStatusList()).'") DEFAULT "'.Advert::STATUS_NEW.'"',
-            'is_templet'            => 'tinyint(1) DEFAULT 0',
             'is_foreign'            => 'TINYINT(1) DEFAULT 0',
             'published'             => 'TINYINT(1) DEFAULT 0',
             'expiry_at'             => 'timestamp',
@@ -52,6 +51,20 @@ class m161118_200032_create_main_tables extends Migration
         $this->addForeignKey('fk_advert_user', 'advert', 'user_id', 'user', 'id', 'NO ACTION', 'NO ACTION');
         $this->addForeignKey('fk_advert_advert_category', 'advert', 'category_id', 'advert_category', 'id', 'NO ACTION', 'NO ACTION');
         $this->addForeignKey('fk_advert_geography', 'advert', 'geography_id', 'geography', 'id', 'NO ACTION', 'NO ACTION');
+
+        $this->createTable('advert_templet', [
+            'user_id'               => 'INT(11) NOT NULL',
+            'category_id'           => 'INT(3)',
+            'geography_id'          => 'INT(11)',
+            'content'               => 'TEXT DEFAULT NULL',
+            'status'                => 'ENUM("'.implode('","', Advert::getStatusList()).'") DEFAULT "'.Advert::STATUS_NEW.'"',
+            'expiry_at'             => 'timestamp',
+            'created_at'            => 'timestamp',
+            'updated_at'            => 'timestamp',
+        ], $tableOptions);
+        $this->addForeignKey('fk_advert_templet_user', 'advert_templet', 'user_id', 'user', 'id', 'NO ACTION', 'NO ACTION');
+        $this->addForeignKey('fk_advert_templet_advert_category', 'advert_templet', 'category_id', 'advert_category', 'id', 'NO ACTION', 'NO ACTION');
+        $this->addForeignKey('fk_advert_templet_geography', 'advert_templet', 'geography_id', 'geography', 'id', 'NO ACTION', 'NO ACTION');
 
         $this->createTable('advert_file', [
             'id'                    => 'pk',
