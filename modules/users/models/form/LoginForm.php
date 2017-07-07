@@ -1,21 +1,34 @@
 <?php
 
-namespace app\modules\users\models\forms;
+namespace app\modules\users\models\form;
 
+use app\modules\users\UsersModule;
+use app\modules\users\models\ar\AuthFail;
+use app\modules\users\models\ar\User;
 use yii\base\Model;
 use Yii;
 
-use app\modules\users\models\User;
-use app\modules\users\UsersModule;
-use app\modules\users\components\LittleBigHelper;
-
 class LoginForm extends Model
 {
-    public $username;
+    /**
+     * @var string
+     */
+    public $email;
+
+    /**
+     * @var string
+     */
     public $password;
+
+    /**
+     * @var bool
+     */
     public $rememberMe = false;
 
-    private $_user = false;
+    /**
+     * @var User
+     */
+    private $_user;
 
     /**
      * @inheritdoc
@@ -23,11 +36,12 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
+            [['email', 'password'], 'required'],
+            [['email'], 'email'],
             ['rememberMe', 'boolean'],
             ['password', 'validatePassword'],
-
-            ['username', 'validateIP'],
+            ['email', 'validateEmailConfirmed'],
+            ['email', 'validateAuthFail', 'skipOnError' => false],
         ];
     }
 
@@ -37,55 +51,36 @@ class LoginForm extends Model
     public function attributeLabels()
     {
         return [
-            'username'   => UsersModule::t('front', 'Login'),
-            'password'   => UsersModule::t('front', 'Password'),
-            'rememberMe' => UsersModule::t('front', 'Remember me'),
+            'email'   => UsersModule::t('Почтовый ящик'),
+            'password'   => UsersModule::t('Пароль'),
+            'rememberMe' => UsersModule::t('Запомнить'),
         ];
     }
 
     /**
-     * Validates the password.
-     * This method serves as the inline validation for password.
+     * @inheritdoc
      */
-    public function validatePassword()
+    public function validate($attributeNames = null, $clearErrors = true)
     {
-        if (!Yii::$app->getModule('users')->checkAttempts()) {
-            $this->addError('password', UsersModule::t('front', 'Too many attempts'));
+        if ($timeout = AuthFail::getTimeout(AuthFail::ACTION_LOGIN, Yii::$app->request->userIP, $this->email)) {
+            $this->addError('email', UsersModule::t('Вы часто ошибались при попытке войти. Подождите {timeout} секунд.', null, [
+                'timeout' => $timeout
+            ]));
             return false;
         }
 
-        if (!$this->hasErrors()) {
-            $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError('password', UsersModule::t('front', 'Incorrect username or password.'));
-            }
-        }
+        return parent::validate($attributeNames, $clearErrors);
     }
 
-    /**
-     * Check if user is binded to IP and compare it with his actual IP
-     */
-    public function validateIP()
-    {
-        $user = $this->getUser();
-
-        if ($user AND $user->bind_to_ip) {
-            $ips = explode(',', $user->bind_to_ip);
-            $ips = array_map('trim', $ips);
-
-            if (!in_array(LittleBigHelper::getRealIp(), $ips)) {
-                $this->addError('password', UsersModule::t('front', "You could not login from this IP"));
-            }
-        }
-    }
 
     /**
-     * Logs in a user using the provided username and password.
-     * @return boolean whether the user is logged in successfully
+     * User authorization.
+     * @return boolean whether authorization run successful
      */
     public function login()
     {
         if ($this->validate()) {
+            AuthFail::resetCounters(AuthFail::ACTION_LOGIN, Yii::$app->request->userIP, $this->email);
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
         } else {
             return false;
@@ -93,15 +88,46 @@ class LoginForm extends Model
     }
 
     /**
-     * Finds user by [[username]]
+     * Password validation.
+     */
+    public function validatePassword()
+    {
+        if (!$this->hasErrors()) {
+            $user = $this->getUser();
+            if (!$user || !$user->validatePassword($this->password)) {
+                $this->addError('password', UsersModule::t('Неправильное имя или пароль'));
+            }
+        }
+    }
+
+    /**
+     * Checking whether user has activate his account.
+     */
+    public function validateEmailConfirmed($attribute, $model)
+    {
+        if (!$this->hasErrors() && ($user = $this->getUser()) && ($user->status == $user::STATUS_INACTIVE)) {
+            $this->addError($attribute, UsersModule::t('Ваш аккаунт не активирован. Проверьте Ваш почтовый ящик, на него должны были прийти инструкции по активации.'));
+        }
+    }
+
+    /**
+     * Checking whether login attempt was unsuccessful.
+     */
+    public function validateAuthFail()
+    {
+        if ($this->hasErrors()) {
+            AuthFail::create(AuthFail::ACTION_LOGIN, Yii::$app->request->userIP, $this->email);
+        }
+    }
+
+    /**
      * @return User|null
      */
     public function getUser()
     {
-        if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
+        if (!$this->_user) {
+            $this->_user = User::findOne(['email' => $this->email]);
         }
-
         return $this->_user;
     }
 }

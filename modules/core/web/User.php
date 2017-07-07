@@ -13,9 +13,20 @@ class User extends \yii\web\User
     /**
      * @inheritdoc
      */
+    public $enableAutoLogin = true;
+
+    /**
+     * @inheritdoc
+     */
     public $loginUrl = ['/user/auth/login'];
 
     /**
+     * @inheritdoc
+     */
+    public $identityClass = 'app\modules\users\models\ar\User';
+
+    /**
+     * Является ли пользователь суперадминистратором.
      * @return bool
      */
     public function getIsSuperadmin()
@@ -24,29 +35,11 @@ class User extends \yii\web\User
     }
 
     /**
+     * Логин пользователя.
      * @return string
      */
     public function getUsername()
     {
         return @Yii::$app->user->identity->username;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function afterLogin($identity, $cookieBased, $duration)
-    {
-        AuthHelper::updatePermissions($identity);
-        parent::afterLogin($identity, $cookieBased, $duration);
-    }
-
-    /**
-     * Возвращает шаблон.
-     * @return \app\modules\adverts\models\Advert
-     */
-    public function getTemplet()
-    {
-        $query = Advert::find()->where(['user_id' => $this->id, 'is_templet' => 1]);
-        return $query->one() ? :  Advert::createTemplet($this->id);
     }
 }

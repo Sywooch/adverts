@@ -6,9 +6,15 @@ $config = [
     'id' => 'Adverts',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'language' => 'ru',
+    'defaultRoute' => 'adverts/advert',
     'components' => [
+        'assetManager' => [
+            //'linkAssets' => true
+        ],
         'authManager' => [
             'class' => 'yii\rbac\PhpManager',
+            'defaultRoles' => ['Admin', 'User']
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -16,6 +22,10 @@ $config = [
         'db' => require(__DIR__ . '/db.php'),
         'errorHandler' => [
             'errorAction' => 'site/error',
+        ],
+        'formatter' => [
+            'dateFormat' => 'php:d.m.Y',
+            'timeFormat' => 'php:d.m.Y H:i',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -41,9 +51,16 @@ $config = [
         ],
         'user' => [
             'class' => 'app\modules\core\web\User',
-            'identityClass' => 'app\modules\users\models\User',
-            'enableAutoLogin' => true,
+            'loginUrl' => '/users/auth/login'
         ],
+    ],
+    'modules' => [
+        'adverts' => [
+            'class' => 'app\modules\adverts\AdvertsModule'
+        ],
+        'users' => [
+            'class' => 'app\modules\users\usersModule'
+        ]
     ],
     'params' => $params,
 ];

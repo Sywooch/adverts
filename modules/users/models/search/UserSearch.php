@@ -5,7 +5,7 @@ namespace app\modules\users\models\search;
 use Yii;
 use yii\base\Model;
 
-use app\modules\users\models\User;
+use app\modules\users\models\ar\User;
 
 /**
  * UserSearch represents the model behind the search form about `webvimark\modules\UserManagement\models\User`.

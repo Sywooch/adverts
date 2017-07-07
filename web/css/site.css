@@ -1,5 +1,5 @@
-html,
-body {
+/* common styling */
+html, body {
     height: 100%;
 }
 
@@ -112,4 +112,124 @@ a.desc:after {
 
 .nav > li > form > button.logout:focus {
     outline: none;
+}
+
+/* bootstrap */
+.form-group .control-label/*, .form-group .help-block*/ {
+    height: 34px;
+    line-height: 34px;
+}
+.mt-10 {
+    margin-top: 10px !important;
+}
+.mt-15 {
+    margin-top:15px !important;
+}
+.mt-20 {
+    margin-top: 20px !important;
+}
+
+/* yii elements styles */
+.summary {
+    padding: 0 0 15px 0;
+}
+
+
+/* adverts list styling s*/
+.adverts-list {
+
+}
+.adverts-list .container {
+    position: relative;
+    float: left;
+    padding: 10px;
+    width: 50%;
+    height: 300px;
+    //border-bottom: 1px solid #ccc;
+    text-align: justify;
+}
+.adverts-list .container:hover {
+    background: #f8f8f8;
+}
+.container:last-child {
+    border-bottom: none;
+}
+.container:hover {
+    cursor: pointer;
+}
+.container /*.left*/ img {
+    float: left;
+//width: 60px;
+}
+.container .right {
+//float: right;
+//width: 620px;
+}
+.container a.content {
+    display: block;
+    text-indent: 12px;
+    color: #555;
+}
+.container a.content:hover {
+    background: none;
+}
+.adverts-list .container .info {
+    position: absolute;
+    bottom: 0;
+}
+/*.adverts-list .container .actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: right;
+}*/
+.adverts-list .container .info span, .info a span {
+    font-size: 11px !important;
+    font-weight: bold;
+    color: #999;
+    vertical-align: middle;
+}
+.container .info .actions a {
+    padding: 2px 5px;
+}
+.bookmarked .icon.star {
+    background-image: url('/../img/star-green.png') !important;
+}
+
+/* social icons */
+.icon {
+    display: inline-block;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+.icon.facebook,
+.icon.google,
+.icon.mailru,
+.icon.odnoklassniki,
+.icon.twitter,
+.icon.vkontakte {
+    background-image: url('/../img/social-icons.png');
+    background-size: auto;
+}
+.icon.facebook {
+    background-position: 0 0;
+}
+.icon.google {
+    background-position: -126px 0;
+}
+.icon.mailru {
+    background-position: -147px 0;
+}
+.icon.odnoklassniki {
+    background-position: -63px 0;
+}
+.icon.twitter {
+    background-position: -21px 0;
+}
+.icon.vkontakte {
+    background-position: -84px 0;
 }

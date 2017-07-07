@@ -1,8 +1,5 @@
 <?php
 
-$params = require(__DIR__ . '/params.php');
-$db = require(__DIR__ . '/db.php');
-
 $config = [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
@@ -18,9 +15,13 @@ $config = [
         ],
     ],
     'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'db' => require(__DIR__ . '/db.php'),
         'log' => [
             'targets' => [
                 [
@@ -29,9 +30,8 @@ $config = [
                 ],
             ],
         ],
-        'db' => $db,
     ],
-    'params' => $params,
+    'params' => require(__DIR__ . '/params.php'),
     /*
     'controllerMap' => [
         'fixture' => [ // Fixture generation command line.

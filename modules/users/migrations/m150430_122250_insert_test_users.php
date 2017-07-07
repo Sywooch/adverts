@@ -2,10 +2,16 @@
 
 use yii\db\Migration;
 
-use app\modules\users\models\User;
+use app\modules\users\models\ar\User;
 
+/**
+ * Class m150430_122250_insert_test_users
+ */
 class m150430_122250_insert_test_users extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         /*if (defined('YII_ENV') && YII_ENV == 'dev') {
@@ -23,6 +29,9 @@ class m150430_122250_insert_test_users extends Migration
         }*/
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         /*if (defined('YII_ENV') && YII_ENV == 'dev') {

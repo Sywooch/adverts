@@ -3,7 +3,7 @@ namespace app\modules\users\components;
 
 use yii\bootstrap\Nav;
 
-use app\modules\users\models\User;
+use app\modules\users\models\ar\User;
 
 /**
  * Class GhostNav

@@ -8,7 +8,7 @@ use yii\base\ActionFilter;
 use yii\web\ForbiddenHttpException;
 
 use app\modules\users\models\rbacDB\Route;
-use app\modules\users\models\User;
+use app\modules\users\models\ar\User;
 
 class GhostAccessControl extends ActionFilter
 {

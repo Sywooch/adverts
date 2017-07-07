@@ -8,7 +8,7 @@ namespace app\modules\users\components;
 use yii;
 use yii\helpers\Html;
 
-use app\modules\users\models\User;
+use app\modules\users\models\ar\User;
 
 /**
  * Class GhostHtml

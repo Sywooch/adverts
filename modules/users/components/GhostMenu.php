@@ -4,7 +4,7 @@ namespace app\modules\users\components;
 
 use yii\widgets\Menu;
 
-use app\modules\users\models\User;
+use app\modules\users\models\ar\User;
 
 /**
  * Class GhostNav

@@ -1,165 +1,131 @@
 <?php
-namespace app\modules\users\models\forms;
 
+namespace app\modules\users\models\form;
+
+use app\modules\users\models\ar\EmailConfirmToken;
+use app\modules\users\models\ar\Profile;
 use yii\base\Model;
 use Yii;
 use yii\helpers\Html;
-
 use app\modules\users\UsersModule;
-use app\modules\users\models\User;
+use app\modules\users\models\ar\User;
 
 class RegistrationForm extends Model
 {
-    public $username;
+    /**
+     * @var string
+     */
+    public $email;
+
+    /**
+     * @var string
+     */
     public $password;
-    public $repeat_password;
-    public $captcha;
+
+    /**
+     * @var string
+     */
+    public $repeatPassword;
 
     /**
      * @inheritdoc
      */
     public function rules()
     {
-        $rules = [
-            ['captcha', 'captcha', 'captchaAction' => '/users/auth/captcha'],
-            [['username', 'password', 'repeat_password', 'captcha'], 'required'],
-            [['username', 'password', 'repeat_password'], 'trim'],
-            ['username', 'unique',
-                'targetClass'     => 'app\modules\users\models\User',
-                'targetAttribute' => 'username',
+        return [
+            [['email', 'password', 'repeatPassword'], 'required',],
+            [['email', 'password', 'repeatPassword'], 'trim'],
+            ['email', 'email', 'message' => UsersModule::t('Неверный формат', 'front')],
+            [
+                'email', 'unique', 'targetClass' => 'app\modules\users\models\ar\User', 'targetAttribute' => 'email',
+                'message' => UsersModule::t('Такой почтовый ящик уже используется', 'front')
             ],
-            ['username', 'purgeXSS'],
-            ['password', 'string', 'max' => 255],
-            ['repeat_password', 'compare', 'compareAttribute' => 'password'],
+            [
+                'email', 'string', 'max' => 128,
+                'tooLong' => UsersModule::t('Такой почтовый ящик уже используется', 'front')
+            ],
+            [
+                'password', 'string', 'min' => 4, 'max' => 32,
+                'tooShort' => UsersModule::t('Минимальная длина пароля - 4 символа', 'front'),
+                'tooLong' => UsersModule::t('Максимальная длина пароля - 32 символа', 'front')
+            ],
+            [
+                'repeatPassword', 'compare', 'compareAttribute' => 'password',
+                'message' => UsersModule::t('Повторный пароль отличается', 'front')
+            ],
         ];
-
-        if ( Yii::$app->getModule('users')->useEmailAsLogin ) {
-            $rules[] = ['username', 'email'];
-        } else {
-            $rules[] = ['username', 'string', 'max' => 50];
-            $rules[] = ['username', 'match', 'pattern' => Yii::$app->getModule('users')->registrationRegexp];
-            $rules[] = ['username', 'match', 'not' => true, 'pattern' => Yii::$app->getModule('users')->registrationBlackRegexp];
-        }
-
-        return $rules;
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function attributeLabels()
     {
         return [
-            'username'        => Yii::$app->getModule('users')->useEmailAsLogin ? 'E-mail' : UsersModule::t('front', 'Login'),
-            'password'        => UsersModule::t('front', 'Password'),
-            'repeat_password' => UsersModule::t('front', 'Repeat password'),
-            'captcha'         => UsersModule::t('front', 'Captcha'),
+            'email'          => UsersModule::t('Почтовый ящик'),
+            'password'       => UsersModule::t('Пароль'),
+            'repeatPassword' => UsersModule::t('Повторите пароль'),
         ];
     }
 
     /**
-     * @param bool $performValidation
-     *
-     * @return bool|User
+     * User registrations
+     * @return \app\modules\users\models\ar\User|boolean
      */
-    public function registerUser($performValidation = true)
+    public function registerUser()
     {
-        if ($performValidation AND !$this->validate()) {
+        if (!$this->validate()) {
             return false;
         }
 
-        $user = new User();
-        $user->password = $this->password;
+        $user = new User([
+            'email' => $this->email,
+            'passwordNotEncrypted' => $this->password,
+            'status' => User::STATUS_INACTIVE,
+        ]);
 
-        if (Yii::$app->getModule('users')->useEmailAsLogin) {
-            $user->email = $this->username;
-
-            // If email confirmation required then we save user with "inactive" status
-            // and without username (username will be filled with email value after confirmation)
-            if (Yii::$app->getModule('users')->emailConfirmationRequired) {
-                $user->status = User::STATUS_INACTIVE;
-                $user->generateConfirmationToken();
-                $user->save(false);
-
-                $this->saveProfile($user);
-
-                if ($this->sendConfirmationEmail($user)) {
-                    return $user;
-                } else {
-                    $this->addError('username', UsersModule::t('front', 'Could not send confirmation email'));
-                }
-            } else {
-                $user->username = $this->username;
-            }
-        } else {
-            $user->username = $this->username;
-        }
-
-        if ($user->save()) {
-            $this->saveProfile($user);
+        $transaction = Yii::$app->db->beginTransaction();
+        if ($user->save() && $this->saveProfile($user) && $user->generateEmailConfirmToken(EmailConfirmToken::ACTION_REGISTRATION) && $this->sendConfirmationEmail($user)) {
+            $transaction->commit();
             return $user;
         } else {
-            $this->addError('username', UsersModule::t('front', 'Login has been taken'));
+            $transaction->rollBack();
+            $this->addError('username', UsersModule::t('Произошла ошибка во время регистрации'));
+            return false;
         }
     }
 
     /**
-     * Implement your own logic if you have user profile and save some there after registration
-     *
+     * User profile creating.
      * @param User $user
+     * @return bool
      */
     protected function saveProfile($user)
     {
+        $profile = new Profile([
+            'user_id' => $user->id
+        ]);
+        return $profile->save();
     }
 
     /**
+     * Sending account activation message.
      * @param User $user
-     *
      * @return bool
      */
     protected function sendConfirmationEmail($user)
     {
-        return Yii::$app->mailer->compose(Yii::$app->getModule('users')->mailerOptions['registrationFormViewFile'], ['user' => $user])
-            ->setFrom(Yii::$app->getModule('users')->mailerOptions['from'])
+        $params = Yii::$app->params;
+        return Yii::$app->mailer
+            ->compose('@app/mail/front/users/email-confirm', ['user' => $user])
+            ->setFrom($params['adminEmail'])
             ->setTo($user->email)
-            ->setSubject(UsersModule::t('front', 'E-mail confirmation for') . ' ' . Yii::$app->name)
+            ->setSubject(UsersModule::t('Подтверждение регистрации на сайте') . ' ' . $params['siteName'])
             ->send();
     }
 
     /**
-     * Check received confirmation token and if user found - activate it, set username, roles and log him in
-     *
-     * @param string $token
-     *
-     * @return bool|User
-     */
-    public function checkConfirmationToken($token)
-    {
-        $user = User::findInactiveByConfirmationToken($token);
-
-        if ($user) {
-            $user->username = $user->email;
-            $user->status = User::STATUS_ACTIVE;
-            $user->email_confirmed = 1;
-            $user->removeConfirmationToken();
-            $user->save(false);
-
-            $roles = (array) Yii::$app->getModule('users')->rolesAfterRegistration;
-
-            foreach ($roles as $role) {
-                User::assignRole($user->id, $role);
-            }
-
-            Yii::$app->user->login($user);
-
-            return $user;
-        }
-
-        return false;
-    }
-
-    /**
-     * Remove possible XSS stuff
+     * Cleaning from XSS attack.
      * @param $attribute
      */
     public function purgeXSS($attribute)
