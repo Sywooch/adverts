@@ -1,11 +1,11 @@
 <?php
 
-use yii\helpers\Html;
-
-use common\models\Advert;
-use common\models\AdvertFile;
-use common\models\City;
+/**
+ * @var \app\modules\adverts\models\ar\Advert $model
+ * @var \app\modules\adverts\models\ar\AdvertTemplet $templet
+ * @var \yii\web\View $this
+ */
 
 ?>
 
-<?php echo $this->render('_form', compact('model', 'directPopulating')) ?>
+<?= $this->render('_form', compact('model', 'templet', 'directPopulating')) ?>

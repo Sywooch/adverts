@@ -2,6 +2,7 @@
 
 namespace app\modules\users\components;
 
+use app\modules\authclient\models\ar\AuthClientUser;
 use app\modules\core\db\ActiveRecord;
 use app\modules\users\models\ar\EmailConfirmToken;
 use app\modules\users\models\ar\PasswordRestoreToken;
@@ -87,7 +88,7 @@ abstract class UserIdentity extends ActiveRecord implements IdentityInterface
             'token' => $token,
             'email' => $this->email,
             'expiry_at' => date('Y-m-d H:i:s', time() + 3600 * 24 * 7),
-            'subject' => $action,
+            'action' => $action,
         ]);
         if ($emailConfirmToken->save()) {
             $this->populateRelation('emailConfirmToken', $emailConfirmToken);
@@ -142,6 +143,20 @@ abstract class UserIdentity extends ActiveRecord implements IdentityInterface
     {
         return static::find()->innerJoinWith('passwordRestoreToken')->where([
             'and', [PasswordRestoreToken::tableName() . '.token' => $token], ['>', 'expiry_at', new Expression('NOW()')]
+        ])->one();
+    }
+
+    /**
+     * Finds user by auth client user id.
+     * @param string $clientUserId
+     * @param string $clientName
+     * @return static|null|User
+     */
+    public static function findByAuthClientUserId($clientUserId, $clientName)
+    {
+        return static::find()->innerJoinWith('authClientUser')->where([
+            AuthClientUser::tableName() . '.client_user_id' => $clientUserId,
+            AuthClientUser::tableName() . '.client_name' => $clientName,
         ])->one();
     }
 

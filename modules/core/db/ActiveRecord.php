@@ -40,4 +40,13 @@ class ActiveRecord extends \yii\db\ActiveRecord
     {
         return [];
     }
+
+    /**
+     * Returns the short class name.
+     */
+    public static function shortClassName()
+    {
+        $class = get_called_class();
+        return substr($class, strrpos($class, '\\') + 1);
+    }
 }

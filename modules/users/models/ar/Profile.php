@@ -2,8 +2,10 @@
 
 namespace app\modules\users\models\ar;
 
+use app\modules\authclient\models\ar\AuthClientUser;
 use app\modules\core\validators\UrlValidator;
 use app\modules\users\UsersModule;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "user".
@@ -47,7 +49,7 @@ class Profile extends \app\modules\core\db\ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id'], 'integer'],
-            [['phone_1', 'phone_2', 'phone_3', 'skype', 'isq'], 'string', 'max' => 32],
+            [['phone_1', 'phone_2', 'phone_3', 'skype', 'isq', 'first_name', 'last_name'], 'string', 'max' => 32],
             [['page_vk', 'page_fb', 'page_ok'], 'string', 'max' => 64],
             [['page_vk'], UrlValidator::className(), 'defaultScheme' => 'http', 'host' => 'vk.com'],
             [['page_fb'], UrlValidator::className(), 'defaultScheme' => 'http', 'host' => 'facebook.com'],
@@ -109,10 +111,26 @@ class Profile extends \app\modules\core\db\ActiveRecord
      */
     public function getFullName()
     {
-        if ($this->name || $this->surname) {
-            return implode(' ', [$this->name, $this->surname]);
+        if ($this->first_name || $this->last_name) {
+            return implode(' ', [$this->first_name, $this->last_name]);
         }
         return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return Url::to(['/users/user/view', 'id' => $this->user_id]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAuthClientUser()
+    {
+        return $this->hasOne(AuthClientUser::className(), ['user_id' => 'user_id']);
     }
     
     /**

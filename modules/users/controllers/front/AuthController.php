@@ -2,6 +2,7 @@
 
 namespace app\modules\users\controllers\front;
 
+use app\modules\authclient\clients\ClientTrait;
 use app\modules\core\widgets\ActiveForm;
 use app\modules\users\components\UserAuthEvent;
 use app\modules\users\models\ar\PasswordRestoreToken;
@@ -13,6 +14,7 @@ use app\modules\users\models\form\PasswordRestoreForm;
 use app\modules\users\models\ar\User;
 use app\modules\users\UsersModule;
 use Yii;
+use yii\authclient\BaseClient;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -25,6 +27,22 @@ class AuthController extends \app\modules\core\web\Controller
     /**
      * @inheritdoc
      */
+    public function actions()
+    {
+         return [
+             'client' => [
+                 'class' => 'yii\authclient\AuthAction',
+                 'successCallback' => [
+                     $this, 'authSuccessCallback'
+                 ],
+                 'successUrl' => '/'
+             ],
+         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [
@@ -33,7 +51,10 @@ class AuthController extends \app\modules\core\web\Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['login', 'registration', 'email', 'email-confirm', 'password-restore', 'captcha', 'change-password'],
+                        'actions' => [
+                            'login', 'registration', 'email', 'email-confirm', 'password-restore', 'captcha', 'change-password',
+                            'client'
+                        ],
                         'roles' => ['?'],
                     ],
                     [
@@ -173,5 +194,22 @@ class AuthController extends \app\modules\core\web\Controller
         }
 
         throw new NotFoundHttpException();
+    }
+
+    /**
+     * Callback that triggered when success client authorization.
+     * @param BaseClient|ClientTrait $authClient
+     */
+    public function authSuccessCallback($authClient)
+    {
+        $attributes = $authClient->getUserAttributes();
+        if (!$user = User::findByAuthClientUserId($authClient->userId, $authClient->name)) {
+            $user = new User([
+                'status' => User::STATUS_ACTIVE,
+            ]);
+            $user->scenario = User::SCENARIO_NEW_AUTH_CLIENT_USER;
+            $user->register($authClient);
+        }
+        Yii::$app->user->login($user, 0);
     }
 }

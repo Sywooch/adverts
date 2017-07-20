@@ -84,28 +84,12 @@ class RegistrationForm extends Model
             'status' => User::STATUS_INACTIVE,
         ]);
 
-        $transaction = Yii::$app->db->beginTransaction();
-        if ($user->save() && $this->saveProfile($user) && $user->generateEmailConfirmToken(EmailConfirmToken::ACTION_REGISTRATION) && $this->sendConfirmationEmail($user)) {
-            $transaction->commit();
+        if ($user->register() && $user->generateEmailConfirmToken(EmailConfirmToken::ACTION_REGISTRATION) && $this->sendConfirmationEmail($user)) {
             return $user;
         } else {
-            $transaction->rollBack();
             $this->addError('username', UsersModule::t('Произошла ошибка во время регистрации'));
             return false;
         }
-    }
-
-    /**
-     * User profile creating.
-     * @param User $user
-     * @return bool
-     */
-    protected function saveProfile($user)
-    {
-        $profile = new Profile([
-            'user_id' => $user->id
-        ]);
-        return $profile->save();
     }
 
     /**

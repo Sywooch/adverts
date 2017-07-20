@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Migration;
+use app\modules\users\models\ar\Profile;
 use app\modules\users\models\ar\User;
 
 /**
@@ -19,7 +20,17 @@ class m140809_072112_insert_superadmin_to_user extends Migration
             'status' => User::STATUS_ACTIVE,
             'superadmin' => 1
         ]);
-        $user->save(false);
+        $user->register();
+
+        $profile = Profile::findOne($user->id);
+        $profile->setAttributes([
+            'first_name' => 'Роман',
+            'last_name' => 'Гниденко',
+            'skype' => 'roman444uk',
+            'page_vk' => 'https://vk.com/id274216423',
+            'phone_1' => '+380666887629'
+        ]);
+        $profile->save();
     }
 
     /**

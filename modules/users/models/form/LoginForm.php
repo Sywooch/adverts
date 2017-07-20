@@ -51,7 +51,7 @@ class LoginForm extends Model
     public function attributeLabels()
     {
         return [
-            'email'   => UsersModule::t('Почтовый ящик'),
+            'email'      => UsersModule::t('Почтовый ящик'),
             'password'   => UsersModule::t('Пароль'),
             'rememberMe' => UsersModule::t('Запомнить'),
         ];

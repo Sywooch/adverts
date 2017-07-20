@@ -35,8 +35,8 @@ class EmailConfirmToken extends \app\modules\core\db\ActiveRecord
         return [
             [['token', 'email'], 'required'],
             [['token', 'email'], 'string', 'max' => 128],
-            [['subject'], 'in', 'range' => array_keys(self::getAttributeLabels('subject'))],
-            [['subject'], 'default', 'value' => self::ACTION_REGISTRATION],
+            [['action'], 'in', 'range' => array_keys(self::getAttributeLabels('action'))],
+            [['action'], 'default', 'value' => self::ACTION_REGISTRATION],
         ];
     }
 
@@ -58,7 +58,7 @@ class EmailConfirmToken extends \app\modules\core\db\ActiveRecord
     public static function attributeLabelsConfig()
     {
         return [
-            'subject' => [
+            'action' => [
                 self::ACTION_CHANGE_EMAIL => 'Смена почтового ящика',
                 self::ACTION_REGISTRATION => 'Регистрация',
             ]

@@ -21,7 +21,11 @@ $this->title = UsersModule::t('Вход');
         'validateOnBlur' => false
     ]) ?>
 
-        <div class="row" style="padding-top: 10px; padding-bottom: 10px;">
+        <?= \yii\authclient\widgets\AuthChoice::widget([
+            'baseAuthUrl' => ['/users/auth/client']
+        ]); ?>
+
+        <!--<div class="row" style="padding-top: 10px; padding-bottom: 10px;">
             <div class="col-sm-12 col-md-12 col-lg-12 text-center">
                 <?= Html::a('', ['/eauth/auth/login', 'service' => 'vkontakte'], [
                     'class' => 'icon vkontakte',
@@ -53,7 +57,7 @@ $this->title = UsersModule::t('Вход');
                     'title' => 'google.com'
                 ]) ?>
             </div>
-        </div>
+        </div>-->
 
         <?= $form->field($model, 'email', [
             'template' => '{label}<div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>{input}</div>{error}'

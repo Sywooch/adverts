@@ -2,12 +2,15 @@
 
 namespace app\modules\users\models\ar;
 
+use app\modules\authclient\clients\ClientTrait;
+use app\modules\authclient\models\ar\AuthClientUser;
 use app\modules\core\behaviors\TimestampBehavior;
 use app\modules\users\components\UserIdentity;
 use app\modules\users\models\aq\UserQuery;
 use app\modules\users\UsersModule;
-use yii\base\Security;
+use yii\authclient\BaseClient;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "user".
@@ -25,7 +28,7 @@ use Yii;
  * @property integer $created_at
  * @property integer $updated_at
  *
- * @property EmailConfirmToken $emailConfirmToken
+ * @property AuthClientUser $authClientUser
  * @property Profile $profile
  */
 class User extends UserIdentity
@@ -35,7 +38,7 @@ class User extends UserIdentity
     const STATUS_BANNED = -1;
     
     const SCENARIO_NEW_USER = 'newUser';
-    const SCENARIO_NEW_SERVICE_USER = 'newServiceUser';
+    const SCENARIO_NEW_AUTH_CLIENT_USER = 'newAuthClientUser';
     const SCENARIO_CHANGE_PASSWORD = 'changePassword';
 
     /**
@@ -61,6 +64,16 @@ class User extends UserIdentity
                 'class' => TimestampBehavior::className(),
             ],
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function scenarios()
+    {
+        return ArrayHelper::merge(parent::scenarios(), [
+            self::SCENARIO_NEW_AUTH_CLIENT_USER => []
+        ]);
     }
 
     /**
@@ -151,18 +164,41 @@ class User extends UserIdentity
     }
 
     /**
-     * @inheritdoc
+     * User registration.
+     * @param BaseClient|ClientTrait $authClient
+     * @return bool
      */
-    public function afterSave($insert, $changedAttributes)
+    public function register($authClient = null)
     {
-        parent::afterSave($insert, $changedAttributes);
+        $transaction = Yii::$app->db->beginTransaction();
 
-        if ($insert) {
-            $profile = new Profile([
-                'user_id' => $this->id
-            ]);
-            $profile->save();
+        $success = $this->save();
+        if ($success) {
+            $attributes = [
+                'user_id' => $this->id,
+            ];
+            if ($authClient) {
+                $attributes['first_name'] = $authClient->firstName;
+                $attributes['last_name'] = $authClient->lastName;
+            }
+            $profile = new Profile($attributes);
+            $success = $profile->save();
         }
+        if ($success && $this->scenario == self::SCENARIO_NEW_AUTH_CLIENT_USER) {
+            $authClientUser = new AuthClientUser([
+                'user_id' => $this->id,
+                'client_user_id' => $authClient->userId,
+                'client_name' => $authClient->name,
+                'first_name' => $authClient->firstName,
+                'last_name' => $authClient->lastName,
+                'avatar_url' => $authClient->avatarUrl,
+                'profile_url' => $authClient->profileUrl,
+            ]);
+            $success = $authClientUser->save();
+        }
+
+        $success ? $transaction->commit() : $transaction->rollBack();
+        return $success;
     }
 
     /**
@@ -170,7 +206,6 @@ class User extends UserIdentity
      */
     public function getId()
     {
-        // TODO
         return $this->id;
     }
 
@@ -183,18 +218,10 @@ class User extends UserIdentity
     }
 
     /**
-     * @return string
+     * @return \yii\db\ActiveQuery
      */
-    public function getProfileUrl()
+    public function getAuthClientUser()
     {
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getFullName()
-    {
-        return $this->profile->fullName;
+        return $this->hasOne(AuthClientUser::className(), ['user_id' => 'id']);
     }
 }

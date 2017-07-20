@@ -129,11 +129,49 @@ a.desc:after {
     margin-top: 20px !important;
 }
 
+.mt-30 {
+    margin-top: 30px !important;
+}
+.mt-40 {
+    margin-top: 40px !important;
+}
+
 /* yii elements styles */
 .summary {
     padding: 0 0 15px 0;
 }
 
+
+/* advert form */
+.files-container {
+    height: 220px;
+    padding: 10px 0;
+    background: #eee;
+}
+.file-container {
+    display: inline-block;
+    position: relative;
+    margin-right: 20px;
+}
+.file-container img {
+    height: 200px;
+}
+.file-container .file-delete {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 32px;
+    color: #fff;
+    background-color: rgba(100, 100, 100, 255);
+    font-size: 2em;
+}
+.file-container .file-delete {
+
+}
+.files-progressbar {
+    margin: 0;
+    height: 3px;
+}
 
 /* adverts list styling s*/
 .adverts-list {

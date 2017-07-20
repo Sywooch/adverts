@@ -5,6 +5,7 @@ namespace app\modules\adverts\models\ar;
 use app\modules\users\models\ar\User;
 use Yii;
 use yii\helpers\ArrayHelper;
+use app\modules\core\models\ar\File;
 
 /**
  * This is the model class for table "advert_templet".
@@ -28,6 +29,24 @@ class AdvertTemplet extends Advert
     public static function tableName()
     {
         return 'advert_templet';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributes()
+    {
+        $attributes = parent::attributes();
+        unset($attributes['created_at']);
+        return $attributes;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [];
     }
 
     /**
@@ -81,7 +100,11 @@ class AdvertTemplet extends Advert
      */
     public static function getByUserId($userId)
     {
-        return self::find()->where(['user_id' => $userId])->one() ? :  new self(['user_id' => $userId]);;
+        if (!$model = self::find()->where(['user_id' => $userId])->one()) {
+            $model = new self(['user_id' => $userId]);
+            $model->save();
+        }
+        return  $model;
     }
 
     /**
@@ -109,5 +132,15 @@ class AdvertTemplet extends Advert
             $this->$attribute = null;
         }
         return $this->save();
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFiles()
+    {
+        return $this->hasMany(File::className(), ['owner_id' => 'id'])->onCondition([
+            'owner_model_name' => static::shortClassName()
+        ]);
     }
 }

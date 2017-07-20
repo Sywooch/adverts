@@ -3,42 +3,13 @@
 $params = require(__DIR__ . '/params.php');
 
 $config = [
-    'id' => 'Adverts',
-    'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
-    'language' => 'ru',
     'defaultRoute' => 'adverts/advert',
     'components' => [
         'assetManager' => [
             //'linkAssets' => true
         ],
-        'authManager' => [
-            'class' => 'yii\rbac\PhpManager',
-            'defaultRoles' => ['Admin', 'User']
-        ],
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
-        'db' => require(__DIR__ . '/db.php'),
         'errorHandler' => [
             'errorAction' => 'site/error',
-        ],
-        'formatter' => [
-            'dateFormat' => 'php:d.m.Y',
-            'timeFormat' => 'php:d.m.Y H:i',
-        ],
-        'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            'useFileTransport' => true,
         ],
         'request' => [
             'cookieValidationKey' => 'U5X6dQpeo0XRgHpRy2BQGogBgJbsQf10',
@@ -60,9 +31,8 @@ $config = [
         ],
         'users' => [
             'class' => 'app\modules\users\usersModule'
-        ]
+        ],
     ],
-    'params' => $params,
 ];
 
 if (YII_ENV_DEV) {
@@ -78,4 +48,4 @@ if (YII_ENV_DEV) {
     ];
 }
 
-return $config;
+return \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/common.php'), $config);

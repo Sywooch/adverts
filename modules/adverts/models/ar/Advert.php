@@ -5,6 +5,7 @@ namespace app\modules\adverts\models\ar;
 use app\modules\adverts\AdvertsModule;
 use app\modules\adverts\models\aq\AdvertQuery;
 use app\modules\core\behaviors\TimestampBehavior;
+use app\modules\core\models\ar\File;
 use app\modules\currencies\models\ar\Currency;
 use app\modules\users\models\ar\User;
 use Yii;
@@ -27,6 +28,8 @@ use yii\helpers\ArrayHelper;
  * @property string $updated_at
  * @property float $min_price
  * @property float $max_price
+ *
+ * @property File[] $files
  */
 class Advert extends \app\modules\core\db\ActiveRecord
 {
@@ -157,7 +160,9 @@ class Advert extends \app\modules\core\db\ActiveRecord
      */
     public function getFiles()
     {
-        // TODO
+        return $this->hasMany(File::className(), ['owner_id' => 'id'])->onCondition([
+            'owner_model_name' => static::shortClassName()
+        ]);
     }
 
     /**

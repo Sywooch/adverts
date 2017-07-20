@@ -21,37 +21,39 @@ class m140608_173539_create_user_table extends Migration
         }
 
         $this->createTable('user', [
-            'id'                 => 'pk',
-            'email'              => 'VARCHAR(128) NOT NULL',
-            'auth_key'           => 'VARCHAR(32) NOT NUlL',
-            'password'           => 'VARCHAR(128)',
-            'status'             => 'INT NOT NULL DEFAULT 1',
-            'superadmin'         => 'TINYINT(1) DEFAULT 0',
-            'created_at'         => 'TIMESTAMP',
-            'updated_at'         => 'TIMESTAMP',
-            'lastvisit_at'       => 'TIMESTAMP',
+            'id'                => 'pk',
+            'email'             => 'VARCHAR(128) DEFAULT NULL',
+            'auth_key'          => 'VARCHAR(32) NOT NUlL',
+            'password'          => 'VARCHAR(128)',
+            'status'            => 'INT NOT NULL DEFAULT 1',
+            'superadmin'        => 'TINYINT(1) DEFAULT 0',
+            'created_at'        => 'TIMESTAMP',
+            'updated_at'        => 'TIMESTAMP',
+            'lastvisit_at'      => 'TIMESTAMP',
         ], $tableOptions);
 
-        $this->createTable('service_user', [
-            'service_user_id'   => 'VARCHAR(32)',
-            'service_name'      => 'VARCHAR(32)',
+        $this->createTable('auth_client_user', [
+            'client_user_id'    => 'VARCHAR(32)',
+            'client_name'       => 'ENUM("'.implode('","', Yii::$app->authClientComponent->getClientsNames()).'")',
             'user_id'           => 'INT(11) NOT NULL',
             'state'             => 'VARCHAR(32)',
             'access_token'      => 'VARCHAR(512)',
-            'service_status'    => 'VARCHAR(32)',
-            'username'          => 'VARCHAR(128)',
+            'client_status'     => 'VARCHAR(32)',
+            'first_name'        => 'VARCHAR(32)',
+            'last_name'         => 'VARCHAR(32)',
             'avatar_url'        => 'VARCHAR(255)',
+            'profile_url'       => 'VARCHAR(255)',
             'profile'           => 'TEXT',
-            'PRIMARY KEY (service_user_id, service_name)'
+            'PRIMARY KEY (client_user_id, client_name)'
         ], $tableOptions);
-        $this->addForeignKey('FK_service_user_REFS_user', 'service_user', 'user_id', 'user', 'id', 'NO ACTION', 'NO ACTION');
+        $this->addForeignKey('FK_auth_client_user_REFS_user', 'auth_client_user', 'user_id', 'user', 'id', 'NO ACTION', 'NO ACTION');
 
         $preferableConnectionTypeLabels = array_keys(Profile::getAttributeLabels('preferable_connection_type'));
         $this->createTable('user_profile', [
             'id'                         => 'pk',
             'user_id'                    => 'INT(11) NOT NULL',
-            'name'                       => 'VARCHAR(32)',
-            'surname'                    => 'VARCHAR(32)',
+            'first_name'                 => 'VARCHAR(32)',
+            'last_name'                  => 'VARCHAR(32)',
             'patronymic'                 => 'VARCHAR(32)',
             'skype'                      => 'VARCHAR(32)',
             'isq'                        => 'VARCHAR(32)',
@@ -76,7 +78,7 @@ class m140608_173539_create_user_table extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
         }
 
-        $subjectLabels = array_keys(EmailConfirmToken::getAttributeLabels('subject'));
+        $subjectLabels = array_keys(EmailConfirmToken::getAttributeLabels('action'));
         $this->createTable('user_email_confirm_token', [
             'id'            => 'pk',
             'user_id'       => 'INT(11) NOT NULL',

@@ -7,12 +7,19 @@
 use app\modules\adverts\AdvertsModule;
 use app\modules\adverts\models\search\AdvertCategorySearch;
 use app\modules\core\widgets\ActiveForm;
+use app\modules\core\widgets\FileUpload;
 use app\modules\currencies\models\search\CurrencySearch;
 use nkovacs\datetimepicker\DateTimePicker;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
+
+/**
+ * @var \app\modules\adverts\models\ar\Advert $model
+ * @var \app\modules\adverts\models\ar\AdvertTemplet $templet
+ * @var \yii\web\View $this
+ */
 
 ?>
 
@@ -84,68 +91,108 @@ use yii\web\View;
         'emptyItem' => Yii::t('app', 'Empty city option'),
     ])*/ ?>
 
-    <div class="btn-group mt-20">
-        <?php if ($model->isNewRecord): ?>
-            <?= Html::submitButton(AdvertsModule::t('Опубликовать'), [
-                'class' => 'btn btn-success'
-            ]); ?>
-
-            <?php
-            // TODO: взвесить и реализовать возможность добавления заметок в черновики
-            /*Html::a(AdvertsModule::t('Сохранить как черновик'), Url::to(['/advert/clear-templet']), [
-                'class' => 'btn btn-success'
-            ]);*/
-            ?>
-
-            <?= Html::a(AdvertsModule::t('Очистить'), Url::to(['/advert/clear-templet']), [
-                'class' => 'btn btn-warning'
-            ]) ?>
-        <?php else: ?>
-            <?= Html::submitButton(AdvertsModule::t('Сохранить изменения')); ?>
-        <?php endif; ?>
+    <div class="row mt-30">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="files-container" data-action="files-container">
+                <?php /** @var $file \app\modules\core\models\ar\File */ ?>
+                <?php foreach ($templet->files as $file): ?>
+                    <div class="file-container" data-action="file-container">
+                        <?= Html::img("/uploaded/{$file->file_name}", [
+                            'class' => 'img-thumbnail'
+                        ]); ?>
+                        <div class="file-delete" data-action="file-delete" data-url="<?= Url::to(['file-delete', 'name' => $file->file_name]); ?>">
+                            <i class="glyphicon glyphicon-remove"></i>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <div id="files-progressbar" class="files-progressbar progress"></div>
+        </div>
     </div>
 
     <div class="clear"></div>
 
-<?php ActiveForm::end() ?>
+    <?php
+        $urlParam = Yii::$app->security->generateRandomString(8);
+        $deleteUrlParam = Yii::$app->security->generateRandomString(8);
+        $file = Html::img($urlParam, [
+            'class' => 'img-thumbnail'
+        ]);
+        $imgTemplate = <<<TMPL
+<div class="file-container" data-action="file-container">{$file}<div class="file-delete" data-action="file-delete" data-url="{$deleteUrlParam}"><i class="glyphicon glyphicon-remove"></i></div></div>
+TMPL;
 
-<!-- Advert upload files form -->
-<?php $form = ActiveForm::begin([
-    'id' => 'advert-file-upload-form',
-    'action' => '/file/upload',
-    'options' => [
-        'enctype' => 'multipart/form-data'
-    ],
-    'enableClientValidation' => false,
-    'fieldConfig' => [
-        'template' => "{input}"
-    ]
-]) ?>
+    ?>
 
-    <?= Html::hiddenInput('owner', 'Advert') ?>
-    <?= Html::hiddenInput('ownerId', $model->id) ?>
+    <div class="mt-20">
+        <?= FileUpload::widget([
+            'model' => $templet,
+            'attribute' => 'files',
+            'plus' => true,
+            'url' => [
+                'file-upload',
+                'id' => $templet->id
+            ],
+            'clientOptions' => [
+                'accept' => 'image/*',
+                //'acceptFileTypes' => '/(\.|\/)(gif|jpe?g|png|bmp|pdf|doc|docx|xls|xlsx)$/i',
+                'dataType' => 'json',
+                'getFilesFromResponse' => true,
+                'maxFileSize' => 2000000,
+                'multiple' => 'multiple',
+            ],
+            // see: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#processing-callback-options
+            'clientEvents' => [
+                'fileuploadadd' => "function(e, data) {
+                    
+                }",
+                'fileuploadprogressall' => "function(e, data) {
+                    alert('fileuploadprogressall');
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#files-progressbar .progress-bar').css('width', progress + '%');
+                }",
+                'fileuploaddone' => "function(e, data) {
+                    var template = '{$imgTemplate}';
+                    var file = jQuery.parseJSON(data.result);
+                    template = template.replace(/{$urlParam}/g, file.url);
+                    template = template.replace(/{$deleteUrlParam}/g, file.deleteUrl);
+                    $('[data-action=files-container]').append(template);
+                    /*$('.files-container .file-container').last().find('img').animate({
+                        height: '100%'
+                    }, 300, function() {});*/
+                }",
+                'fileuploadfail' => 'function(e, data) {
+                    console.log(e);
+                    console.log(data);
+                }',
+            ],
+        ]); ?>
 
-    <label>
-        <?php /*$form->field(new File, 'file', [
-            'options' => ['tag' => false]
-        ])->fileInput();*/ ?>
+        <div class="btn-group pull-right">
+            <?php if ($model->isNewRecord): ?>
+                <?= Html::submitButton(AdvertsModule::t('Опубликовать'), [
+                    'class' => 'btn btn-success'
+                ]); ?>
 
-        <span class="button" style="">
-            <?= Yii::t('app', 'Attach file') ?>
-        </span>
-    </label>
+                <?php
+                // TODO: взвесить и реализовать возможность добавления заметок в черновики
+                /*Html::a(AdvertsModule::t('Сохранить как черновик'), Url::to(['/advert/clear-templet']), [
+                    'class' => 'btn btn-success'
+                ]);*/
+                ?>
 
-    <?= Html::submitButton(Yii::t('app', 'Upload')) ?>
+                <?= Html::a(AdvertsModule::t('Очистить'), Url::to(['clear-templet']), [
+                    'class' => 'btn btn-warning'
+                ]) ?>
+            <?php else: ?>
+                <?= Html::submitButton(AdvertsModule::t('Сохранить изменения')); ?>
+            <?php endif; ?>
+        </div>
+    </div>
 
-<?php ActiveForm::end() ?>
+    <div class="clear"></div>
 
-<?php //$this->render('dropzone/register') ?>
-
-<div id="advert-uploaded-files">
-    <?php //foreach ($model->files as $file): ?>
-        <?php //$this->render('dropzone/_file', ['model' => $file]) ?>
-    <?php //endforeach ?>
-</div>
+<?php ActiveForm::end(); ?>
 
 <?php
     /*MaskedInput::widget([
@@ -173,15 +220,15 @@ jQuery('#advert-form').on('ajaxComplete', function(data) {
     });    
 });
 
-jQuery('#advert-uploaded-files').on('click', '[data-delete-file]', function() {
-    var a = $(this);
+jQuery('#advert-form').on('click', '[data-action=file-delete]', function() {
+    var self = $(this);
     $.ajax({
-        url: $(this).attr('href'),
+        url: self.attr('data-url'),
         success: function(data, textStatus, jqXHR ) {
-            a.parents('.dz-preview').animate({
-                opacity: 0
+            self.prev().animate({
+                width: 0
             }, 300, function() {
-                $(this).remove();
+                self.parents('.file-container').remove();
             });
         },
         error: function() {

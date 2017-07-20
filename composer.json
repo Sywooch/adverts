@@ -21,7 +21,9 @@
         "yiisoft/yii2-jui": "~2.0.0",
         "fishvision/yii2-migrate": "*",
         "webvimark/module-user-management": "^1.0",
-        "nkovacs/yii2-datetimepicker": "*"
+        "nkovacs/yii2-datetimepicker": "*",
+        "yiisoft/yii2-authclient": "^2.1",
+        "2amigos/yii2-file-upload-widget": "~1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

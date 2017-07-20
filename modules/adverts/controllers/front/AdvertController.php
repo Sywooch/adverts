@@ -5,12 +5,16 @@ namespace app\modules\adverts\controllers\front;
 use app\modules\adverts\models\ar\Advert;
 use app\modules\adverts\models\ar\AdvertTemplet;
 use app\modules\adverts\models\search\AdvertSearch;
+use app\modules\core\models\ar\File;
 use app\modules\core\web\Controller;
 use Yii;
+use yii\filters\AccessControl;
+use yii\helpers\Json;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
-use yii\filters\AccessControl;
 
 /**
  * Class AdvertController
@@ -36,7 +40,7 @@ class AdvertController extends Controller
                         'allow' => true,
                         'actions' => [
                             'create', 'validate', 'save-templet', 'clear-templet', 'update', 'delete',
-                            'bookmark', 'like', 'comment', 'upload-file'
+                            'bookmark', 'like', 'comment', 'file-upload', 'file-delete'
                         ],
                         'roles' => ['@'],
                     ],
@@ -113,7 +117,7 @@ class AdvertController extends Controller
         $model->copyFromTemplet($templet->attributes);
         $model->validate();
 
-        return $this->render('create', compact('model', 'directPopulating'));
+        return $this->render('create', compact('model', 'templet', 'directPopulating'));
     }
 
     /**
@@ -202,7 +206,7 @@ class AdvertController extends Controller
      */
     public function actionClearTemplet()
     {
-        $model = AdvertTemplet::getByUserId(Yii::$pp->user->id);
+        $model = AdvertTemplet::getByUserId(Yii::$app->user->id);
         $model->clear();
         $model->save();
 
@@ -226,11 +230,49 @@ class AdvertController extends Controller
     }
 
     /**
-     *
+     * File uploading.
+     * @param integer $id
+     * @param bool $isTemplet
+     * @return string
      */
-    public function actionUploadFile($id)
+    public function actionFileUpload($id, $isTemplet = true)
     {
+        $model = $isTemplet ? AdvertTemplet::getByUserId(Yii::$app->user->id) : $this->findModel($id, self::MODE_WRITE);
+        if ($file = File::upload($model)) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'file_name' => $file->file_name,
+                'url' => $file->url,
+                'thumbnailUrl' => $file->url,
+                'deleteUrl' => Url::to(['file-delete', 'name' => $file->file_name]),
+                'deleteType' => 'POST',
+            ];
+        }
 
+        return '';
+    }
+
+    /**
+     * File deleting.
+     * @param string  $name
+     * @return string
+     */
+    public function actionFileDelete($name)
+    {
+        if ($file = File::findOne(['file_name' => $name])) {
+            $file->delete();
+        }
+
+        return Json::encode([
+            'files' => [
+                'name' => $name,
+                //'size' => filesize($file->full),
+                'url' => $file->url,
+                'thumbnailUrl' => $file->url,
+                'deleteUrl' => 'image-delete?name=' . $name,
+                'deleteType' => 'POST',
+            ]
+        ]);
     }
 
     /**

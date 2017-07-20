@@ -1,9 +1,6 @@
 <?php
 
 $config = [
-    'id' => 'basic-console',
-    'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',
     'controllerMap' => [
         'migrate' => [
@@ -13,32 +10,12 @@ $config = [
                 '@app/modules/users',
             ],
         ],
-    ],
-    'components' => [
-        'authManager' => [
-            'class' => 'yii\rbac\PhpManager',
-        ],
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
-        'db' => require(__DIR__ . '/db.php'),
-        'log' => [
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
-    ],
-    'params' => require(__DIR__ . '/params.php'),
-    /*
-    'controllerMap' => [
+        /*
         'fixture' => [ // Fixture generation command line.
             'class' => 'yii\faker\FixtureController',
         ],
+         */
     ],
-    */
 ];
 
 if (YII_ENV_DEV) {
@@ -49,4 +26,4 @@ if (YII_ENV_DEV) {
     ];
 }
 
-return $config;
+return \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/common.php'), $config);
