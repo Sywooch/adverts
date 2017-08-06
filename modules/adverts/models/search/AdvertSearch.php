@@ -2,9 +2,11 @@
 
 namespace app\modules\adverts\models\search;
 
-use Yii;
-use yii\data\ActiveDataProvider;
 use app\modules\adverts\models\ar\Advert;
+use app\modules\adverts\models\ar\AdvertCategory;
+use Yii;
+use app\modules\core\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 
 class AdvertSearch extends Advert
 {
@@ -24,6 +26,11 @@ class AdvertSearch extends Advert
     public $max_date;
 
     /**
+     * @var string
+     */
+    public $phrase;
+
+    /**
      * @inheritdoc
      */
     public function rules()
@@ -34,45 +41,46 @@ class AdvertSearch extends Advert
     }
 
     /**
-     * @return array customized attribute labels
+     * @inheritdoc
      */
     public function attributeLabels()
     {
-        return [
-            'id' => 'Id',
-            'category' => Yii::t('app', 'Category'),
-            'city_id' => Yii::t('app', 'City'),
-            'content' => Yii::t('app', 'Content'),
-            'created_at' => Yii::t('app', 'Created'),
-            'price' => Yii::t('app', 'Price'),
-            'max_price' => Yii::t('app', 'Price to'),
-            'max_date' => Yii::t('app', 'Date to'),
-            'min_price' => Yii::t('app', 'Price from'),
-            'min_date' => Yii::t('app', 'Date from'),
-            'published' => Yii::t('app', 'Is Published'),
-            'status' => Yii::t('app', 'Status'),
-            'term' => Yii::t('app', 'Term'),
-            'type' => Yii::t('app', 'Type'),
-            'updated_at' => Yii::t('app', 'Updated'),
-        ];
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'max_date' => Yii::t('app', 'Минимальная дата'),
+            'min_date' => Yii::t('app', 'Максимальная дата'),
+            'phrase' => Yii::t('app', 'Фраза'),
+        ]);
     }
 
     /**
      * Creating model search query.
+     * @param array $params
      * @return ActiveDataProvider|\yii\data\DataProviderInterface
      */
     public function search($params = [])
     {
-        $query = $query = self::find()->with('owner.profile');
+        $query = Advert::find()
+            ->active()
+            ->withCommentsCount()
+            ->withDislikesCount()
+            ->withLikesCount()
+            ->withLooksCount()
+            ->withBookmarksCurrentUser()
+            ->withLikesCurrentUser()
+            ->with(['owner.profile', 'category', 'files', 'geography'])
+            ->groupBy(['advert.id']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            /*'pagination' => [
-                'pageSize' => \roman444uk\yii\widgets\WidgetPageSize::getPageSize(),
-            ],*/
+            'pagination' => [
+                //'pageSize' => \roman444uk\yii\widgets\WidgetPageSize::getPageSize(),
+                'pageSize' => 5
+            ],
             'sort' => [
                 'attributes' => [
-                    'asc' => ['updated_at', 'updated_at', 'min_price', 'max_price']
+                    'asc' => [
+                        'created_at', 'min_price', 'max_price'
+                    ]
                 ]
             ]
         ]);
@@ -117,41 +125,33 @@ class AdvertSearch extends Advert
     {
         $tableAdvert = self::tableName();
 
-        if (!empty($this->category)) {
-            $query->andWhere('category = :category', [':category' => $this->category]);
+        if ($this->category_id) {
+            $query->andWhere("{$tableAdvert}.category_id = :category", [':category' => $this->category_id]);
         }
 
-        /*if (!empty($this->content)) {
+        /*if (!empty($this->phrase)) {
             $ids = [];
-            foreach ((new \yii\sphinx\Query)->from(self::tableName())->match($this->content)->all() as $row) {
+            foreach ((new \yii\sphinx\Query)->from(self::tableName())->match($this->phrase)->all() as $row) {
                 array_push($ids, $row['id']);
             }
-            $query->andWhere([self::tableName() . '.id' => $ids]);
+            $query->andWhere(["{$tableAdvert}.id" => $ids]);
         }*/
 
 
-        if (!empty($this->min_date) && ($minDate = DatepickerHelper::convertDateFrom($this->min_date))) {
-            $query->andWhere(self::tableName() . '.created_at >= :minDate', [':minDate' => $minDate]);
+        if (!empty($this->min_date)) {
+            $query->andWhere("{$tableAdvert}.created_at >= :minDate", [':minDate' => $this->min_date]);
+        }
+
+        if (!empty($this->max_date)) {
+            $query->andWhere("{$tableAdvert}.created_at >= :maxDate", [':minDate' => $this->max_date]);
         }
 
         if (!empty($this->min_price)) {
-            $query->andWhere('min_price = :min_price', [':min_price' => $this->min_price]);
+            $query->andWhere("{$tableAdvert}.min_price = :minPrice", [':minprice' => $this->min_price]);
         }
 
         if (!empty($this->max_price)) {
-            $query->andWhere('max_price = :max_price', [':max_price' => $this->max_price]);
-        }
-
-        if (!empty($this->max_date) && ($maxDate = DatepickerHelper::convertDateTo($this->max_date))) {
-            $query->andWhere(self::tableName() . '.created_at <= :maxDate', [':maxDate' => $maxDate]);
-        }
-
-        if (!empty($this->published) || $this->published === 0) {
-            $query->andWhere('published = :published', [':published' => $this->published]);
-        }
-
-        if (!empty($this->user_id)) {
-            $query->andWhere("$tableAdvert.user_id = :user_id", [':user_id' => $this->user_id]);
+            $query->andWhere("{$tableAdvert}.max_price = :maxPrice", [':maxPrice' => $this->max_price]);
         }
 
         $query->orderBy(self::tableName() . '.created_at desc');

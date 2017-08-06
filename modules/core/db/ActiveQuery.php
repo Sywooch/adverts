@@ -2,52 +2,107 @@
 
 namespace app\modules\core\db;
 
+use app\modules\core\models\ar\Bookmark;
 use app\modules\core\models\ar\Comment;
 use app\modules\core\models\ar\Like;
 use app\modules\core\models\ar\Look;
+use Yii;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 
 class ActiveQuery extends \yii\db\ActiveQuery
 {
     /**
-     * @var bool
+     * @var string
      */
-    protected $_countDislikes = false;
+    public $tableName;
 
     /**
      * @var bool
      */
-    protected $_countLikes = false;
+    protected $_commentsCount = false;
 
     /**
      * @var bool
      */
-    protected $_countLooks = false;
+    protected $_dislikesCount = false;
+
+    /**
+     * @var bool
+     */
+    protected $_likesCount = false;
+
+    /**
+     * @var bool
+     */
+    protected $_likesCurrentUser = false;
+
+    /**
+     * @var bool
+     */
+    protected $_looksCount = false;
+
+    /**
+     * @var bool
+     */
+    protected $_bookmarksCurrentUser = false;
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->tableName = ($this->modelClass)::tableName();
+    }
 
     /**
      *
      */
-    public function countDislikes()
+    public function withCommentsCount()
     {
-        $this->_countDislikes = true;
+        $this->_commentsCount = true;
+        return $this;
+    }
+    /**
+     *
+     */
+    public function withDislikesCount()
+    {
+        $this->_dislikesCount = true;
         return $this;
     }
 
     /**
      *
      */
-    public function countLikes()
+    public function withLikesCount()
     {
-        $this->_countLikes = true;
+        $this->_likesCount = true;
         return $this;
     }
 
     /**
      *
      */
-    public function countLooks()
+    public function withLikesCurrentUser()
     {
-        $this->_countLooks = true;
+        $this->_likesCurrentUser = true;
+        return $this;
+    }
+
+    /**
+     *
+     */
+    public function withLooksCount()
+    {
+        $this->_looksCount = true;
+        return $this;
+    }
+
+    public function withBookmarksCurrentUser()
+    {
+        $this->_bookmarksCurrentUser = true;
         return $this;
     }
 
@@ -65,6 +120,7 @@ class ActiveQuery extends \yii\db\ActiveQuery
      */
     protected function createModels($rows)
     {
+        /* @var $models ActiveRecord[] */
         $models = [];
         $modelsIds = [];
         if ($this->asArray) {
@@ -107,7 +163,7 @@ class ActiveQuery extends \yii\db\ActiveQuery
         }
 
         $likes = [];
-        if ($this->_countLikes) {
+        if ($this->_likesCount) {
             $likes = Like::find()->select([
                 'owner_id', 'likesCount' => 'COUNT(*)'
             ])->where([
@@ -118,7 +174,7 @@ class ActiveQuery extends \yii\db\ActiveQuery
         }
 
         $dislikes = [];
-        if ($this->_countDislikes) {
+        if ($this->_dislikesCount) {
             $dislikes = Like::find()->select([
                 'owner_id', 'dislikesCount' => 'COUNT(*)'
             ])->where([
@@ -128,8 +184,19 @@ class ActiveQuery extends \yii\db\ActiveQuery
             ])->groupBy('owner_id')->indexBy('owner_id')->asArray()->all();
         }
 
+        $likesCurrentUser = [];
+        if ($this->_likesCurrentUser) {
+            $likesCurrentUser = Like::find()->select([
+                'owner_id', 'value'
+            ])->where([
+                'user_id' => Yii::$app->user->id,
+                'owner_id' => $modelsIds,
+                'owner_model_name' => $class::shortClassName(),
+            ])->indexBy('owner_id')->asArray()->all();
+        }
+
         $looks = [];
-        if ($this->_countLooks) {
+        if ($this->_looksCount) {
             $looks = Look::find()->select([
                 'owner_id', 'looksCount' => 'SUM(' . Look::tableName() . '.value)'
             ])->where([
@@ -138,78 +205,45 @@ class ActiveQuery extends \yii\db\ActiveQuery
             ])->groupBy('owner_id')->indexBy('owner_id')->asArray()->all();
         }
 
+        $comments = [];
+        if ($this->_commentsCount) {
+            $comments = Comment::find()->select([
+                'owner_id', 'commentsCount' => 'COUNT(*)'
+            ])->where([
+                'owner_id' => $modelsIds,
+                'owner_model_name' => $class::shortClassName(),
+            ])->groupBy('owner_id')->indexBy('owner_id')->asArray()->all();
+        }
+
+        $bookmarks = [];
+        if ($this->_bookmarksCurrentUser && !Yii::$app->user->isGuest) {
+            $bookmarks = Bookmark::find()->select([
+                'owner_id'
+            ])->where([
+                'user_id' => Yii::$app->user->id,
+                'owner_id' => $modelsIds,
+                'owner_model_name' => $class::shortClassName(),
+            ])->groupBy('owner_id')->indexBy('owner_id')->asArray()->all();
+        }
+
         foreach ($models as $model) {
-            if (isset($likes[$model->id])) {
-                $model->likesCount = $likes[$model->id]['likesCount'];
-            }
-            if (isset($dislikes[$model->id])) {
-                $model->dislikesCount = $dislikes[$model->id]['dislikesCount'];
-            }
-            if (isset($looks[$model->id])) {
-                $model->looksCount = $looks[$model->id]['looksCount'];
+            $modelId = $model instanceof ActiveRecord ? $model->id : $model['id'];
+            $attributes = [
+                'likesCount' => isset($likes[$modelId]) ? $likes[$modelId]['likesCount'] : 0,
+                'dislikesCount' => isset($dislikes[$modelId]) ? $dislikes[$modelId]['dislikesCount'] : 0,
+                'isLikedCurrentUser' => isset($likesCurrentUser[$modelId]) ? $likesCurrentUser[$modelId]['value'] == Like::LIKE_VALUE : false,
+                'isDislikedCurrentUser' => isset($likesCurrentUser[$modelId]) ? $likesCurrentUser[$modelId]['value'] == Like::DISLIKE_VALUE : false,
+                'looksCount' => isset($looks[$modelId]) ? $looks[$modelId]['looksCount'] : 0,
+                'commentsCount' => isset($comments[$modelId]) ? $comments[$modelId]['commentsCount'] : 0,
+                'isBookmarkedCurrentUserInDb' => isset($bookmarks[$modelId])
+            ];
+            if ($model instanceof ActiveRecord) {
+                $model->setAttributes($attributes);
+            } else {
+                $model = ArrayHelper::merge($model, $attributes);
             }
         }
 
         return $models;
     }
-
-    /**
-     * Adds conditions for the counting of likes and dislikes.
-     * @return $this
-     */
-    /*public function addLikesCountSelectConditions()
-    {
-        $modelName = $this->modelClass;
-        $ownerModelName = $modelName::shortClassName();
-        $selfTable = self::getPrimaryTableName();
-        return $this
-            ->addSelect([
-                'likesCount' => 'COUNT(`likesCount`.`id`)',
-                'dislikesCount' => 'COUNT(`dislikesCount`.`id`)',
-            ])->leftJoin(['likesCount' => Like::tableName()], [
-                'likesCount.owner_id' => new Expression("{$selfTable}.id"),
-                'likesCount.owner_model_name' => $ownerModelName,
-                'likesCount.value' => 1
-            ])->leftJoin(['dislikesCount' => Like::tableName()], [
-                'dislikesCount.owner_id' => new Expression("{$selfTable}.id"),
-                'dislikesCount.owner_model_name' => $ownerModelName,
-                'dislikesCount.value' => 0
-            ]);
-    }*/
-
-    /**
-     * Adds conditions for the counting of looks.
-     * @return $this
-     */
-    /*public function addLooksCountSelectConditions()
-    {
-        $modelName = $this->modelClass;
-        $ownerModelName = $modelName::shortClassName();
-        $selfTable = self::getPrimaryTableName();
-        return $this
-            ->addSelect([
-                'looksCount' => 'COUNT(`look`.`value`)',
-            ])->leftJoin(Look::tableName(), [
-                'look.owner_id' => new Expression("{$selfTable}.id"),
-                'look.owner_model_name' => $ownerModelName,
-            ]);
-    }*/
-
-    /**
-     * Adds conditions for the counting of looks.
-     * @return $this
-     */
-    /*public function addCommentsCountSelectConditions()
-    {
-        $modelName = $this->modelClass;
-        $ownerModelName = $modelName::shortClassName();
-        $selfTable = self::getPrimaryTableName();
-        return $this
-            ->addSelect([
-                'commentsCount' => 'COUNT(`comment`.`id`)',
-            ])->leftJoin(Comment::tableName(), [
-                'comment.owner_id' => new Expression("{$selfTable}.id"),
-                'comment.owner_model_name' => $ownerModelName,
-            ]);
-    }*/
 }

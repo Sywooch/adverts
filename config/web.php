@@ -1,8 +1,8 @@
 <?php
 
-$params = require(__DIR__ . '/params.php');
+require(__DIR__ . '/bootstrap.php');
 
-$config = [
+$webConfig = [
     'defaultRoute' => 'adverts/advert',
     'components' => [
         'assetManager' => [
@@ -33,19 +33,20 @@ $config = [
             'class' => 'app\modules\users\usersModule'
         ],
     ],
+    'params' => require(__DIR__ . '/params.php'),
 ];
 
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = [
+    $webConfig['bootstrap'][] = 'debug';
+    $webConfig['modules']['debug'] = [
         'class' => 'yii\debug\Module',
     ];
 
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['gii'] = [
+    $webConfig['bootstrap'][] = 'gii';
+    $webConfig['modules']['gii'] = [
         'class' => 'yii\gii\Module',
     ];
 }
 
-return \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/common.php'), $config);
+return \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/common.php'), $webConfig);

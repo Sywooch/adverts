@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "135e0fb1690ce404e2b0eccae7dda83e",
+    "content-hash": "ebdf2db207536245a630b627f8deb93b",
     "packages": [
         {
             "name": "2amigos/yii2-file-upload-widget",
@@ -760,6 +760,95 @@
                 "browser"
             ],
             "time": "2015-08-26T20:05:14+00:00"
+        },
+        {
+            "name": "jumper423/yii2-captcha",
+            "version": "1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jumper423/yii2-captcha.git",
+                "reference": "b04bdd2fc5fdbbdbd8d4df365c150fa4a56c6f04"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jumper423/yii2-captcha/zipball/b04bdd2fc5fdbbdbd8d4df365c150fa4a56c6f04",
+                "reference": "b04bdd2fc5fdbbdbd8d4df365c150fa4a56c6f04",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "yiisoft/yii2": "*"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "jumper423\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache License 2.0"
+            ],
+            "description": "Распознавание капч для всех популярных сервисов rucaptcha.com, 2captcha.com, pixodrom.com, captcha24.com, socialink.ru, anti-captcha.com",
+            "homepage": "http://infoblog1.ru/learn/cms/yii/raspoznavanie-kapch-na-yii2",
+            "keywords": [
+                "2captcha",
+                "2captcha.com",
+                "anti-captcha",
+                "anti-captcha.com",
+                "captcha",
+                "captcha24",
+                "captcha24.com",
+                "pixodrom",
+                "pixodrom.com",
+                "recognition",
+                "rucaptcha",
+                "rucaptcha.com",
+                "socialink",
+                "socialink.ru",
+                "yii2"
+            ],
+            "time": "2016-03-06T22:11:06+00:00"
+        },
+        {
+            "name": "jumper423/yii2-vk",
+            "version": "2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jumper423/yii2-vk.git",
+                "reference": "11e1053d53894ec3559082d77231434f58004a81"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jumper423/yii2-vk/zipball/11e1053d53894ec3559082d77231434f58004a81",
+                "reference": "11e1053d53894ec3559082d77231434f58004a81",
+                "shasum": ""
+            },
+            "require": {
+                "jumper423/yii2-captcha": "*",
+                "php": ">=5.4.0",
+                "yiisoft/yii2": "*",
+                "yiisoft/yii2-authclient": "~2.0"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "jumper423\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache License 2.0"
+            ],
+            "keywords": [
+                "api",
+                "vk",
+                "vkontakte",
+                "yii2",
+                "апи",
+                "вконтакте"
+            ],
+            "time": "2015-10-25T00:24:37+00:00"
         },
         {
             "name": "nkovacs/yii2-datetimepicker",

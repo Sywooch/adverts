@@ -1,15 +1,15 @@
 <?php
 
-namespace app\modules\currencies\models\ar;
+namespace app\modules\core\models\ar;
 
-use app\modules\currencies\models\aq\CurrencyQuery;
+use app\modules\core\models\aq\CurrencyQuery;
 
 /**
  * This is the model class for table "currency".
  *
  * @property integer $id
  * @property string $name
- * @property string $abbreviaton
+ * @property string $abbreviation
  * @property string $sign
  */
 class Currency extends \app\modules\core\db\ActiveRecord
@@ -33,9 +33,9 @@ class Currency extends \app\modules\core\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'abbreviaton', 'sign'], 'required'],
+            [['name', 'abbreviation', 'sign'], 'required'],
             [['name'], 'string', 'max' => 32],
-            [['abbreviaton'], 'string', 'length' => 3],
+            [['abbreviation'], 'string', 'length' => 3],
             [['sign'], 'string', 'max' => 12],
         ];
     }

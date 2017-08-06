@@ -14,6 +14,10 @@ html, body {
     padding: 70px 15px 20px;
 }
 
+.container {
+    width: 90% !important;
+}
+
 .footer {
     height: 60px;
     background-color: #f5f5f5;
@@ -114,124 +118,173 @@ a.desc:after {
     outline: none;
 }
 
-/* bootstrap */
 .form-group .control-label/*, .form-group .help-block*/ {
     height: 34px;
     line-height: 34px;
 }
-.mt-10 {
-    margin-top: 10px !important;
-}
-.mt-15 {
-    margin-top:15px !important;
-}
-.mt-20 {
-    margin-top: 20px !important;
-}
-
-.mt-30 {
-    margin-top: 30px !important;
-}
-.mt-40 {
-    margin-top: 40px !important;
-}
 
 /* yii elements styles */
 .summary {
-    padding: 0 0 15px 0;
+    line-height: 38px;
+}
+.pagination {
+    margin: 0;
+}
+.pagination li span {
+    border: none;
+}
+.pagination li a, .pagination li span {
+    border: none;
+    color: #999 !important;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.pagination li.active a, .pagination li.active span {
+    background: none;
+    border-bottom: 1px solid #bbb !important;
+    border-bottom-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+    -webkit-border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    -moz-border-radius-bottomright: 0;
+    -webkit-border-bottom-right-radius: 0;
+}
+.pagination li.active a:hover, .pagination li.active a:focus {
+    background: #eee !important;
 }
 
-
 /* advert form */
-.files-container {
-    height: 220px;
+.advert-form .files-list {
+    height: 170px;
     padding: 10px 0;
     background: #eee;
 }
-.file-container {
+.advert-form .file-container {
     display: inline-block;
     position: relative;
     margin-right: 20px;
 }
-.file-container img {
-    height: 200px;
+.advert-form .file-container img {
+    height: 150px;
 }
-.file-container .file-delete {
+.advert-form .file-container .file-delete, .advert-form .file-container .file-deleting {
+    display: none;
     position: absolute;
-    right: 0;
-    top: 0;
+    right: 5px;
+    top: 5px;
+    width: 32px;
     height: 32px;
     color: #fff;
-    background-color: rgba(100, 100, 100, 255);
-    font-size: 2em;
+    background-color: rgba(0, 0, 0, .5);
+    font-size: 28px;
+    text-align: center;
 }
-.file-container .file-delete {
-
+.advert-form .file-container .file-deleting {
+    line-height: 32px;
 }
-.files-progressbar {
+.advert-form .file-container:hover .file-delete.visible {
+    display: block;
+}
+.advert-form .files-list .files-empty {
+    text-align: center;
+    line-height: 150px;
+}
+.advert-form .files-progressbar {
     margin: 0;
     height: 3px;
+    border: none;
+}
+.advert-form .file-uploaded-success, .file-uploaded-fail {
+    display: none;
+}
+.advert-form .file-uploaded-success {
+    color: #5cb85c;
+}
+.advert-form .file-uploaded-fail {
+    color: #d9534f;
 }
 
 /* adverts list styling s*/
+.adverts-list .items {
+
+}
 .adverts-list {
 
 }
-.adverts-list .container {
-    position: relative;
-    float: left;
-    padding: 10px;
-    width: 50%;
-    height: 300px;
-    //border-bottom: 1px solid #ccc;
-    text-align: justify;
+.adverts-list .advert-container {
+    margin: 0 0 30px 0;
+    padding: 15px 10px;
 }
-.adverts-list .container:hover {
+.adverts-list .advert-container:hover {
+    //cursor: pointer;
     background: #f8f8f8;
 }
-.container:last-child {
+.adverts-list .advert-container:last-child {
     border-bottom: none;
 }
-.container:hover {
-    cursor: pointer;
-}
-.container /*.left*/ img {
+.adverts-list img {
     float: left;
-//width: 60px;
+    width: 48px;
+    margin-right: 10px;
 }
-.container .right {
-//float: right;
-//width: 620px;
-}
-.container a.content {
+
+.adverts-list .advert-container a.content {
     display: block;
     text-indent: 12px;
     color: #555;
 }
-.container a.content:hover {
+.adverts-list .advert-container a.user-fullname {
+    color: #2a5885;
+}
+.adverts-list .advert-container a.content:hover {
+    text-decoration: none;
     background: none;
 }
-.adverts-list .container .info {
-    position: absolute;
-    bottom: 0;
-}
-/*.adverts-list .container .actions {
-    position: absolute;
-    top: 0;
-    right: 0;
-    text-align: right;
-}*/
-.adverts-list .container .info span, .info a span {
-    font-size: 11px !important;
+.adverts-list .advert-container .info, .adverts-list .advert-container .actions {
     font-weight: bold;
-    color: #999;
-    vertical-align: middle;
+    font-size: 13px;
+    line-height: 2em;
+    color: #777;
 }
-.container .info .actions a {
+.adverts-list .actions span {
     padding: 2px 5px;
+    border-radius: 4px;
+    -moz-border-radius: 4px;;
+    -webkit-border-radius: 4px;
+    color: #888;
 }
-.bookmarked .icon.star {
-    background-image: url('/../img/star-green.png') !important;
+.adverts-list .actions .active {
+    color: #00aa00;
+}
+.adverts-list .actions .like-button:hover, .adverts-list .actions .bookmark-button:hover {
+    background: #ddd;
+    cursor: pointer;
+}
+.adverts-list .actions a:hover, .adverts-list .actions a:focus {
+    text-decoration: none;
+}
+
+/* advert list filter */
+@media (min-width: 768px) and (max-width: 991px) {
+    .adverts-list-container .left {
+        position: fixed;
+        width: 30%;
+    }
+    .adverts-list-container .right {
+        width: 66.66%;
+        margin-left: 33.33%;
+    }
+}
+@media (min-width: 992px) {
+    .adverts-list-container .left {
+        position: fixed;
+        width: 18%;
+    }
+    .adverts-list-container .right {
+        width: 80%;
+        margin-left: 20%;
+    }
 }
 
 /* social icons */

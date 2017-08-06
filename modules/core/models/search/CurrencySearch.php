@@ -1,9 +1,9 @@
 <?php
 
-namespace app\modules\currencies\models\search;
+namespace app\modules\core\models\search;
 
-use app\modules\currencies\models\ar\Currency;
-use app\modules\currencies\CurrenciesModule;
+use app\modules\core\models\ar\Currency;
+use Yii;
 use yii\data\ActiveDataProvider;
 
 class CurrencySearch extends Currency
@@ -30,7 +30,7 @@ class CurrencySearch extends Currency
     {
         return [
             'id' => 'Id',
-            'name' => CurrenciesModule::t('Название'),
+            'name' => Yii::t('app', 'Название'),
         ];
     }
 

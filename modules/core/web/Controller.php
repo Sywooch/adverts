@@ -16,6 +16,11 @@ class Controller extends \yii\web\Controller
     const MODE_WRITE = 'write';
 
     /**
+     * @var string
+     */
+    public $modelName;
+
+    /**
      * Try to perform model ajax validation.
      * @param $model
      * @return mixed

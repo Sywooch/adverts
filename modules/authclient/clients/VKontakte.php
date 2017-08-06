@@ -2,8 +2,27 @@
 
 namespace app\modules\authclient\clients;
 
-class VKontakte extends \yii\authclient\clients\VKontakte implements ClientInterface
+use app\modules\authclient\models\OAuthToken;
+use jumper423\VK;
+use Yii;
+
+class VKontakte extends VK implements ClientInterface
 {
+    /**
+     * @inheritdoc
+     */
+    protected function createToken(array $tokenConfig = [])
+    {
+        $tokenConfig['tokenParamKey'] = 'access_token';
+
+        if (!array_key_exists('class', $tokenConfig)) {
+            $tokenConfig['class'] = OAuthToken::className();
+        }
+
+        return Yii::createObject($tokenConfig);
+    }
+
+
     /**
      * @return string
      */

@@ -8,7 +8,8 @@ use app\modules\adverts\AdvertsModule;
 use app\modules\adverts\models\search\AdvertCategorySearch;
 use app\modules\core\widgets\ActiveForm;
 use app\modules\core\widgets\FileUpload;
-use app\modules\currencies\models\search\CurrencySearch;
+use app\modules\core\widgets\Spaceless;
+use app\modules\core\models\search\CurrencySearch;
 use nkovacs\datetimepicker\DateTimePicker;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -30,8 +31,14 @@ use yii\web\View;
     'enableAjaxValidation' => true,
     'validateOnBlur' => true,
     'validationUrl' => Url::to(['validate', 'id' => $model->id]),
+    'options' => [
+        'class' => 'advert-form'
+    ],
     'fieldConfig' => [
         'template' => "{label}\n{input}",
+        'inputOptions' => [
+            'class' => 'form-control input-sm'
+        ]
     ]
 ]) ?>
 
@@ -58,9 +65,11 @@ use yii\web\View;
                 'class' => 'col-sm-4 col-md-4 col-lg-4'
             ]
         ])->widget(DateTimePicker::className(), [
-            'class' => 'form-control',
             'format' => Yii::$app->formatter->dateFormat,
             'locale' => Yii::$app->language,
+            'options' => [
+                'class' => 'form-control input-sm'
+            ]
         ]); ?>
     </div>
 
@@ -93,20 +102,24 @@ use yii\web\View;
 
     <div class="row mt-30">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="files-container" data-action="files-container">
-                <?php /** @var $file \app\modules\core\models\ar\File */ ?>
-                <?php foreach ($templet->files as $file): ?>
-                    <div class="file-container" data-action="file-container">
-                        <?= Html::img("/uploaded/{$file->file_name}", [
-                            'class' => 'img-thumbnail'
+            <div class="files-list" data-action="files-list">
+                <?php if ($templet->files): ?>
+                    <?php /** @var $file \app\modules\core\models\ar\File */ ?>
+                    <?php foreach ($templet->files as $file): ?>
+                        <?= $this->render('file/_file-container', [
+                            'model' => $file
                         ]); ?>
-                        <div class="file-delete" data-action="file-delete" data-url="<?= Url::to(['file-delete', 'name' => $file->file_name]); ?>">
-                            <i class="glyphicon glyphicon-remove"></i>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="files-empty"><?= Yii::t('app', 'Не загружено ни одного файла...'); ?></div>
+                <?php endif; ?>
             </div>
-            <div id="files-progressbar" class="files-progressbar progress"></div>
+            <?= \yii\jui\ProgressBar::widget([
+                'options' => [
+                    'id' => 'files-progressbar',
+                    'class' => 'files-progressbar',
+                ]
+            ]); ?>
         </div>
     </div>
 
@@ -115,13 +128,12 @@ use yii\web\View;
     <?php
         $urlParam = Yii::$app->security->generateRandomString(8);
         $deleteUrlParam = Yii::$app->security->generateRandomString(8);
-        $file = Html::img($urlParam, [
-            'class' => 'img-thumbnail'
+        $imgTemplate = Spaceless::widget([
+            'text' => $this->render('file/_file-container', [
+                'urlParam' => $urlParam,
+                'deleteUrlParam' => $deleteUrlParam
+            ])
         ]);
-        $imgTemplate = <<<TMPL
-<div class="file-container" data-action="file-container">{$file}<div class="file-delete" data-action="file-delete" data-url="{$deleteUrlParam}"><i class="glyphicon glyphicon-remove"></i></div></div>
-TMPL;
-
     ?>
 
     <div class="mt-20">
@@ -145,33 +157,43 @@ TMPL;
             'clientEvents' => [
                 'fileuploadadd' => "function(e, data) {
                     
-                }",
+}",
                 'fileuploadprogressall' => "function(e, data) {
-                    alert('fileuploadprogressall');
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
-                    $('#files-progressbar .progress-bar').css('width', progress + '%');
-                }",
+    $('#files-progressbar').progressbar({
+        value: parseInt(data.loaded / data.total * 100, 10)
+    });
+}",
                 'fileuploaddone' => "function(e, data) {
-                    var template = '{$imgTemplate}';
-                    var file = jQuery.parseJSON(data.result);
-                    template = template.replace(/{$urlParam}/g, file.url);
-                    template = template.replace(/{$deleteUrlParam}/g, file.deleteUrl);
-                    $('[data-action=files-container]').append(template);
-                    /*$('.files-container .file-container').last().find('img').animate({
-                        height: '100%'
-                    }, 300, function() {});*/
-                }",
-                'fileuploadfail' => 'function(e, data) {
-                    console.log(e);
-                    console.log(data);
-                }',
+    var template = '{$imgTemplate}';
+    if (data.result.file) {
+        var file = data.result.file;        
+    }
+    template = template.replace(/{$urlParam}/g, file.url);
+    template = template.replace(/{$deleteUrlParam}/g, file.deleteUrl);
+    $('[data-action=files-list]').append(template);
+    $('#files-progressbar').progressbar({
+        value: 0
+    });
+    $('.file-uploaded-success').css('display', 'inline').delay(4000).animate({
+        opacity: 0
+    }, 2000, function() {
+        $('.file-uploaded-success').css('display', '')
+    });
+    $('.files-list .files-empty').hide();
+}",
+                'fileuploadfail' => "function(e, data) {
+    $('.file-uploaded-success').css('display', 'inline');
+}",
             ],
         ]); ?>
+
+        <span class="file-uploaded-success">Файл загружен</span>
+        <span class="file-uploaded-fail">Произошла ошибка при загрузке файла</span>
 
         <div class="btn-group pull-right">
             <?php if ($model->isNewRecord): ?>
                 <?= Html::submitButton(AdvertsModule::t('Опубликовать'), [
-                    'class' => 'btn btn-success'
+                    'class' => 'btn btn-success btn-sm'
                 ]); ?>
 
                 <?php
@@ -182,10 +204,12 @@ TMPL;
                 ?>
 
                 <?= Html::a(AdvertsModule::t('Очистить'), Url::to(['clear-templet']), [
-                    'class' => 'btn btn-warning'
+                    'class' => 'btn btn-warning btn-sm'
                 ]) ?>
             <?php else: ?>
-                <?= Html::submitButton(AdvertsModule::t('Сохранить изменения')); ?>
+                <?= Html::submitButton(AdvertsModule::t('Сохранить изменения'), [
+                    'class' => 'btn btn-sm'
+                ]); ?>
             <?php endif; ?>
         </div>
     </div>
@@ -222,14 +246,20 @@ jQuery('#advert-form').on('ajaxComplete', function(data) {
 
 jQuery('#advert-form').on('click', '[data-action=file-delete]', function() {
     var self = $(this);
+    var img = self.prev();
+    var container = self.parent();
+    container.css('width', img.css('width')).css('height', img.css('height'));
+    container.find('[data-action=file-deleting]').show();
+    self.removeClass('visible');
     $.ajax({
         url: self.attr('data-url'),
-        success: function(data, textStatus, jqXHR ) {
+        success: function(data, textStatus, jqXHR) {
             self.prev().animate({
                 width: 0
             }, 300, function() {
                 self.parents('.file-container').remove();
             });
+            $('.files-list .files-empty').show();
         },
         error: function() {
             alert('error. Посмотри firebug!');

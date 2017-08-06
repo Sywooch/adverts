@@ -1,25 +1,24 @@
-
 <?php
 
 return [
     [
         'name' => 'Гривна',
-        'abbreviaton' => 'grn',
+        'abbreviation' => 'grn',
         'sign' => '₴'
     ],
     [
         'name' => 'Доллар',
-        'abbreviaton' => 'dol',
+        'abbreviation' => 'dol',
         'sign' => '$'
     ],
     [
         'name' => 'Евро',
-        'abbreviaton' => 'eur',
+        'abbreviation' => 'eur',
         'sign' => '€' // &#8364;
     ],
     [
         'name' => 'Рубль',
-        'abbreviaton' => 'rub',
+        'abbreviation' => 'rub',
         'sign' => '₽' // &#8381; &#x20bd;
     ],
 ];

@@ -37,113 +37,18 @@ $directPopulating = $this->params['directPopulating'];
             <?= $form->field($searchModel, 'city_id')->dropDownList(City::getList(), [
                 'name' => ($directPopulating) ? 'city_id' : null,
                 'emptyItem' => Yii::t('app', 'Empty city option'),
-            ]) ?>
+            ]); ?>
             
             <?= $form->field($searchModel, 'type')->dropDownList(Advert::getTypesDropDownList(), [
                 'name' => ($directPopulating) ? 'type' : null,
                 'emptyItem' => Yii::t('app', 'Empty type option'),
             ]) ?>
             
-            <?= $form->field($searchModel, 'category')->dropDownList(Category::getDropdownList(), [
-                'name' => ($directPopulating) ? 'category' : null,
-                'emptyItem' => Yii::t('app', 'Empty category option'),
-            ]) ?>
-
-            <div class="range">
-                <label class="control-label" for="min_date"><?=Yii::t('app', 'Period') ?></label>
-                <br>
-                <?php Spaceless::begin(); ?>
-                    <?= $form->field($searchModel, 'min_date', [
-                        'template' => "{input}",
-                    ])->datepicker([
-                        'name' => ($directPopulating) ? 'min_date' : null,
-                        'placeholder' => $searchModel->getAttributeLabel('min_date'),
-                        'datepicker' => [
-                            'dateFormat' => Yii::$app->formatter->dateFormat,
-                            'clientOptions' => [
-                                'maxDate' => "0",
-                                'monthNamesShort' => DatepickerHelper::monthNamesShort(),
-                            ]
-                        ]
-                    ]) ?>
-
-                    <?= $form->field($searchModel, 'max_date', [
-                        'template' => "{input}",
-                    ])->datepicker([
-                        'name' => ($directPopulating) ? 'max_date' : null,
-                        'class' => 'without-left-border',
-                        'placeholder' => $searchModel->getAttributeLabel('max_date'),
-                        'datepicker' => [
-                            'dateFormat' => Yii::$app->formatter->dateFormat,
-                            'clientOptions' => [
-                                'maxDate' => "0",
-                                'monthNamesShort' => DatepickerHelper::monthNamesShort()
-                            ]
-                        ]
-                    ]) ?>
-                <?php Spaceless::end(); ?>
-                <div class="clear"></div>
-            </div>
-    
-            <div class="range">
-                <label class="control-label" for="min_price"><?= Yii::t('app', 'Price') ?></label>
-                <br>
-                <?php Spaceless::begin(); ?>
-                    <?= $form->field($searchModel, 'min_price', [
-                        'template' => "{input}",
-                    ])->textInput([
-                        'name' => ($directPopulating) ? 'min_price' : null,
-                        'placeholder' => $searchModel->getAttributeLabel('min_price'),
-                    ]) ?>
-
-                    <?= $form->field($searchModel, 'max_price', [
-                        'template' => "{input}",
-                    ])->textInput([
-                        'name' => ($directPopulating) ? 'max_price' : null,
-                        'class' => 'without-left-border',
-                        'placeholder' => $searchModel->getAttributeLabel('max_price'),
-                    ]) ?>
-
-                    <?= $form->field($searchModel, 'currency', [
-                        'template' => "{input}{error}",
-                        'options' => ['tag' => false],
-                    ])->dropDownList(Currency::getDropDownList(), [
-                        'name' => ($directPopulating) ? 'currency' : null,
-                        'emptyItem' => Yii::t('app', 'Currency'),
-                    ]) ?>
-                <?php Spaceless::end(); ?>
-                <div class="clear"></div>
-            </div>
-            
             <div class="button-container">
                 <?= Html::submitInput('Искать', [
                     'class' => 'clear'
                 ]) ?>
-                    
-                <?php
-                    $js = <<<JS
-$('#detaile-search-panel .button-container input').hide();
-jQuery('#detaile-search-form').on('change.yiiActiveForm', function(event) {
-    $.pjax.submit(event, '#advert-list-pjax');
-});
-jQuery(document).on('pjax:beforeSend', function(data, xhr, options) {
-    var targetId = options.target ? options.target.id : null;
-    if (targetId == 'detaile-search-form' || targetId == 'search-form') {
-        var params = [];;
-        var func = function(i, field) {
-            if (field.value) {
-                params.push(field.name + '=' + field.value);
-            }
-        }
-        $.each(jQuery('#search-form').serializeArray(), func);
-        $.each(jQuery('#detaile-search-form').serializeArray(), func);
-        options.url = options.url.split('?')[0] + '?' + params.join('&');
-    }
-})
-JS;
-                    
-                    $this->registerJs($js);
-                ?>
+
             </div>
 
         <?php ActiveForm::end() ?>

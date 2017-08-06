@@ -2,13 +2,11 @@
 
 namespace app\commands;
 
-use yii\console\Controller;
-
 /**
  * Class AdvertController
  * @package app\commands
  */
-class UserController extends Controller
+class UserController extends \app\modules\core\console\Controller
 {
     public function actionDeleteExpiredTokens()
     {

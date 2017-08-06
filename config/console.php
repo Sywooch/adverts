@@ -1,6 +1,8 @@
 <?php
 
-$config = [
+require(__DIR__ . '/bootstrap.php');
+
+$consoleConfig = [
     'controllerNamespace' => 'app\commands',
     'controllerMap' => [
         'migrate' => [
@@ -9,6 +11,7 @@ $config = [
             'migrationPaths' => [
                 '@app/modules/users',
             ],
+            'templateFile' => '@app/modules/core/views/migration.php'
         ],
         /*
         'fixture' => [ // Fixture generation command line.
@@ -16,14 +19,15 @@ $config = [
         ],
          */
     ],
+    'params' => require(__DIR__ . '/params.php'),
 ];
 
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['gii'] = [
+    $consoleConfig['bootstrap'][] = 'gii';
+    $consoleConfig['modules']['gii'] = [
         'class' => 'yii\gii\Module',
     ];
 }
 
-return \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/common.php'), $config);
+return \yii\helpers\ArrayHelper::merge(require(__DIR__ . '/common.php'), $consoleConfig);

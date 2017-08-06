@@ -2,6 +2,7 @@
 
 namespace app\modules\adverts\models\aq;
 
+use app\modules\adverts\models\ar\Advert;
 use app\modules\core\db\ActiveQuery;
 
 /**
@@ -16,7 +17,7 @@ class AdvertQuery extends ActiveQuery
      */
     public function active()
     {
-        return $this->andWhere('[[status]]=1');
+        return $this->andWhere(["{$this->tableName}.status" => Advert::STATUS_ACTIVE]);
     }
 
     /**

@@ -1,8 +1,10 @@
 <?php
 
+use app\modules\authclient\models\ar\AuthClientUser;
 use app\modules\users\models\ar\AuthFail;
 use app\modules\users\models\ar\EmailConfirmToken;
 use app\modules\users\models\ar\Profile;
+use app\modules\users\models\ar\User;
 use yii\db\Migration;
 
 /**
@@ -20,7 +22,7 @@ class m140608_173539_create_user_table extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('user', [
+        $this->createTable(User::tableName(), [
             'id'                => 'pk',
             'email'             => 'VARCHAR(128) DEFAULT NULL',
             'auth_key'          => 'VARCHAR(32) NOT NUlL',
@@ -32,7 +34,8 @@ class m140608_173539_create_user_table extends Migration
             'lastvisit_at'      => 'TIMESTAMP',
         ], $tableOptions);
 
-        $this->createTable('auth_client_user', [
+        $this->createTable(AuthClientUser::tableName(), [
+            'id'                => 'pk',
             'client_user_id'    => 'VARCHAR(32)',
             'client_name'       => 'ENUM("'.implode('","', Yii::$app->authClientComponent->getClientsNames()).'")',
             'user_id'           => 'INT(11) NOT NULL',
@@ -44,9 +47,9 @@ class m140608_173539_create_user_table extends Migration
             'avatar_url'        => 'VARCHAR(255)',
             'profile_url'       => 'VARCHAR(255)',
             'profile'           => 'TEXT',
-            'PRIMARY KEY (client_user_id, client_name)'
         ], $tableOptions);
         $this->addForeignKey('FK_auth_client_user_REFS_user', 'auth_client_user', 'user_id', 'user', 'id', 'NO ACTION', 'NO ACTION');
+        $this->createIndex('UI_auth_client_user', AuthClientUser::tableName(), ['client_name', 'client_user_id'], true);
 
         $preferableConnectionTypeLabels = array_keys(Profile::getAttributeLabels('preferable_connection_type'));
         $this->createTable('user_profile', [

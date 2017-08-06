@@ -105,6 +105,22 @@ class Profile extends \app\modules\core\db\ActiveRecord
             ]
         ];
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAuthClientUser()
+    {
+        return $this->hasOne(AuthClientUser::className(), ['user_id' => 'user_id']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatarUrl()
+    {
+        return '/img/vk-default.png';
+    }
     
     /**
      * @return string full user name
@@ -123,14 +139,6 @@ class Profile extends \app\modules\core\db\ActiveRecord
     public function getUrl()
     {
         return Url::to(['/users/user/view', 'id' => $this->user_id]);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAuthClientUser()
-    {
-        return $this->hasOne(AuthClientUser::className(), ['user_id' => 'user_id']);
     }
     
     /**

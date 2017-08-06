@@ -23,7 +23,8 @@
         "webvimark/module-user-management": "^1.0",
         "nkovacs/yii2-datetimepicker": "*",
         "yiisoft/yii2-authclient": "^2.1",
-        "2amigos/yii2-file-upload-widget": "~1.0"
+        "2amigos/yii2-file-upload-widget": "~1.0",
+        "jumper423/yii2-vk": "2.*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

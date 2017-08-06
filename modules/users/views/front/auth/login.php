@@ -63,14 +63,16 @@ $this->title = UsersModule::t('Вход');
             'template' => '{label}<div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>{input}</div>{error}'
         ])->textInput([
             'autocomplete' => 'off',
-            'placeholder' => $model->getAttributeLabel('email')
+            'placeholder' => $model->getAttributeLabel('email'),
+            'class' => 'form-control input-sm'
         ]); ?>
 
         <?= $form->field($model, 'password', [
             'template' => '{label}<div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>{input}</div>{error}'
         ])->passwordInput([
             'autocomplete' => 'off',
-            'placeholder' => $model->getAttributeLabel('password')
+            'placeholder' => $model->getAttributeLabel('password'),
+            'class' => 'form-control input-sm'
         ]); ?>
 
         <div class="row">

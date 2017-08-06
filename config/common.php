@@ -1,6 +1,6 @@
 <?php
 
-return [
+$commonConfig = [
     'id' => 'Adverts',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -11,8 +11,8 @@ return [
             'clients' => [
                 'facebook' => [
                     'class' => 'app\modules\authclient\clients\Facebook',
-                    'clientId' => '1597163377228520',
-                    'clientSecret' => 'f6b971c36a61d5dc4275f81db53d94f4',
+                    'clientId' => CLIENT_ID_FACEBOOK,
+                    'clientSecret' => CLIENT_SECRET_FACEBOOK,
                 ],
                 /*'google' => [
                     'class' => 'app\modules\authclient\clients\Google',
@@ -29,8 +29,11 @@ return [
                 ],*/
                 'vkontakte' => [
                     'class' => 'app\modules\authclient\clients\VKontakte',
-                    'clientId' => '4909741',
-                    'clientSecret' => 'E2T2TUfxvQqoMVupTg8f',
+                    'clientId' => CLIENT_ID_VKONTAKTE,
+                    'clientSecret' => CLIENT_SECRET_VKONTAKTE,
+                    'delay' => 0.7,
+                    'delayExecute' => 120,
+                    'limitExecute' => 1,
                 ],
                 /*'yandex' => [
                     'class' => 'app\modules\authclient\clients\Yandex',
@@ -67,21 +70,29 @@ return [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => true,
         ],
+        'vk' => [
+            'class' => 'jumper423\VK',
+            'clientId' => '11111',
+            'clientSecret' => 'n9wsv98svSD867SA7dsda87',
+            'delay' => 0.7, // Минимальная задержка между запросами
+            'delayExecute' => 120, // Задержка между группами инструкций в очереди
+            'limitExecute' => 1, // Количество инструкций на одно выполнении в очереди
+            'captcha' => 'captcha', // Компонент по распознованию капчи
+        ],
     ],
-    'params' => require(__DIR__ . '/params.php'),
 ];
 
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = [
+    $commonConfig['bootstrap'][] = 'debug';
+    $commonConfig['modules']['debug'] = [
         'class' => 'yii\debug\Module',
     ];
 
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['gii'] = [
+    $commonConfig['bootstrap'][] = 'gii';
+    $commonConfig['modules']['gii'] = [
         'class' => 'yii\gii\Module',
     ];
 }
 
-return $config;
+return $commonConfig;

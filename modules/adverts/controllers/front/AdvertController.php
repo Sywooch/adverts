@@ -6,8 +6,10 @@ use app\modules\adverts\models\ar\Advert;
 use app\modules\adverts\models\ar\AdvertTemplet;
 use app\modules\adverts\models\search\AdvertSearch;
 use app\modules\core\models\ar\File;
+use app\modules\core\models\ar\Look;
 use app\modules\core\web\Controller;
 use Yii;
+use yii\db\Expression;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -22,6 +24,48 @@ use yii\widgets\ActiveForm;
  */
 class AdvertController extends Controller
 {
+    /**
+     * @var string
+     */
+    public $modelName = 'app\modules\adverts\models\ar\Advert';
+
+    /**
+     * @return array
+     */
+    public function actions()
+    {
+        return [
+            'bookmark' => [
+                'class' => 'app\modules\core\actions\BookmarkToggleAction',
+                'modelName' => Advert::className()
+            ],
+            'comment-add' => [
+                'class' => 'app\modules\core\actions\CommentAddAction',
+                'modelName' => Advert::className()
+            ],
+            'comment-delete' => [
+                'class' => 'app\modules\core\actions\CommentDeleteAction',
+                'modelName' => Advert::className()
+            ],
+            'file-upload' => [
+                'class' => 'app\modules\core\actions\FileUploadAction',
+                'modelName' => Yii::$app->controller->action->id == 'create' ? AdvertTemplet::className() : Advert::className(),
+                'findModelCallback' => function($id, $modelName) {
+                    return $modelName == AdvertTemplet::className()
+                        ? AdvertTemplet::getByUserId(Yii::$app->user->id) : Advert::findOne($id);
+                }
+            ],
+            'file-delete' => [
+                'class' => 'app\modules\core\actions\FileDeleteAction',
+                'modelName' => Yii::$app->controller->action->id == 'create' ? AdvertTemplet::className() : Advert::className(),
+            ],
+            'like' => [
+                'class' => 'app\modules\core\actions\LikeAction',
+                'modelName' => Advert::className()
+            ],
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -50,7 +94,8 @@ class AdvertController extends Controller
     }
 
     /**
-     * Список объявлений.
+     * Adverts list.
+     * @return string
      */
     public function actionIndex()
     {
@@ -64,7 +109,8 @@ class AdvertController extends Controller
     }
 
     /**
-     * Список опубликованных пользователем объявлений.
+     * List of the published adverts.
+     * @return string
      */
     public function actionPublished()
     {
@@ -78,7 +124,8 @@ class AdvertController extends Controller
     }
 
     /**
-     * Список опубликованных пользователем объявлений.
+     * List of the bookmarked adverts.
+     * @return string
      */
     public function actionBookmarks()
     {
@@ -98,7 +145,7 @@ class AdvertController extends Controller
     }
 
     /**
-     * Создание объявления.
+     * Creating of new advert.
      * @return Response
      */
     public function actionCreate()
@@ -121,6 +168,7 @@ class AdvertController extends Controller
     }
 
     /**
+     * Viewing of advert.
      * @param $id
      * @return mixed
      * @throws NotFoundHttpException
@@ -129,11 +177,22 @@ class AdvertController extends Controller
     {
         $model = $this->findModel($id, self::MODE_READ);
 
+        $lookModelAttributes = [
+            'user_id' => Yii::$app->user->id,
+            'owner_id' => $model->id,
+            'owner_model_name' => Advert::shortClassName()
+        ];
+        if (!$lookModel = Look::findOne($lookModelAttributes)) {
+            $lookModel = new Look($lookModelAttributes);
+        }
+        $lookModel->plus();
+        $model->looksCount++;
+
         if (Yii::$app->user->id != $model->user_id && $model->status != Advert::STATUS_ACTIVE) {
             throw new NotFoundHttpException;
         }
 
-        return $this->renderIsAjax('view', [
+        return $this->render('view', [
             'model' => $model
         ]);
     }
@@ -214,109 +273,6 @@ class AdvertController extends Controller
     }
 
     /**
-     *
-     */
-    public function actionBookmark($id)
-    {
-
-    }
-
-    /**
-     *
-     */
-    public function actionLike($id, $value)
-    {
-
-    }
-
-    /**
-     * File uploading.
-     * @param integer $id
-     * @param bool $isTemplet
-     * @return string
-     */
-    public function actionFileUpload($id, $isTemplet = true)
-    {
-        $model = $isTemplet ? AdvertTemplet::getByUserId(Yii::$app->user->id) : $this->findModel($id, self::MODE_WRITE);
-        if ($file = File::upload($model)) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return [
-                'file_name' => $file->file_name,
-                'url' => $file->url,
-                'thumbnailUrl' => $file->url,
-                'deleteUrl' => Url::to(['file-delete', 'name' => $file->file_name]),
-                'deleteType' => 'POST',
-            ];
-        }
-
-        return '';
-    }
-
-    /**
-     * File deleting.
-     * @param string  $name
-     * @return string
-     */
-    public function actionFileDelete($name)
-    {
-        if ($file = File::findOne(['file_name' => $name])) {
-            $file->delete();
-        }
-
-        return Json::encode([
-            'files' => [
-                'name' => $name,
-                //'size' => filesize($file->full),
-                'url' => $file->url,
-                'thumbnailUrl' => $file->url,
-                'deleteUrl' => 'image-delete?name=' . $name,
-                'deleteType' => 'POST',
-            ]
-        ]);
-    }
-
-    /**
-     *
-     */
-    public function actionComment($id)
-    {
-
-    }
-
-    /**
-     * Test action.
-     */
-    public function actionVk()
-    {
-        $wall = file_get_contents("https://api.vk.com/method/wall.get?owner_id=-120504421&filter=others");
-        $wall = json_decode($wall);
-
-        foreach ($wall->response as $item) {
-            if (is_object($item)) {
-                $advert = new Advert;
-                $advert->setScenario(Advert::SCENARIO_CREATE_FROM_SERVICE);
-                $advert->content = $item->text;
-                $advert->created_at = $item->date;
-                $advert->save();
-
-                if (isset($item->attachments)) {
-                    foreach ($item->attachments as $a) {
-                        $type = $a->type;
-                        $f = $a->$type;
-                        
-                        $file = new \common\models\Image;
-                        $file->remote_url = $f->src_big;
-                        $file->created_at = $f->created;
-                        $file->save();
-
-                        $file->attachOwner($advert->id, 'Advert', 'files');
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * @param int $id
      * @param string $mode
      * @return Advert
@@ -324,7 +280,16 @@ class AdvertController extends Controller
      */
     protected function findModel($id, $mode = self::MODE_READ)
     {
-        if (!$model = Advert::findOne($id)) {
+        $model = Advert::find()
+            ->withDislikesCount()
+            ->withLikesCount()
+            ->withLooksCount()
+            ->withBookmarksCurrentUser()
+            ->withLikesCurrentUser()
+            ->with(['comments'])
+            ->where([Advert::tableName() . '.id' => $id])
+            ->one();
+        if (!$model) {
             throw new NotFoundHttpException(Yii::t('Страница не найдена'));
         }
 

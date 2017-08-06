@@ -9,7 +9,7 @@ class ActiveFormAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $sourcePath = '@app/modules/core/assets';
+    public $sourcePath = '@app/modules/core/assets/src';
 
     /**
      * @inheritdoc

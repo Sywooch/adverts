@@ -51,7 +51,7 @@ class User extends UserIdentity
      */
     public static function tableName()
     {
-        return '{{%user}}';
+        return 'user';
     }
 
     /**

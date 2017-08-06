@@ -5,8 +5,12 @@ namespace app\modules\adverts\models\ar;
 use app\modules\adverts\AdvertsModule;
 use app\modules\adverts\models\aq\AdvertQuery;
 use app\modules\core\behaviors\TimestampBehavior;
+use app\modules\core\models\ar\Comment;
 use app\modules\core\models\ar\File;
-use app\modules\currencies\models\ar\Currency;
+use app\modules\core\models\ar\Like;
+use app\modules\core\models\ar\Currency;
+use app\modules\core\models\ar\Look;
+use app\modules\geography\models\ar\Geography;
 use app\modules\users\models\ar\User;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -28,8 +32,15 @@ use yii\helpers\ArrayHelper;
  * @property string $updated_at
  * @property float $min_price
  * @property float $max_price
+ * @property string $cityName
+ * @property integer $commentsCount
+ * @property Currency $currency
+ * @property integer $dislikesCount
+ * @property integer $likesCount
+ * @property integer $looksCount
+ * @property Geography $geography
+ * @property AdvertCategory $category
  *
- * @property File[] $files
  */
 class Advert extends \app\modules\core\db\ActiveRecord
 {
@@ -52,7 +63,7 @@ class Advert extends \app\modules\core\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%advert}}';
+        return 'advert';
     }
 
     /**
@@ -78,10 +89,13 @@ class Advert extends \app\modules\core\db\ActiveRecord
             [['category_id'], 'exist', 'targetClass' => AdvertCategory::className(), 'targetAttribute' => ['category_id' => 'id'],'skipOnError' => true],
             //[['geography_id'], 'exist', 'targetClass' => , 'targetAttribute' => ['geography_id' => 'id'],'skipOnError' => true],
             ['expiry_at', 'default', 'value' => Yii::$app->formatter->asDate(time() + 3600 * 24 * 30)],
-            ['currency_id', 'default', 'value' => Currency::RUB],
+            ['currency_id', 'default', 'value' => function() {
+                $currency = Currency::findOne(['abbreviation' => Currency::RUB]);
+                return $currency->id;
+            }],
             //[['min_price', 'max_price'], 'integer', 'integerOnly' => false],
             [['min_price', 'max_price'], 'validatePrice'],
-            [['status'], 'safe'],
+            [['status', 'likesCount', 'dislikesCount', 'looksCount'], 'safe'],
         ];
     }
 
@@ -93,6 +107,7 @@ class Advert extends \app\modules\core\db\ActiveRecord
         return [
             'id' => 'Id',
             'category_id' => Yii::t('app', 'Категория'),
+            'geography_id' => Yii::t('app', 'Месторасположение'),
             'city_id' => Yii::t('app', 'City'),
             'content' => Yii::t('app', 'Содержание'),
             'created_at' => Yii::t('app', 'Создано'),
@@ -109,7 +124,7 @@ class Advert extends \app\modules\core\db\ActiveRecord
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public static function attributeLabelsConfig()
     {
@@ -133,18 +148,11 @@ class Advert extends \app\modules\core\db\ActiveRecord
 
     /**
      * @return \yii\db\ActiveQuery
+     *
      */
     public function getCategory()
     {
-        return $this->hasMany(AdvertCategory::className(), ['category_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getComments()
-    {
-        return $this->hasMany(AdvertComment::className(), ['advert_id' => 'id']);
+        return $this->hasOne(AdvertCategory::className(), ['id' => 'category_id']);
     }
 
     /**
@@ -158,19 +166,11 @@ class Advert extends \app\modules\core\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getFiles()
-    {
-        return $this->hasMany(File::className(), ['owner_id' => 'id'])->onCondition([
-            'owner_model_name' => static::shortClassName()
-        ]);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getGeography()
     {
-        return $this->hasOne(City::className(), ['id' => 'city_id']);
+        return $this->hasOne(Geography::className(), ['id' => 'geography_id'])->onCondition([
+            Geography::className() . '.type' => Geography::TYPE_CITY
+        ]);
     }
 
     /**
@@ -182,31 +182,11 @@ class Advert extends \app\modules\core\db\ActiveRecord
     }
 
     /**
-     * @return boolean whether advert in bookmarks by current user
+     * @return string
      */
-    public function getIsBookmarked()
-    {
-        // TODO
-    }
-
     public function getCityName()
     {
-        return 'Макеевка';
-    }
-
-    public function getViewsCount()
-    {
-        return 0;
-    }
-
-    public function getCommentsCount()
-    {
-        return 0;
-    }
-
-    public function getLikesCount()
-    {
-        return 0;
+        return isset($this->geography) ? $this->geography->title : null;
     }
 
     /**

@@ -1,10 +1,9 @@
 <?php
 
-use yii\helpers\Html;
-
-use common\models\Advert;
-use common\models\AdvertFile;
-use common\models\City;
+/**
+ * @var $this yii\web\View
+ * @var $model \app\modules\adverts\models\ar\Advert
+ */
 
 ?>
 

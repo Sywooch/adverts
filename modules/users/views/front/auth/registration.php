@@ -35,21 +35,21 @@ $this->title = !$registeredUser ? UsersModule::t('Регистрация') : Use
                 'template' => '{label}<div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>{input}</div>{error}'
             ])->textInput([
                 'autocomplete' => 'off',
-                'placeholder' => $model->getAttributeLabel('email')
+                'placeholder' => $model->getAttributeLabel('email'),
             ]); ?>
 
             <?= $form->field($model, 'password', [
                 'template' => '{label}<div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>{input}</div>{error}'
             ])->passwordInput([
                 'autocomplete' => 'off',
-                'placeholder' => $model->getAttributeLabel('password')
+                'placeholder' => $model->getAttributeLabel('password'),
             ]); ?>
 
             <?= $form->field($model, 'repeatPassword', [
                 'template' => '{label}<div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>{input}</div>{error}'
             ])->passwordInput([
                 'autocomplete' => 'off',
-                'placeholder' => $model->getAttributeLabel('repeatPassword')
+                'placeholder' => $model->getAttributeLabel('repeatPassword'),
             ]); ?>
 
             <?php /*$form->field($model, 'captcha')->widget(Captcha::className(), [

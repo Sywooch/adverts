@@ -1,24 +1,18 @@
 <?php
 
-use yii\db\Migration;
-
+use app\modules\core\db\Migration;
 use app\modules\core\models\ar\File;
 
 /**
  * Handles the creation of table `files`.
  */
-class m170713_174615_create_files_table extends Migration
+class m170713_174615_create_files_tables extends Migration
 {
     /**
      * @inheritdoc
      */
     public function up()
     {
-        $tableOptions = null;
-        if ($this->db->driverName === 'mysql') {
-            $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
-        }
-
         $modelNames = array_keys(File::getAttributeLabels('owner_model_name'));
         $this->createTable('file', [
             'id'               => 'pk',
@@ -27,7 +21,9 @@ class m170713_174615_create_files_table extends Migration
             'file_name'        => 'VARCHAR(128) NOT NULL',
             'origin_file_name' => 'VARCHAR(128) NOT NULL',
             'deleted_at'       => 'TIMESTAMP DEFAULT NULL',
-        ], $tableOptions);
+        ], $this->tableOptions);
+        $this->createIndex('UI_owner_id', File::tableName(), 'owner_id');
+        $this->createIndex('UI_owner_model_name_AND_owner_id', File::tableName(), ['owner_model_name', 'owner_id']);
     }
 
     /**

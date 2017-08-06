@@ -24,11 +24,11 @@ class UserController extends \app\modules\core\web\Controller
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    [
+                    /*[
                         'allow' => true,
                         'actions' => ['view'],
                         'roles' => ['?', '@'],
-                    ],
+                    ],*/
                     [
                         'allow' => true,
                         'actions' => ['profile'],
