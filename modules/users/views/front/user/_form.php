@@ -11,7 +11,11 @@ use yii\helpers\Html;
  * @var $this \yii\web\View
  */
 
-$formFieldTemplate = "<div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4 text-right\">{label}</div>\n<div class=\"col-xs-6 col-sm-4 col-md-4 col-lg-4\">{input}</div><div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center\">{error}</div>";
+$formFieldTemplate = "
+    <div class=\"col-xs-12 col-sm-4 col-md-4 col-lg-4 text-left-xs text-right\">{label}</div>
+    <div class=\"col-xs-12 col-sm-4 col-md-4 col-lg-4\">{input}</div>
+    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center\">{error}</div>
+";
 
 ?>
 
@@ -29,7 +33,7 @@ $formFieldTemplate = "<div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4 text-righ
     'validateOnBlur' => false,
     'fieldConfig' => [
         'template' => $formFieldTemplate
-    ],
+    ]
 ]); ?>
 
     <div class="row mt-10">

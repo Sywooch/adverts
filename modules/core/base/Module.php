@@ -41,6 +41,6 @@ class Module extends \yii\base\Module
      */
     public static function t($message, $category = null, $params = [], $language = null)
     {
-        throw new Exception('Нужно ркалиховать ' . self::className() . '::t()');
+        throw new Exception('Нужно реалиховать ' . self::className() . '::t()');
     }
 }

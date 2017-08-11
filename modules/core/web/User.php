@@ -3,10 +3,10 @@
 namespace app\modules\core\web;
 
 use app\modules\adverts\models\Advert;
+use Yii;
 
 /**
- * Class User
- * @package app\components
+ * @property  boolean $isSuperadmin
  */
 class User extends \yii\web\User
 {
@@ -26,20 +26,11 @@ class User extends \yii\web\User
     public $identityClass = 'app\modules\users\models\ar\User';
 
     /**
-     * Является ли пользователь суперадминистратором.
+     * Whether user is admin.
      * @return bool
      */
     public function getIsSuperadmin()
     {
-        return @Yii::$app->user->identity->superadmin == 1;
-    }
-
-    /**
-     * Логин пользователя.
-     * @return string
-     */
-    public function getUsername()
-    {
-        return @Yii::$app->user->identity->username;
+        return Yii::$app->user->identity && Yii::$app->user->identity->superadmin == 1;
     }
 }

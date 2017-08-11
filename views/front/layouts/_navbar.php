@@ -6,7 +6,6 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Url;
 use app\modules\users\UsersModule;
-use yii\bootstrap\Html;
 
 ?>
 
@@ -51,6 +50,11 @@ use yii\bootstrap\Html;
                         [
                             'label' => Yii::t('app', 'Опубликованные'),
                             'url' => ['/adverts/advert/published'], 
+                        ],
+                        [
+                            'label' => Yii::t('app', 'Администрировать'),
+                            'url' => ['/core/switch-admin'],
+                            'visible' => Yii::$app->user->isSuperadmin,
                         ],
                     ]
                 ],

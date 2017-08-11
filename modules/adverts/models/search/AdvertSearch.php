@@ -67,7 +67,7 @@ class AdvertSearch extends Advert
             ->withLooksCount()
             ->withBookmarksCurrentUser()
             ->withLikesCurrentUser()
-            ->with(['owner.profile', 'category', 'files', 'geography'])
+            ->with(['user.profile.authClientUser', 'category', 'files', 'geography', 'currency'])
             ->groupBy(['advert.id']);
 
         $dataProvider = new ActiveDataProvider([

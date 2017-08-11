@@ -27,7 +27,7 @@ class LookButtonWidget extends Widget
         parent::init();
 
         if (!$this->title) {
-            $this->title = Yii::t('app', 'Просмотры');
+            $this->title = Yii::t('app', 'Просмотреть');
         }
     }
 
@@ -36,9 +36,15 @@ class LookButtonWidget extends Widget
      */
     public function run()
     {
-        echo Html::tag('span',"<i class=\"glyphicon glyphicon-eye-open\"></i> <span>{$this->model->looksCount}</span>",  [
-            'class' => 'look-button',
-            'title' => $this->title,
-        ]);
+        echo Html::a(
+            Html::tag('span',"<i class=\"glyphicon glyphicon-eye-open\"></i> <span>{$this->model->looksCount}</span>"),
+            ['/adverts/advert/view', 'id' => $this->model->id],
+            [
+                'class' => 'look-button',
+                'title' => $this->title,
+                'target' => '_blank',
+                'data-pjax' => 0
+            ]
+        );
     }
 }

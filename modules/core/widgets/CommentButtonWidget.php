@@ -58,29 +58,11 @@ class CommentButtonWidget extends Widget
      */
     public function run()
     {
-        $this->registerClientScripts();
-
-        echo Html::tag('span', '<i class="glyphicon glyphicon-comment"></i> <span>' . $this->model->commentsCount . '</span>', [
+        $commentsCount = $this->model->commentsCount !== null ? $this->model->commentsCount : count($this->model->comments);
+        echo Html::tag('span', '<i class="glyphicon glyphicon-comment"></i> <span>' . $commentsCount . '</span>', [
             'title' => $this->titleMessage,
             'data-add-comment-url' => Url::to(['/adverts/advert/comment-add', 'id' => $this->model->id]),
             'data-pjax' => 0
         ]);
-    }
-
-    /**
-     * Registers widget client scripts.
-     */
-    protected function registerClientScripts()
-    {
-        if (!self::$_initialized && !Yii::$app->user->isGuest) {
-            $js = <<<JS
-var loading = false;
-jQuery('').on('click', '[data-action=like], [data-action=dislike]', function(e) {
-    
-JS;
-            //$this->getView()->registerJs($js);
-
-            self::$_initialized = true;
-        }
     }
 }

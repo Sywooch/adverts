@@ -5,11 +5,22 @@ namespace app\modules\authclient\clients;
 class Facebook extends \yii\authclient\clients\Facebook implements ClientInterface
 {
     /**
+     * @inheritdoc
+     */
+    public $attributeNames = [
+        'name', 'first_name', 'middle_name', 'last_name', 'email', 'picture', 'gender', 'link', 'location', 'locale', 'timezone',
+    ];
+
+    /**
      * @return string
      */
     public function getAvatarUrl()
     {
-        return $this->getUserAttributes()['photo'];
+        $picture = $this->getUserAttributes()['picture'];
+        if (isset($picture['data']) && isset($picture['data']['url'])) {
+            return $picture['data']['url'];
+        }
+        return '';
     }
 
     /**
@@ -25,7 +36,15 @@ class Facebook extends \yii\authclient\clients\Facebook implements ClientInterfa
      */
     public function getFirstName()
     {
-        return $this->getUserAttributes()['name'];
+        return $this->getUserAttributes()['first_name'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getGender()
+    {
+        return $this->getUserAttributes()['gender'];
     }
 
     /**
@@ -33,7 +52,7 @@ class Facebook extends \yii\authclient\clients\Facebook implements ClientInterfa
      */
     public function getLastName()
     {
-        return '';
+        return $this->getUserAttributes()['last_name'];
     }
 
     /**
@@ -41,7 +60,7 @@ class Facebook extends \yii\authclient\clients\Facebook implements ClientInterfa
      */
     public function getProfileUrl()
     {
-        return '';
+        return $this->getUserAttributes()['link'];
     }
 
     /**

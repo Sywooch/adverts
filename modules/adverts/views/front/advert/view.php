@@ -9,10 +9,11 @@
 
 <h2><?= $this->title ?></h2>
 
-<div class="adverts-list">
+<div class="advert-view">
     <div class="advert-container">
         <?= $this->render('_advert', [
-            'model' => $model
+            'model' => $model,
+            'renderPartial' => false,
         ]); ?>
     </div>
 </div>

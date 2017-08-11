@@ -4,6 +4,10 @@ namespace app\modules\adverts\models\aq;
 
 use app\modules\adverts\models\ar\Advert;
 use app\modules\core\db\ActiveQuery;
+use app\modules\core\db\ActiveRecord;
+use app\modules\core\models\ar\Bookmark;
+use Yii;
+use yii\db\Expression;
 
 /**
  * This is the ActiveQuery class for [[Advert]].
@@ -43,14 +47,8 @@ class AdvertQuery extends ActiveQuery
      */
     public function published()
     {
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function bookmarked()
-    {
-        return $this;
+        return $this->where([
+            self::getPrimaryTableName() . '.user_id' => Yii::$app->user->id
+        ]);
     }
 }

@@ -3,9 +3,15 @@
 namespace app\modules\core\base;
 
 use app\modules\core\db\ActiveRecord;
+use app\modules\core\web\Controller;
 
 class Action extends \yii\base\Action
 {
+    /**
+     * @var Controller the controller that owns this action
+     */
+    public $controller;
+
     /**
      * @var ActiveRecord $model AR model
      */

@@ -135,6 +135,21 @@ class AdvertTemplet extends Advert
     }
 
     /**
+     * Attach all templet files to advert model.
+     * @param Advert $model
+     */
+    public function attachFilesToAdvert($model)
+    {
+        File::updateAll([
+            'owner_id' => $model->id,
+            'owner_model_name' => $model::shortClassName(),
+        ],[
+            'owner_id' => $this->id,
+            'owner_model_name' => $this::shortClassName(),
+        ]);
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getFiles()

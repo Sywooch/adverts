@@ -5,8 +5,14 @@
  * @var $model \app\modules\adverts\models\ar\Advert
  */
 
+use app\modules\adverts\AdvertsModule;
+
 ?>
 
-<h3>Редактирование объявления № <?= $model->id ?>:</h3>
+<?php if (Yii::$app->session->getFlash('success')): ?>
+    <div class="alert alert-success text-center">
+        <?= AdvertsModule::t('Объявление успешно изменено.'); ?>
+    </div>
+<?php endif ?>
 
-<?php echo $this->render('_form', compact('model', 'directPopulating')) ?>
+<?= $this->render('_form', compact('model', 'templet')) ?>

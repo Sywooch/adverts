@@ -32,10 +32,10 @@ class Look extends \app\modules\core\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'owner_id', 'owner_model_name'], 'required'],
+            [['owner_id', 'owner_model_name'], 'required'],
             [['user_id', 'owner_id', 'value'], 'integer'],
             [['owner_model_name'], 'string'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnEmpty' => true, 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 

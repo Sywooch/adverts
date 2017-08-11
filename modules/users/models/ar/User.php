@@ -2,6 +2,7 @@
 
 namespace app\modules\users\models\ar;
 
+use app\modules\authclient\clients\ClientInterface;
 use app\modules\authclient\clients\ClientTrait;
 use app\modules\authclient\models\ar\AuthClientUser;
 use app\modules\core\behaviors\TimestampBehavior;
@@ -10,6 +11,7 @@ use app\modules\users\models\aq\UserQuery;
 use app\modules\users\UsersModule;
 use yii\authclient\BaseClient;
 use Yii;
+use yii\authclient\OAuth2;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -165,7 +167,7 @@ class User extends UserIdentity
 
     /**
      * User registration.
-     * @param BaseClient|ClientTrait $authClient
+     * @param OAuth2|ClientInterface $authClient
      * @return bool
      */
     public function register($authClient = null)
@@ -185,16 +187,11 @@ class User extends UserIdentity
             $success = $profile->save();
         }
         if ($success && $this->scenario == self::SCENARIO_NEW_AUTH_CLIENT_USER) {
-            $authClientUser = new AuthClientUser([
-                'user_id' => $this->id,
-                'client_user_id' => $authClient->userId,
-                'client_name' => $authClient->name,
-                'first_name' => $authClient->firstName,
-                'last_name' => $authClient->lastName,
-                'avatar_url' => $authClient->avatarUrl,
-                'profile_url' => $authClient->profileUrl,
-            ]);
+            $authClientUser = new AuthClientUser;
+            $authClientUser->setClientAttributes($authClient);
+            $authClientUser->user_id = $this->id;
             $success = $authClientUser->save();
+            $this->populateRelation('authClientUser', $authClientUser);
         }
 
         $success ? $transaction->commit() : $transaction->rollBack();

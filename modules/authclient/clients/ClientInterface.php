@@ -2,6 +2,14 @@
 
 namespace app\modules\authclient\clients;
 
+/**
+ * @property string $avatarUrl
+ * @property string $email
+ * @property string $firstName
+ * @property string $lastName
+ * @property string $profileUrl
+ * @property integer $userId
+ */
 interface ClientInterface
 {
     /**
@@ -18,6 +26,11 @@ interface ClientInterface
      * @return string
      */
     public function getFirstName();
+
+    /**
+     * @return string
+     */
+    public function getGender();
 
     /**
      * @return string

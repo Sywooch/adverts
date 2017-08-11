@@ -10,6 +10,7 @@ use app\modules\core\models\ar\File;
 use app\modules\core\models\ar\Like;
 use app\modules\core\models\ar\Currency;
 use app\modules\core\models\ar\Look;
+use app\modules\core\validators\FilesLimitValidator;
 use app\modules\geography\models\ar\Geography;
 use app\modules\users\models\ar\User;
 use Yii;
@@ -34,6 +35,7 @@ use yii\helpers\ArrayHelper;
  * @property float $max_price
  * @property string $cityName
  * @property integer $commentsCount
+ * @property Comment[] $comments
  * @property Currency $currency
  * @property integer $dislikesCount
  * @property integer $likesCount
@@ -171,14 +173,6 @@ class Advert extends \app\modules\core\db\ActiveRecord
         return $this->hasOne(Geography::className(), ['id' => 'geography_id'])->onCondition([
             Geography::className() . '.type' => Geography::TYPE_CITY
         ]);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOwner()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**

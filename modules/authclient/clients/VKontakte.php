@@ -46,6 +46,14 @@ class VKontakte extends VK implements ClientInterface
     {
         return $this->getUserAttributes()['first_name'];
     }
+    /**
+     * @return string
+     */
+    public function getGender()
+    {
+        return $this->getUserAttributes()['gender'];
+    }
+
 
     /**
      * @return string

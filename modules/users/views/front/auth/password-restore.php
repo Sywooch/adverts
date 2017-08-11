@@ -24,7 +24,7 @@ $this->title = UsersModule::t('Восстановление пароля','front
         <?= UsersModule::t('На указанный Вами почтовый ящик отправлено письмо с инструкциями по восстановлению пароля.','front'); ?>
     </div>
 <?php else: ?>
-    <div class="col-md-offset-4 col-md-4">
+    <div class="col-sm-offset-2 col-md-offset-3 col-lg-offset-4 col-xs-12 col-sm-8 col-md-6 col-lg-4">
         <?php $form = ActiveForm::begin([
             'id' => 'password-restore-form',
             'enableAjaxValidation' => true,

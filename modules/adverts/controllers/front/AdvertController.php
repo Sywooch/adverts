@@ -49,15 +49,11 @@ class AdvertController extends Controller
             ],
             'file-upload' => [
                 'class' => 'app\modules\core\actions\FileUploadAction',
-                'modelName' => Yii::$app->controller->action->id == 'create' ? AdvertTemplet::className() : Advert::className(),
-                'findModelCallback' => function($id, $modelName) {
-                    return $modelName == AdvertTemplet::className()
-                        ? AdvertTemplet::getByUserId(Yii::$app->user->id) : Advert::findOne($id);
-                }
+                'modelName' => Yii::$app->request->get('owner'),
             ],
             'file-delete' => [
                 'class' => 'app\modules\core\actions\FileDeleteAction',
-                'modelName' => Yii::$app->controller->action->id == 'create' ? AdvertTemplet::className() : Advert::className(),
+                'modelName' => Yii::$app->request->get('owner'),
             ],
             'like' => [
                 'class' => 'app\modules\core\actions\LikeAction',
@@ -84,7 +80,7 @@ class AdvertController extends Controller
                         'allow' => true,
                         'actions' => [
                             'create', 'validate', 'save-templet', 'clear-templet', 'update', 'delete',
-                            'bookmark', 'like', 'comment', 'file-upload', 'file-delete'
+                            'bookmark', 'like', 'comment-add', 'file-upload', 'file-delete'
                         ],
                         'roles' => ['@'],
                     ],
@@ -105,6 +101,7 @@ class AdvertController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'withFilter' => true,
         ]);
     }
 
@@ -120,6 +117,7 @@ class AdvertController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'withFilter' => false,
         ]);
     }
 
@@ -141,11 +139,12 @@ class AdvertController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'withFilter' => false,
         ]);
     }
 
     /**
-     * Creating of new advert.
+     * Advert creating.
      * @return Response
      */
     public function actionCreate()
@@ -157,8 +156,11 @@ class AdvertController extends Controller
         ]);
         $directPopulating = true;
 
-        if ($model->load($request->post(), '') && $model->save() && $templet->clear()) {
-            return $this->redirect(['/advert/view/', 'id' => $model->id]);
+        if ($model->load($request->post(), '') && $model->save()) {
+            $templet->clear();
+            $templet->attachFilesToAdvert($model);
+            Yii::$app->session->setFlash('success', true);
+            return $this->redirect('');
         }
 
         $model->copyFromTemplet($templet->attributes);
@@ -168,8 +170,8 @@ class AdvertController extends Controller
     }
 
     /**
-     * Viewing of advert.
-     * @param $id
+     * Advert wiewing.
+     * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException
      */
@@ -188,29 +190,33 @@ class AdvertController extends Controller
         $lookModel->plus();
         $model->looksCount++;
 
-        if (Yii::$app->user->id != $model->user_id && $model->status != Advert::STATUS_ACTIVE) {
-            throw new NotFoundHttpException;
-        }
-
         return $this->render('view', [
             'model' => $model
         ]);
     }
 
     /**
-     * @return string
+     * Advert updating.
+     * @param integer $id
+     * @return string|Response
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id, self::MODE_WRITE);
 
-        return $this->renderIsAjax('view', [
-            'model' => $model
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', true);
+            return $this->redirect('');
+        }
+
+        return $this->render('update', [
+            'model' => $model,
         ]);
     }
 
     /**
-     * @param int $id
+     * Advert deleting.
+     * @param integer $id
      * @return Response
      */
     public function actionDelete($id)
@@ -221,7 +227,8 @@ class AdvertController extends Controller
     }
 
     /**
-     * @param null $id
+     * Advert validating.
+     * @param integer|null $id
      * @return array
      * @throws NotFoundHttpException
      */
@@ -244,7 +251,7 @@ class AdvertController extends Controller
     }
 
     /**
-     * @return Response
+     * Advert templet saving.
      * @throws NotFoundHttpException
      */
     public function actionSaveTemplet()
@@ -261,6 +268,7 @@ class AdvertController extends Controller
     }
 
     /**
+     * Advert templet clearing.
      * @return Response
      */
     public function actionClearTemplet()
@@ -273,28 +281,30 @@ class AdvertController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param string $mode
-     * @return Advert
+     * @inheritdoc
+     * @return Advert|null
      * @throws NotFoundHttpException
      */
-    protected function findModel($id, $mode = self::MODE_READ)
+    public function findModel($id, $mode = self::MODE_READ)
     {
+        if ($this->modelName == AdvertTemplet::className()) {
+            return AdvertTemplet::getByUserId(Yii::$app->user->id);
+        }
+
         $model = Advert::find()
             ->withDislikesCount()
             ->withLikesCount()
             ->withLooksCount()
             ->withBookmarksCurrentUser()
             ->withLikesCurrentUser()
-            ->with(['comments'])
+            ->with(['comments.user.profile'])
             ->where([Advert::tableName() . '.id' => $id])
             ->one();
-        if (!$model) {
-            throw new NotFoundHttpException(Yii::t('Страница не найдена'));
-        }
 
-        if (!$mode == self::MODE_WRITE) {
-            return ($model && $model->user_id == Yii::$app->user->id) ? $model : false;
+        if (!$model || $model->status != Advert::STATUS_ACTIVE
+            || ($mode == self::MODE_WRITE && $model->user_id != Yii::$app->user->id)
+        ) {
+            throw new NotFoundHttpException(Yii::t('app', 'Страница не найдена'));
         }
 
         return $model;

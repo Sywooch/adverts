@@ -2,8 +2,10 @@
 
 namespace app\modules\core\web;
 
+use app\modules\core\db\ActiveRecord;
 use app\modules\core\widgets\ActiveForm;
 use Yii;
+use yii\base\Exception;
 use yii\web\Response;
 
 /**
@@ -32,5 +34,17 @@ class Controller extends \yii\web\Controller
             echo json_encode(ActiveForm::validate($model));
             Yii::$app->end();
         }
+    }
+
+    /**
+     * Try to find model.
+     * @param integer $id
+     * @param string $mode
+     * @return ActiveRecord
+     * @throws Exception
+     */
+    public function findModel($id, $mode = self::MODE_READ)
+    {
+        throw new Exception('Необходимо реализовать метод findModel()');
     }
 }

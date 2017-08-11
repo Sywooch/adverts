@@ -2,6 +2,7 @@
 
 namespace app\modules\core\models\ar;
 
+use app\modules\core\behaviors\TimestampBehavior;
 use app\modules\core\models\aq\CommentQuery;
 use app\modules\users\models\ar\User;
 use Yii;
@@ -32,11 +33,23 @@ class Comment extends \app\modules\core\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
             [['user_id', 'owner_id', 'owner_model_name', 'text'], 'required'],
-            [['user_id', 'owner_id', 'text'], 'integer'],
+            [['user_id', 'owner_id'], 'integer'],
             [['owner_model_name'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],

@@ -4,8 +4,10 @@ namespace app\modules\core\models\ar;
 
 use app\modules\adverts\models\ar\Advert;
 use app\modules\adverts\models\ar\AdvertTemplet;
+use app\modules\core\db\ActiveRecord;
 use Yii;
 use yii\web\UploadedFile;
+use app\modules\core\validators\FilesLimitValidator;
 
 /**
  * This is the model class for table "file".
@@ -41,6 +43,7 @@ class File extends \app\modules\core\db\ActiveRecord
             [['deleted_at'], 'safe'],
             [['owner_model_name'], 'string', 'max' => 32],
             [['file_name', 'origin_file_name'], 'string', 'max' => 128],
+            ['owner_id', 'validateFilesLimit'],
         ];
     }
 
@@ -117,24 +120,41 @@ class File extends \app\modules\core\db\ActiveRecord
     }
 
     /**
-     * @param $owner
+     * Validates maximum count of related files.
      * @param string $attribute
-     * @return null|File
+     */
+    public function validateFilesLimit($attribute)
+    {
+        $count = self::find()->where([
+            'owner_id' => $this->owner_id,
+            'owner_model_name' => $this->owner_model_name
+        ])->count();
+        $modelName = ActiveRecord::getFullClassName($this->owner_model_name);;
+        $maxCount = $modelName::getMaxFilesCount();
+
+        if ($count >= $maxCount) {
+            $this->addError($attribute, Yii::t('app', 'Максимально допустимое количество файлов - {count}', [
+                'count' => $maxCount
+            ]));
+        }
+    }
+
+    /**
+     * Uploads file and attaches it to the model.
+     * @param ActiveRecord $owner
+     * @param string $attribute
+     * @return File
      */
     public static function upload($owner, $attribute = 'files')
     {
         $uploadedFile = UploadedFile::getInstance($owner, $attribute);
-
         $file = new self([
             'owner_id' => $owner->id,
             'owner_model_name' => $owner::shortClassName(),
             'file_name' => uniqid(time(), true) . '.' . $uploadedFile->extension,
             'origin_file_name' => $uploadedFile->name
         ]);
-        if ($uploadedFile->saveAs("{$file->path}/{$file->file_name}") && $file->save()) {
-            return $file;
-        }
-
-        return null;
+        $file->save() && $uploadedFile->saveAs("{$file->path}/{$file->file_name}");
+        return $file;
     }
 }

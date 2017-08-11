@@ -1,9 +1,5 @@
 <?php
 
-//use common\helpers\DatepickerHelper;
-//use common\helpers\MaskedInputHelper;
-//use roman444uk\jqueryUpoadFilePlugin\JQueryUpoadFilePlugin;
-//use roman444uk\yii\widgets\ActiveForm;
 use app\modules\adverts\AdvertsModule;
 use app\modules\adverts\models\search\AdvertCategorySearch;
 use app\modules\core\widgets\ActiveForm;
@@ -35,17 +31,20 @@ use yii\web\View;
         'class' => 'advert-form'
     ],
     'fieldConfig' => [
-        'template' => "{label}\n{input}",
+        'template' => "{label}\n{input}\n{error}",
         'inputOptions' => [
             'class' => 'form-control input-sm'
+        ],
+        'errorOptions' => [
+            'tag' => 'div'
         ]
     ]
-]) ?>
+]); ?>
 
     <div class="row">
         <?= $form->field($model, 'content', [
             'options' => [
-                'class' => 'col-sm-12 col-md-12 col-lg-12'
+                'class' => 'form-group col-sm-12 col-md-12 col-lg-12'
             ]
         ])->textarea([
             'rows' => '10',
@@ -55,14 +54,14 @@ use yii\web\View;
     <div class="row mt-10">
         <?= $form->field($model, 'category_id', [
             'options' => [
-                'class' => 'col-sm-4 col-md-4 col-lg-4'
+                'class' => 'form-group col-sm-4 col-md-4 col-lg-4'
             ]
         ])->dropDownList(ArrayHelper::map(AdvertCategorySearch::getList(), 'id', 'name')); ?>
 
         <?php $model->expiry_at = Yii::$app->formatter->asDate($model->expiry_at, Yii::$app->formatter->dateFormat); ?>
         <?= $form->field($model, 'expiry_at', [
             'options' => [
-                'class' => 'col-sm-4 col-md-4 col-lg-4'
+                'class' => 'form-group col-sm-4 col-md-4 col-lg-4'
             ]
         ])->widget(DateTimePicker::className(), [
             'format' => Yii::$app->formatter->dateFormat,
@@ -76,20 +75,20 @@ use yii\web\View;
     <div class="row mt-10">
         <?= $form->field($model, 'currency_id', [
             'options' => [
-                'class' => 'col-sm-4 col-md-4 col-lg-4'
+                'class' => 'form-group col-sm-4 col-md-4 col-lg-4'
             ]
         ])->dropDownList(ArrayHelper::map(CurrencySearch::getList(), 'id', 'name')); ?>
 
 
         <?= $form->field($model, 'min_price', [
             'options' => [
-                'class' => 'col-sm-4 col-md-4 col-lg-4'
+                'class' => 'form-group col-sm-4 col-md-4 col-lg-4'
             ]
         ])->textInput(); ?>
 
         <?= $form->field($model, 'max_price', [
             'options' => [
-                'class' => 'col-sm-4 col-md-4 col-lg-4'
+                'class' => 'form-group col-sm-4 col-md-4 col-lg-4'
             ]
         ])->textInput(); ?>
     </div>
@@ -103,16 +102,18 @@ use yii\web\View;
     <div class="row mt-30">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="files-list" data-action="files-list">
-                <?php if ($templet->files): ?>
+                <?php
+                    $files = !$model->isNewRecord ? $model->files : $templet->files;
+                ?>
+                <?php if ($files): ?>
                     <?php /** @var $file \app\modules\core\models\ar\File */ ?>
-                    <?php foreach ($templet->files as $file): ?>
+                    <?php foreach ($files as $file): ?>
                         <?= $this->render('file/_file-container', [
                             'model' => $file
                         ]); ?>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="files-empty"><?= Yii::t('app', 'Не загружено ни одного файла...'); ?></div>
                 <?php endif; ?>
+                <div class="files-empty<?= $files ? ' hide' : '' ?>"><?= Yii::t('app', 'Не загружено ни одного файла...'); ?></div>
             </div>
             <?= \yii\jui\ProgressBar::widget([
                 'options' => [
@@ -138,12 +139,13 @@ use yii\web\View;
 
     <div class="mt-20">
         <?= FileUpload::widget([
-            'model' => $templet,
+            'model' => !$model->isNewRecord ? $model : $templet,
             'attribute' => 'files',
             'plus' => true,
             'url' => [
                 'file-upload',
-                'id' => $templet->id
+                'id' => !$model->isNewRecord ? $model->id : $templet->id,
+                'owner' => !$model->isNewRecord ? $model::className() : $templet::className(),
             ],
             'clientOptions' => [
                 'accept' => 'image/*',
@@ -164,26 +166,33 @@ use yii\web\View;
     });
 }",
                 'fileuploaddone' => "function(e, data) {
-    var template = '{$imgTemplate}';
-    if (data.result.file) {
-        var file = data.result.file;        
+    if (data.result.success && data.result.file) {
+        var file = data.result.file;
+        var template = '{$imgTemplate}';
+        template = template.replace(/{$urlParam}/g, file.url);
+        template = template.replace(/{$deleteUrlParam}/g, file.deleteUrl);
+        $('[data-action=files-list]').append(template);
+        $('.files-list .files-empty').hide();
+        $('.file-uploaded-success').css('display', 'inline').delay(4000).animate({
+            opacity: 0
+        }, 2000, function() {
+            $('.file-uploaded-success').css('display', '')
+        });
+        $('.file-uploaded-fail').hide();
+    } else if (data.result.errors && data.result.errors.owner_id) {
+        $('.file-uploaded-fail').html(data.result.errors.owner_id).css('display', 'inline');
     }
-    template = template.replace(/{$urlParam}/g, file.url);
-    template = template.replace(/{$deleteUrlParam}/g, file.deleteUrl);
-    $('[data-action=files-list]').append(template);
     $('#files-progressbar').progressbar({
         value: 0
     });
-    $('.file-uploaded-success').css('display', 'inline').delay(4000).animate({
-        opacity: 0
-    }, 2000, function() {
-        $('.file-uploaded-success').css('display', '')
-    });
-    $('.files-list .files-empty').hide();
 }",
                 'fileuploadfail' => "function(e, data) {
-    $('.file-uploaded-success').css('display', 'inline');
+    $('#files-progressbar').progressbar({
+        value: parseInt(0, 10)
+    });
+    alert('Ошибка загрузки файла. Пожалуйста, попробуйте еще раз');
 }",
+                'fileuploadprocessalways' => "function(e, data) {}",
             ],
         ]); ?>
 
@@ -193,7 +202,7 @@ use yii\web\View;
         <div class="btn-group pull-right">
             <?php if ($model->isNewRecord): ?>
                 <?= Html::submitButton(AdvertsModule::t('Опубликовать'), [
-                    'class' => 'btn btn-success btn-sm'
+                    'class' => 'btn btn-primary btn-sm'
                 ]); ?>
 
                 <?php
@@ -208,7 +217,7 @@ use yii\web\View;
                 ]) ?>
             <?php else: ?>
                 <?= Html::submitButton(AdvertsModule::t('Сохранить изменения'), [
-                    'class' => 'btn btn-sm'
+                    'class' => 'btn btn-primary btn-sm'
                 ]); ?>
             <?php endif; ?>
         </div>
@@ -217,15 +226,6 @@ use yii\web\View;
     <div class="clear"></div>
 
 <?php ActiveForm::end(); ?>
-
-<?php
-    /*MaskedInput::widget([
-       'id' => 'term_at', 
-       'name' => 'term_at',
-       'mask' => 'd m y',
-       'definitions' => MaskedInputHelper::getDatepickerDefinitions()
-    ]);*/
-?>
 
 <?php
     $saveTempletUrl = Url::to('/adverts/advert/save-templet');

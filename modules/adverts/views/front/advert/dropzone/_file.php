@@ -47,7 +47,7 @@ use roman444uk\yii\widgets\ActiveForm;
             ]) ?>
         </div>
     
-        <?php echo $form->field($model, 'description', [
+        <?= $form->field($model, 'description', [
             'options' => ['tag' => false]
         ])->textarea() ?>
     

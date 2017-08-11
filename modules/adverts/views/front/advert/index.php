@@ -1,29 +1,37 @@
 <?php
 
 /**
- * @var $this yii\web\View
- * @var $dataProvider \yii\data\ActiveDataProvider
- * @var $searchModel \app\modules\adverts\models\search\AdvertSearch
+ * @var \yii\web\View $this
+ * @var \yii\data\ActiveDataProvider $dataProvider
+ * @var \app\modules\adverts\models\search\AdvertSearch $searchModel
+ * @var boolean $withFilter
  */
 
 use app\modules\adverts\widgets\AdvertListView;
+use app\modules\adverts\widgets\MultiGallery;
 use yii\widgets\Pjax;
 
 ?>
 
 <div class="row adverts-list-container">
-    <div class="col-xs-12 left">
-        <?= $this->render('_filter', [
-            'model' => $searchModel,
-        ]); ?>
-    </div>
+    <?php if ($withFilter): ?>
+        <div class="col-xs-12 left">
+            <?= $this->render('_filter', [
+                'model' => $searchModel,
+            ]); ?>
+        </div>
+    <?php endif; ?>
+
     <?php Pjax::begin(['id' => 'adverts-list-pjax']) ?>
         <?= AdvertListView::widget([
             'id' => 'adverts-list',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'itemView' => '@app/modules/adverts/views/front/advert/_advert',
-            'layout' => "  
+            'viewParams' => [
+                'renderPartial' => true
+            ],
+            'layout' => "
                 <div class=\"col-xs-12 right\">
                     <div class=\"row\">
                         <div class=\"col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center-xs text-center-sm\">{summary}</div>

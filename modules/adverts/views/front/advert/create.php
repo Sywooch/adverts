@@ -6,6 +6,14 @@
  * @var \yii\web\View $this
  */
 
+use app\modules\adverts\AdvertsModule;
+
 ?>
 
-<?= $this->render('_form', compact('model', 'templet', 'directPopulating')) ?>
+<?php if (Yii::$app->session->getFlash('success')): ?>
+    <div class="alert alert-success text-center">
+        <?= AdvertsModule::t('Ваше объявление сохранено и будет опубликовано после одобрения администрацией в кратчайшие сроки.'); ?>
+    </div>
+<?php else: ?>
+    <?= $this->render('_form', compact('model', 'templet')) ?>
+<?php endif ?>

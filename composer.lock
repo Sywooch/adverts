@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ebdf2db207536245a630b627f8deb93b",
+    "content-hash": "dd3a1f9e538deeadfb53abb35bbd3589",
     "packages": [
         {
             "name": "2amigos/yii2-file-upload-widget",
@@ -124,6 +124,46 @@
                 "yii2"
             ],
             "time": "2016-09-10T19:18:19+00:00"
+        },
+        {
+            "name": "almasaeed2010/adminlte",
+            "version": "v2.4.0-rc",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/almasaeed2010/AdminLTE.git",
+                "reference": "1ee1030db29f62756a773b868c29a56935607c00"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/almasaeed2010/AdminLTE/zipball/1ee1030db29f62756a773b868c29a56935607c00",
+                "reference": "1ee1030db29f62756a773b868c29a56935607c00",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Abdullah Almsaeed",
+                    "email": "abdullah@almsaeedstudio.com"
+                }
+            ],
+            "description": "AdminLTE - admin control panel and dashboard that's based on Bootstrap 3",
+            "homepage": "https://adminlte.io/",
+            "keywords": [
+                "JS",
+                "admin",
+                "back-end",
+                "css",
+                "less",
+                "responsive",
+                "template",
+                "theme",
+                "web"
+            ],
+            "time": "2017-07-02T15:38:16+00:00"
         },
         {
             "name": "bower-asset/blueimp-canvas-to-blob",
@@ -4217,7 +4257,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,

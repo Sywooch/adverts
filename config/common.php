@@ -9,24 +9,6 @@ $commonConfig = [
         'authClientCollection' => [
             'class' => 'yii\authclient\Collection',
             'clients' => [
-                'facebook' => [
-                    'class' => 'app\modules\authclient\clients\Facebook',
-                    'clientId' => CLIENT_ID_FACEBOOK,
-                    'clientSecret' => CLIENT_SECRET_FACEBOOK,
-                ],
-                /*'google' => [
-                    'class' => 'app\modules\authclient\clients\Google',
-                    'clientId' => 'airy-dialect-95610',
-                    'clientSecret' => 'airy-dialect-95610',
-                ],
-                'twitter' => [
-                    'class' => 'app\modules\authclient\clients\Twitter',
-                    'attributeParams' => [
-                        'include_email' => 'true'
-                    ],
-                    'consumerKey' => '',
-                    'consumerSecret' => '',
-                ],*/
                 'vkontakte' => [
                     'class' => 'app\modules\authclient\clients\VKontakte',
                     'clientId' => CLIENT_ID_VKONTAKTE,
@@ -35,11 +17,29 @@ $commonConfig = [
                     'delayExecute' => 120,
                     'limitExecute' => 1,
                 ],
-                /*'yandex' => [
+                'facebook' => [
+                    'class' => 'app\modules\authclient\clients\Facebook',
+                    'clientId' => CLIENT_ID_FACEBOOK,
+                    'clientSecret' => CLIENT_SECRET_FACEBOOK,
+                ],
+                'google' => [
+                    'class' => 'app\modules\authclient\clients\Google',
+                    'clientId' => CLIENT_ID_GOOGLE,
+                    'clientSecret' => CLIENT_SECRET_GOOGLE,
+                ],
+                'twitter' => [
+                    'class' => 'app\modules\authclient\clients\Twitter',
+                    'attributeParams' => [
+                        'include_email' => 'true'
+                    ],
+                    'consumerKey' => CLIENT_ID_TWITTER,
+                    'consumerSecret' => CLIENT_SECRET_TWITTER,
+                ],
+                'yandex' => [
                     'class' => 'app\modules\authclient\clients\Yandex',
-                    'clientId' => '',
-                    'clientSecret' => '',
-                ],*/
+                    'clientId' => CLIENT_ID_YANDEX,
+                    'clientSecret' => CLIENT_SECRET_YANDEX,
+                ],
             ]
         ],
         'authClientComponent' => [

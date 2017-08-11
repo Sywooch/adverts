@@ -210,7 +210,7 @@ class AuthController extends \app\modules\core\web\Controller
             $user->scenario = User::SCENARIO_NEW_AUTH_CLIENT_USER;
             $user->register($authClient);
         }
-        $user->authClientUser->access_token = $authClient->accessToken->token;
+        $user->authClientUser->setClientAttributes($authClient);
         $user->authClientUser->save();
         Yii::$app->user->login($user, 0);
     }

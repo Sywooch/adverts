@@ -4,6 +4,15 @@ require(__DIR__ . '/bootstrap.php');
 
 $webConfig = [
     'defaultRoute' => 'adverts/advert',
+    'as endSideBehavior' => [
+        'class' => 'app\modules\core\behaviors\ApplicationEndSideBehavior',
+        'frontControllerNamespace' => 'front',
+        'frontViewPath' => 'front',
+        'frontDefaultRoute' => 'adverts/advert',
+        'backControllerNamespace' => 'back',
+        'backViewPath' => 'back',
+        'backDefaultRoute' => 'adverts/advert',
+    ],
     'components' => [
         'assetManager' => [
             //'linkAssets' => true

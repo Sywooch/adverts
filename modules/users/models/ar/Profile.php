@@ -22,6 +22,9 @@ use yii\helpers\Url;
  * @property string $preferable_connection_type
  * @property string $surname
  * @property integer $user_id
+ * @property string $avatarUrl
+ *
+ * @property AuthClientUser $authClientUser
  */
 class Profile extends \app\modules\core\db\ActiveRecord
 {
@@ -119,7 +122,7 @@ class Profile extends \app\modules\core\db\ActiveRecord
      */
     public function getAvatarUrl()
     {
-        return '/img/vk-default.png';
+        return $this->authClientUser && $this->authClientUser->avatar_url ? $this->authClientUser->avatar_url : '/img/vk-default.png';
     }
     
     /**

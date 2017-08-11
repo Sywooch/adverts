@@ -26,7 +26,7 @@ $this->title = !$registeredUser ? UsersModule::t('Регистрация') : Use
 
 <?php else: ?>
 
-    <div class="col-sm-offset-3 col-md-offset-4 col-lg-offset-4 col-sm-6 col-md-4 col-lg-4">
+    <div class="col-sm-offset-2 col-md-offset-3 col-lg-offset-4 col-xs-12 col-sm-8 col-md-6 col-lg-4">
         <?php $form = ActiveForm::begin([
             'id' => 'form-registration',
             'validateOnBlur' => false,

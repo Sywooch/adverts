@@ -5,7 +5,7 @@
 
 ?>
 
-<span class="btn btn-success fileinput-button btn-sm">
+<span class="btn btn-primary fileinput-button btn-sm">
    <i class="glyphicon glyphicon-plus"></i>
    <span><?= Yii::t('app','Добавить файл'); ?></span>
     <?= $input ?>

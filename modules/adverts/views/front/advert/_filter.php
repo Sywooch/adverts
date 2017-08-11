@@ -37,7 +37,7 @@ use app\modules\geography\models\search\GeographySearch;
         'emptyItem' => Yii::t('app', 'Все'),
     ]); ?>
 
-    <label class="control-label" for="min_date"><?= Yii::t('app', 'Дата') ?></label>
+    <label class="control-label" for="min_date"><?= Yii::t('app', 'Дата публикации') ?></label>
     <div class="row">
         <?= $form->field($model, 'min_date', [
             'options' => [

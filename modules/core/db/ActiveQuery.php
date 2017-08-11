@@ -57,15 +57,18 @@ class ActiveQuery extends \yii\db\ActiveQuery
     }
 
     /**
-     *
+     * Whether to load comments count value.
+     * @return $this
      */
     public function withCommentsCount()
     {
         $this->_commentsCount = true;
         return $this;
     }
+
     /**
-     *
+     * Whether to load dislikes count value.
+     * @return $this
      */
     public function withDislikesCount()
     {
@@ -74,7 +77,8 @@ class ActiveQuery extends \yii\db\ActiveQuery
     }
 
     /**
-     *
+     * Whether to load likes count value.
+     * @return $this
      */
     public function withLikesCount()
     {
@@ -83,7 +87,8 @@ class ActiveQuery extends \yii\db\ActiveQuery
     }
 
     /**
-     *
+     * Whether to load current user likes.
+     * @return $this
      */
     public function withLikesCurrentUser()
     {
@@ -92,7 +97,8 @@ class ActiveQuery extends \yii\db\ActiveQuery
     }
 
     /**
-     *
+     * Whether to load views count value.
+     * @return $this
      */
     public function withLooksCount()
     {
@@ -100,6 +106,10 @@ class ActiveQuery extends \yii\db\ActiveQuery
         return $this;
     }
 
+    /**
+     * Whether to load current user bookmarks.
+     * @return $this
+     */
     public function withBookmarksCurrentUser()
     {
         $this->_bookmarksCurrentUser = true;
@@ -107,6 +117,7 @@ class ActiveQuery extends \yii\db\ActiveQuery
     }
 
     /**
+     * Adds main table attributes to the select query section.
      * @return $this
      */
     public function addMainSelect()
@@ -245,5 +256,21 @@ class ActiveQuery extends \yii\db\ActiveQuery
         }
 
         return $models;
+    }
+
+    /**
+     * Adds only bookmarked models conditions.
+     * @return $this
+     */
+    public function bookmarked()
+    {
+        /** @var ActiveRecord $modelClass */
+        $modelClass = $this->modelClass;
+        $bookmarkTable = Bookmark::tableName();
+        return $this->innerJoin($bookmarkTable, [
+            "{$bookmarkTable}.owner_model_name" => $modelClass::shortClassName(),
+            self::getPrimaryTableName() . '.id' => new Expression("{$bookmarkTable}.owner_id"),
+            "{$bookmarkTable}.user_id" => Yii::$app->user->id
+        ]);
     }
 }

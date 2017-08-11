@@ -12,6 +12,7 @@ use app\modules\geography\models\ar\Geography;
 use app\modules\users\models\ar\Profile;
 use app\modules\users\models\ar\User;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class InitController
@@ -42,10 +43,21 @@ class InitController extends \app\modules\core\console\Controller
 
         $adverts = require Yii::getAlias('@app/data/db/adverts.php');
         foreach ($adverts as $advertData) {
-            $advertData['user_id'] = 1;
+            $advertData['user_id'] = rand(1, 3);
+            $comments = ArrayHelper::remove($advertData,'comments', []);
             $advert = new Advert(array_merge($advertData, ['status' => Advert::STATUS_ACTIVE]));
             if (!$advert->save()) {
                 print_r($advert->getErrors());
+            }
+            foreach ($comments as $commentData) {
+                $comment = new Comment(array_merge($commentData, [
+                    'user_id' => rand(1, 3),
+                    'owner_id' => $advert->id,
+                    'owner_model_name' => $advert::shortClassName()
+                ]));
+                if (!$comment->save()) {
+                    print_r($comment->getErrors());
+                }
             }
         }
     }

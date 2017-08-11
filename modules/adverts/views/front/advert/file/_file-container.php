@@ -17,11 +17,11 @@ use yii\helpers\Url;
         'class' => 'img-thumbnail'
     ]); ?>
     <div class="file-delete visible" data-action="file-delete" data-url="<?= Url::to([
-        'file-delete', 'name' => $deleteUrlParam ? : $model->file_name
+        'file-delete', 'id' => $deleteUrlParam ? : $model->id
     ]); ?>">
         <i class="glyphicon glyphicon-remove"></i>
     </div>
-    <!--<div class="file-deleting" data-action="file-deleting">
+    <div class="file-deleting" data-action="file-deleting">
         <i class="fa fa-refresh fa-spin"></i>
-    </div>-->
+    </div>
 </div>

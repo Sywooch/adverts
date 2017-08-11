@@ -6,6 +6,7 @@
  */
 
 use yii\bootstrap\Html;
+use app\modules\authclient\widgets\AuthChoice;
 use app\modules\core\widgets\ActiveForm;
 use app\modules\users\UsersModule;
 
@@ -13,7 +14,7 @@ $this->title = UsersModule::t('Вход');
 
 ?>
 
-<div class="col-sm-offset-3 col-md-offset-4 col-sm-6 col-md-4 col-lg-4">
+<div class="col-sm-offset-2 col-md-offset-3 col-lg-offset-4 col-xs-12 col-sm-8 col-md-6 col-lg-4">
     <?php $form = ActiveForm::begin([
         'id' => 'login-form',
         'enableAjaxValidation' => true,
@@ -21,43 +22,9 @@ $this->title = UsersModule::t('Вход');
         'validateOnBlur' => false
     ]) ?>
 
-        <?= \yii\authclient\widgets\AuthChoice::widget([
+        <?= AuthChoice::widget([
             'baseAuthUrl' => ['/users/auth/client']
         ]); ?>
-
-        <!--<div class="row" style="padding-top: 10px; padding-bottom: 10px;">
-            <div class="col-sm-12 col-md-12 col-lg-12 text-center">
-                <?= Html::a('', ['/eauth/auth/login', 'service' => 'vkontakte'], [
-                    'class' => 'icon vkontakte',
-                    'title' => 'vk.com'
-                ]) ?>
-
-                <?= Html::a('', ['/eauth/auth/login', 'service' => 'facebook'], [
-                    'class' => 'icon facebook',
-                    'title' => 'facebook.com'
-                ]) ?>
-
-                <?= Html::a('', ['/eauth/auth/login', 'service' => 'odnoklassniki'], [
-                    'class' => 'icon odnoklassniki',
-                    'title' => 'ok.ru'
-                ]) ?>
-
-                <?= Html::a('', ['/eauth/auth/login', 'service' => 'twitter'], [
-                    'class' => 'icon twitter',
-                    'title' => 'twitter.com'
-                ]) ?>
-
-                <?= Html::a('', ['/eauth/auth/login', 'service' => 'mailru'], [
-                    'class' => 'icon mailru',
-                    'title' => 'mail.ru'
-                ]) ?>
-
-                <?= Html::a('', ['/eauth/auth/login', 'service' => 'google_oauth'], [
-                    'class' => 'icon google',
-                    'title' => 'google.com'
-                ]) ?>
-            </div>
-        </div>-->
 
         <?= $form->field($model, 'email', [
             'template' => '{label}<div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>{input}</div>{error}'

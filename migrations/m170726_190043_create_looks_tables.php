@@ -14,7 +14,7 @@ class m170726_190043_create_looks_tables extends Migration
         $modelNames = ['Advert', 'User'];
         $this->createTable(Look::tableName(), [
             'id'                    => 'pk',
-            'user_id'               => 'INT(11) NOT NULL',
+            'user_id'               => 'INT(11)',
             'owner_id'              => 'INT(11) NOT NULL',
             'owner_model_name'      => 'ENUM("'.implode('","', $modelNames).'") NOT NULL',
             'value'                 => 'INT(5)',
