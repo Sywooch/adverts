@@ -1,0 +1,204 @@
+/* common styling */
+html, body {
+    height: 100%;
+}
+p {
+    text-indent: 10px !important;
+    padding: 5px;
+}
+
+.wrap {
+    min-height: 100%;
+    height: auto;
+    margin: 0 auto -60px;
+    padding: 0 0 60px;
+}
+
+.wrap > .container {
+    padding: 70px 15px 20px;
+}
+
+.container {
+    width: 90% !important;
+}
+
+.footer {
+    height: 60px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.jumbotron {
+    text-align: center;
+    background-color: transparent;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    padding-left: 5px;
+}
+
+a.asc:after {
+    content: /*"\e113"*/ "\e151";
+}
+
+a.desc:after {
+    content: /*"\e114"*/ "\e152";
+}
+
+.sort-numerical a.asc:after {
+    content: "\e153";
+}
+
+.sort-numerical a.desc:after {
+    content: "\e154";
+}
+
+.sort-ordinal a.asc:after {
+    content: "\e155";
+}
+
+.sort-ordinal a.desc:after {
+    content: "\e156";
+}
+
+.grid-view th {
+    white-space: nowrap;
+}
+
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/* align the logout "link" (button in form) of the navbar */
+.nav li > form > button.logout {
+    padding: 15px;
+    border: none;
+}
+
+@media(max-width:767px) {
+    .nav li > form > button.logout {
+        display:block;
+        text-align: left;
+        width: 100%;
+        padding: 10px 15px;
+    }
+}
+
+.nav > li > form > button.logout:focus,
+.nav > li > form > button.logout:hover {
+    text-decoration: none;
+}
+
+.nav > li > form > button.logout:focus {
+    outline: none;
+}
+
+.form-group .control-label/*, .form-group .help-block*/ {
+    height: 34px;
+    line-height: 34px;
+}
+
+/* auth clients styling */
+.auth-clients {
+    text-align: center;
+}
+.auth-clients .auth-icon {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+/* advert list filter */
+@media (min-width: 768px) and (max-width: 991px) {
+    .adverts-list-container .left {
+        position: fixed;
+        width: 30%;
+    }
+    .adverts-list-container .right {
+        width: 66.66%;
+        margin-left: 33.33%;
+    }
+}
+@media (min-width: 992px) {
+    .adverts-list-container .left {
+        position: fixed;
+        width: 18%;
+    }
+    .adverts-list-container .right {
+        width: 80%;
+        margin-left: 20%;
+    }
+}
+
+/* social icons */
+.icon {
+    display: inline-block;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+.icon.facebook,
+.icon.google,
+.icon.mailru,
+.icon.odnoklassniki,
+.icon.twitter,
+.icon.vkontakte {
+    background-image: url('/../img/social-icons.png');
+    background-size: auto;
+}
+.icon.facebook {
+    background-position: 0 0;
+}
+.icon.google {
+    background-position: -126px 0;
+}
+.icon.mailru {
+    background-position: -147px 0;
+}
+.icon.odnoklassniki {
+    background-position: -63px 0;
+}
+.icon.twitter {
+    background-position: -21px 0;
+}
+.icon.vkontakte {
+    background-position: -84px 0;
+}
+
+/* blueimp gallery styling */
+.blueimp-gallery > .indicator > li {
+    width: 50px;
+    height: 50px;
+    opacity: 1 !important;
+}

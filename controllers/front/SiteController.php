@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace app\controllers\front;
 
 use Yii;
 use yii\filters\AccessControl;
@@ -63,6 +63,7 @@ class SiteController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
             Yii::$app->session->setFlash('contactFormSubmitted');
+
             return $this->refresh();
         }
 

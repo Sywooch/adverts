@@ -25,7 +25,7 @@ use app\modules\core\widgets\LookButtonWidget;
 ]); ?>
 
 <?= Html::tag('p', $model->content, [
-    'class' => 'content mt-5 mb-5',
+    'class' => 'advert-content mt-5 mb-5',
     'target' => '_blank',
     'data-pjax' => 0,
 ]); ?>

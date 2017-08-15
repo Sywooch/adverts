@@ -103,16 +103,16 @@ class User extends UserIdentity
             'id'                   => 'ID',
             'superadmin'           => UsersModule::t('Superadmin'),
             'confirmation_token'   => UsersModule::t('Confirmation token'),
-            'status'               => UsersModule::t('Ствтус'),
-            'gridRoleSearch'       => UsersModule::t('Roles'),
-            'created_at'           => UsersModule::t('Created'),
-            'updated_at'           => UsersModule::t('Updated'),
+            'status'               => UsersModule::t('Статус'),
+            'created_at'           => UsersModule::t('Зарегистрирован'),
+            'updated_at'           => UsersModule::t('Последнее обновление'),
             'password'             => UsersModule::t('Пароль'),
             'repeatPassword'       => UsersModule::t('Repeat password'),
             'email_confirmed'      => UsersModule::t('E-mail confirmed'),
-            'email'                => UsersModule::t('E-mail'),
-            'is_from_service'      => UsersModule::t('Is from social'),
-            'passwordNotEncrypted' => UsersModule::t('Password'),
+            'email'                => UsersModule::t('Почтовый ящик'),
+            'is_from_service'      => UsersModule::t('Из соцсети'),
+            'passwordNotEncrypted' => UsersModule::t('Пароль'),
+            'fullName'             => UsersModule::t('ФИО'),
         ];
     }
 
@@ -137,16 +137,6 @@ class User extends UserIdentity
     public static function find()
     {
         return new UserQuery(get_called_class());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function load($data, $formName = null)
-    {
-        $profileLoaded = $this->profile->load($data);
-        $selfLoaded = parent::load($data, $formName);
-        return $profileLoaded || $selfLoaded;
     }
 
     /**

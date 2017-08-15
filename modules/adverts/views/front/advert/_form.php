@@ -27,6 +27,8 @@ use yii\web\View;
     'enableAjaxValidation' => true,
     'validateOnBlur' => true,
     'validationUrl' => Url::to(['validate', 'id' => $model->id]),
+    'ajaxSubmit' => true, //Yii::$app->request->isAjax,
+    'sendAjaxRedirectHeader' => false,
     'options' => [
         'class' => 'advert-form'
     ],
@@ -38,6 +40,14 @@ use yii\web\View;
         'errorOptions' => [
             'tag' => 'div'
         ]
+    ],
+    'clientEvents' => [
+        'ajaxSubmitComplete' => "function(event, jqXHR) {
+            var url = jqXHR.getResponseHeader('X-Reload-Url');
+            if (url) {
+                            
+            }
+        }"
     ]
 ]); ?>
 
@@ -228,22 +238,27 @@ use yii\web\View;
 <?php ActiveForm::end(); ?>
 
 <?php
-    $saveTempletUrl = Url::to('/adverts/advert/save-templet');
-    $js = <<<JS
+    if (!Yii::$app->request->isAjax) {
+        $saveTempletUrl = Url::to('/adverts/advert/save-templet');
+        $js = <<<JS
 jQuery('#advert-form').on('ajaxComplete', function(data) {
     $.ajax({
         url: '{$saveTempletUrl}',
         method: 'post',
         data: $(this).serialize(),
         success: function(data, textStatus, jqXHR ) {
-            
-        },
+
+    },
         error: function() {
-            alert('error. Посмотри firebug!');
-        }
+        alert('Ошибка, данные объявления не сохранилиь автоматически!');
+    }
     });    
 });
+JS;
+        $this->registerJs($js, View::POS_READY);
+    }
 
+    $js = <<<JS
 jQuery('#advert-form').on('click', '[data-action=file-delete]', function() {
     var self = $(this);
     var img = self.prev();

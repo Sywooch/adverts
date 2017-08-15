@@ -108,11 +108,11 @@ class Advert extends \app\modules\core\db\ActiveRecord
     {
         return [
             'id' => 'Id',
+            'user_id' => 'Создал',
             'category_id' => Yii::t('app', 'Категория'),
             'geography_id' => Yii::t('app', 'Месторасположение'),
-            'city_id' => Yii::t('app', 'City'),
             'content' => Yii::t('app', 'Содержание'),
-            'created_at' => Yii::t('app', 'Создано'),
+            'created_at' => Yii::t('app', 'Дата создания'),
             'currency_id' => Yii::t('app', 'Валюта'),
             'price' => Yii::t('app', 'Цена'),
             'min_price' => Yii::t('app', 'Минимальная цена'),

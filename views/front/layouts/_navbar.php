@@ -5,6 +5,7 @@
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Url;
+use app\modules\core\behaviors\EndSideBehavior;
 use app\modules\users\UsersModule;
 
 ?>
@@ -53,7 +54,7 @@ use app\modules\users\UsersModule;
                         ],
                         [
                             'label' => Yii::t('app', 'Администрировать'),
-                            'url' => ['/core/switch-admin'],
+                            'url' => ['/switch-end-side', 'side' => EndSideBehavior::BACK_END_SIDE],
                             'visible' => Yii::$app->user->isSuperadmin,
                         ],
                     ]

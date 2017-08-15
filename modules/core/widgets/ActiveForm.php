@@ -2,9 +2,10 @@
 
 namespace app\modules\core\widgets;
 
-use yii\helpers\Html;
+use Yii;
 use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\widgets\ActiveFormAsset;
 
 class ActiveForm extends \yii\bootstrap\ActiveForm
 {
@@ -19,9 +20,26 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
     public $ajaxSubmit = false;
 
     /**
+     * @var bool whether server to send redirect header after form submitting
+     */
+    public $sendAjaxRedirectHeader = true;
+
+    /**
      * Widget client event handlers list.
      */
     public $clientEvents;
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        if (Yii::$app->request->isAjax) {
+            $this->ajaxSubmit = true;
+        }
+    }
 
     /**
      * @inheritdoc
@@ -52,6 +70,7 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
             'ajaxParam' => $this->ajaxParam,
             'ajaxDataType' => $this->ajaxDataType,
             'ajaxSubmit' => $this->ajaxSubmit,
+            'sendAjaxRedirectHeader' => $this->sendAjaxRedirectHeader,
         ];
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
@@ -67,6 +86,7 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
             'ajaxParam' => 'ajax',
             'ajaxDataType' => 'json',
             'ajaxSubmit' => false,
+            'sendAjaxRedirectHeader' => true,
         ]);
     }
 
@@ -82,11 +102,10 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
                     foreach ($handler as $func) {
                         $js[] = "jQuery('#$this->id').on('$event', $func);";
                     }
-                } else {
+                } else if ($handler) {
                     $js[] = "jQuery('#$this->id').on('$event', $handler);";
                 }
             }
-
             $this->getView()->registerJs(implode("\n", $js));
         }
     }

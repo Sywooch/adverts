@@ -1,0 +1,187 @@
+/* yii elements styles */
+.grid-view .actions {
+    width: 40px;
+}
+.pagination {
+    margin: 0;
+}
+.pagination li span {
+    border: none;
+}
+.pagination li a, .pagination li span {
+    border: none;
+    color: #999 !important;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.pagination li.active a, .pagination li.active span {
+    background: none;
+    border-bottom: 1px solid #bbb !important;
+    border-bottom-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+    -webkit-border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    -moz-border-radius-bottomright: 0;
+    -webkit-border-bottom-right-radius: 0;
+}
+.pagination li.active a:hover, .pagination li.active a:focus {
+    background: #eee !important;
+}
+.summary {
+    line-height: 38px;
+}
+
+/* user header section */
+.user-header {
+    height: 48px;
+}
+.user-header .avatar {
+    float: left;
+    width: 48px;
+    margin-right: 10px;
+}
+.user-header .fullname, .user-header .time {
+    line-height: 24px;
+}
+.user-header .fullname {
+    color: #2a5885;
+}
+.user-header .time {
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 2em;
+    color: #999;
+}
+
+/* advert form */
+.advert-form .files-list {
+    height: 170px;
+    padding: 10px 0;
+    background: #eee;
+}
+.advert-form .file-container {
+    display: inline-block;
+    position: relative;
+    margin-right: 20px;
+}
+.advert-form .file-container img {
+    height: 150px;
+}
+.advert-form .file-container .file-delete, .advert-form .file-container .file-deleting {
+    display: none;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    color: #fff;
+    background-color: rgba(0, 0, 0, .5);
+    font-size: 28px;
+    text-align: center;
+}
+.advert-form .file-container .file-deleting {
+    line-height: 32px;
+}
+.advert-form .file-container:hover .file-delete.visible {
+    display: block;
+}
+.advert-form .files-list .files-empty {
+    text-align: center;
+    line-height: 150px;
+}
+.advert-form .files-progressbar {
+    margin: 0;
+    height: 3px;
+    border: none;
+}
+.advert-form .file-uploaded-success, .file-uploaded-fail {
+    display: none;
+}
+.advert-form .file-uploaded-success {
+    color: #5cb85c;
+}
+.advert-form .file-uploaded-fail {
+    color: #d9534f;
+}
+
+/* adverts list styling s*/
+.adverts-list .items {
+
+}
+.adverts-list {
+
+}
+.advert-container .files-list img {
+    margin-right: 10px;
+    height: 80px;
+}
+.advert-container {
+    position: relative;
+    margin: 0 0 30px 0;
+    padding: 15px 10px;
+}
+.advert-container:hover {
+    background: #f8f8f8;
+}
+.advert-view .advert-container:hover {
+    background: none;
+}
+.advert-container:last-child {
+    border-bottom: none;
+}
+
+.advert-container a.advert-content {
+    display: block;
+    text-indent: 12px;
+    color: #555;
+}
+.advert-container .content:hover {
+    text-decoration: none;
+    background: none;
+}
+.advert-container .info, .advert-container .actions {
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 2em;
+    color: #999;
+}
+.actions-top {
+    position: absolute;
+    top: 17px;
+    right: 10px;
+}
+.advert-container .actions a, .advert-container .actions span {
+    padding: 2px 5px;
+    border-radius: 4px;
+    -moz-border-radius: 4px;;
+    -webkit-border-radius: 4px;
+    color: #888;
+}
+.advert-container .actions .active {
+    color: #00aa00;
+}
+.advert-container .actions a:hover,
+.advert-container .actions .like-button:hover,
+.advert-container .actions .bookmark-button:hover {
+    background: #ddd;
+    cursor: pointer;
+}
+.advert-container .actions a:hover, .advert-container .actions a:focus {
+    text-decoration: none;
+}
+
+.modal-loader .loader-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.modal-loader .loader-image-container i {
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 50%;
+    margin: -40px 0 0 -40px;
+    font-size: 80px;
+}

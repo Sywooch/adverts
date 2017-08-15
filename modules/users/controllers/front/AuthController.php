@@ -22,7 +22,7 @@ use yii\web\Response;
 /**
  * Class AuthController
  */
-class AuthController extends \app\modules\core\web\Controller
+class AuthController extends \app\modules\users\controllers\AuthController
 {
     /**
      * @inheritdoc
@@ -84,17 +84,7 @@ class AuthController extends \app\modules\core\web\Controller
             return $this->goBack();
         }
 
-        return $this->render('login', compact('model'));
-    }
-
-    /**
-     * Logout from site.
-     * @return Response
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-        return $this->goHome();
+        return $this->renderIsAjax('login', compact('model'));
     }
 
     /**
@@ -117,7 +107,7 @@ class AuthController extends \app\modules\core\web\Controller
             return $this->redirect('');
         }
 
-        return $this->render('registration', compact('model', 'registeredUser'));
+        return $this->renderIsAjax('registration', compact('model', 'registeredUser'));
     }
 
     /**
@@ -144,7 +134,7 @@ class AuthController extends \app\modules\core\web\Controller
             }
         }
 
-        return $this->render('password-restore', compact('model', 'sendingError'));
+        return $this->renderIsAjax('password-restore', compact('model', 'sendingError'));
     }
 
     /**
@@ -177,7 +167,7 @@ class AuthController extends \app\modules\core\web\Controller
             return $this->redirect('/users/auth/change-password');
         }
 
-        return $this->render('change-password', compact('model', 'passwordChanged'));
+        return $this->renderIsAjax('change-password', compact('model', 'passwordChanged'));
     }
 
     /**
@@ -190,7 +180,7 @@ class AuthController extends \app\modules\core\web\Controller
     {
         if ($model = User::findByEmailConfirmToken($token)) {
             Yii::$app->user->login($model);
-            return $this->render('email-confirm', compact('model'));
+            return $this->renderIsAjax('email-confirm', compact('model'));
         }
 
         throw new NotFoundHttpException();

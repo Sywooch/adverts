@@ -7,6 +7,8 @@
 
 use app\modules\adverts\AdvertsModule;
 
+$this->title = AdvertsModule::t('Редактирование объявления');
+
 ?>
 
 <?php if (Yii::$app->session->getFlash('success')): ?>

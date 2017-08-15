@@ -1,0 +1,138 @@
+<?php
+
+/**
+ * @var \yii\web\View $this
+ * @var \yii\data\ActiveDataProvider $dataProvider
+ * @var \app\modules\adverts\models\search\AdvertSearch $searchModel
+ */
+
+use app\modules\adverts\AdvertsModule;
+use app\modules\adverts\models\ar\Advert;
+use app\modules\core\widgets\Modal;
+use yii\widgets\Pjax;
+use yii\helpers\Html;
+
+$this->title = AdvertsModule::t('Список объявлений');
+
+?>
+
+<?php Pjax::begin(['id' => 'adverts-list-pjax']) ?>
+
+    <?= \yii\grid\GridView::widget([
+        'id' => 'advert-grid',
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'layout' => '
+                <div class="row">
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        {summary}
+                    </div>
+                    <div class="col-sm-4 text-right">
+                    </div>
+                </div>
+                {items}
+                <div class="row">
+                    <div class="col-sm-8">
+                        {pager}
+                    </div>
+                    <div class="col-sm-4 text-right" style="padding: 20px">
+                        ' . /*GridBulkActions::widget(['gridId' => 'user-grid'])*/ '
+                    </div>
+                </div>
+            ',
+        'columns' => [
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+                'options' => [
+                    'style' => 'width:10px'
+                ]
+            ],
+            [
+                'class' => 'yii\grid\SerialColumn',
+                'options' => [
+                    'style'=>'width:10px'
+                ]
+            ],
+            [
+                'attribute' => 'created_at',
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'user_id',
+                'value' => function(Advert $model) {
+                    return Html::a($model->user->profile->fullName, $model->user->profile->url, [
+                        'data-action' => 'user-view',
+                        'data-pjax' => 0
+                    ]);
+                },
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'category_id',
+                'value' => function(Advert $model) {
+                    return $model->category->name;
+                },
+                'format' => 'raw',
+            ],
+            [
+                'attribute' => 'geography_id',
+                'value' => function(Advert $model) {
+                    return $model->geography->title;
+                },
+                'format' => 'raw',
+            ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view} {update}',
+                'contentOptions' => [
+                    'class' => 'actions',
+                ],
+                'buttons' => [
+                    'view' => function ($url, $model, $key) {
+                        return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
+                            'title' => Yii::t('yii', 'View'),
+                            'data-pjax' => '0',
+                            'data-action' => 'advert-view',
+                        ]);
+                    },
+                    'update' => function ($url, $model, $key) {
+                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                            'title' => Yii::t('yii', 'Update'),
+                            'data-pjax' => '0',
+                            'data-action' => 'advert-update',
+                        ]);
+                    },
+                ]
+            ],
+        ],
+    ]); ?>
+
+<?php Pjax::end() ?>
+
+<?= Modal::widget([
+    'id' => 'advert-grid-modal',
+    'size' => Modal::SIZE_LARGE,
+    'openButtonSelector' => '[data-action=advert-view],[data-action=advert-update]',
+]); ?>
+
+<?= Modal::widget([
+    'id' => 'user-view-modal',
+    'size' => Modal::SIZE_LARGE,
+    'openButtonSelector' => '[data-action=user-view]',
+]); ?>
+
+
+<?php
+    $js = <<<JS
+jQuery(document).on('ajaxSubmitComplete', '#advert-form', function(event, jqXHR) {
+    var url = jqXHR.getResponseHeader('X-Reload-Url');
+    if (url) { 
+        $('#advert-grid-modal').find('.modal-body').load(url, [], function() {
+            $('#advert-grid-modal').scrollTop(0);
+        });
+    }
+});
+JS;
+    $this->registerJs($js);

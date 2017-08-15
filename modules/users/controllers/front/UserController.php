@@ -11,7 +11,6 @@ use yii\web\Response;
 
 /**
  * Class UserController
- * @package app\modules\users\controllers
  */
 class UserController extends \app\modules\core\web\Controller
 {
@@ -46,7 +45,7 @@ class UserController extends \app\modules\core\web\Controller
      */
     public function actionView($id)
     {
-        return $this->render('view');
+        return $this->renderIsAjax('view');
     }
 
     /**
@@ -83,6 +82,6 @@ class UserController extends \app\modules\core\web\Controller
             return $this->redirect('');
         }
 
-        return $this->render('profile', compact('model', 'changePasswordForm', 'profile'));
+        return $this->renderIsAjax('profile', compact('model', 'changePasswordForm', 'profile'));
     }
 }

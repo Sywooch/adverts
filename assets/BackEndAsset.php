@@ -4,7 +4,7 @@ namespace app\assets;
 
 use yii\web\AssetBundle;
 
-class AppAsset extends AssetBundle
+class BackEndAsset extends AssetBundle
 {
     /**
      * @inheritdoc
@@ -20,8 +20,7 @@ class AppAsset extends AssetBundle
      * @inheritdoc
      */
     public $css = [
-        'css/bootstrap.css',
-        'css/app.css'
+        'css/back.css',
     ];
 
     /**
@@ -35,7 +34,7 @@ class AppAsset extends AssetBundle
      * @inheritdoc
      */
     public $depends = [
-        'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapPluginAsset'
+        'app\assets\AdminLteAsset',
+        'app\assets\AppAsset',
     ];
 }

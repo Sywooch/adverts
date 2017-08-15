@@ -23,6 +23,7 @@ use yii\helpers\Url;
  * @property string $surname
  * @property integer $user_id
  * @property string $avatarUrl
+ * @property string $url
  *
  * @property AuthClientUser $authClientUser
  */

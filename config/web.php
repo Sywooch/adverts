@@ -4,24 +4,32 @@ require(__DIR__ . '/bootstrap.php');
 
 $webConfig = [
     'defaultRoute' => 'adverts/advert',
-    'as endSideBehavior' => [
-        'class' => 'app\modules\core\behaviors\ApplicationEndSideBehavior',
-        'frontControllerNamespace' => 'front',
-        'frontViewPath' => 'front',
-        'frontDefaultRoute' => 'adverts/advert',
-        'backControllerNamespace' => 'back',
-        'backViewPath' => 'back',
-        'backDefaultRoute' => 'adverts/advert',
+    'as endSideBehavior' => 'app\modules\core\behaviors\EndSideBehavior',
+    'controllerMap' => [
+        'switch-end-side' => 'app\modules\core\controllers\SwitchEndSideController'
     ],
     'components' => [
         'assetManager' => [
-            //'linkAssets' => true
+            //'linkAssets' => true,
+            'bundles' => [
+                'yii\web\YiiAsset' => [
+                    'sourcePath' => '@app/modules/core/assets/src',
+                    'js' => ['js/yii.js'],
+                ],
+                'yii\widgets\ActiveFormAsset' => [
+                    'sourcePath' => '@app/modules/core/assets/src',
+                    'js' => ['js/yii.activeForm.js'],
+                ],
+            ]
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
         'request' => [
             'cookieValidationKey' => 'U5X6dQpeo0XRgHpRy2BQGogBgJbsQf10',
+        ],
+        'response' => [
+            'class' => 'app\modules\core\web\Response',
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -36,10 +44,12 @@ $webConfig = [
     ],
     'modules' => [
         'adverts' => [
-            'class' => 'app\modules\adverts\AdvertsModule'
+            'class' => 'app\modules\adverts\AdvertsModule',
+            'as endSideBehavior' => 'app\modules\core\behaviors\EndSideBehavior',
         ],
         'users' => [
-            'class' => 'app\modules\users\usersModule'
+            'class' => 'app\modules\users\UsersModule',
+            'as endSideBehavior' => 'app\modules\core\behaviors\EndSideBehavior',
         ],
     ],
     'params' => require(__DIR__ . '/params.php'),

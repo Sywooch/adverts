@@ -20,48 +20,9 @@ use yii\widgets\ActiveForm;
 
 /**
  * Class AdvertController
- * @package app\modules\adverts\controllers\front
  */
-class AdvertController extends Controller
+class AdvertController extends \app\modules\adverts\controllers\AdvertController
 {
-    /**
-     * @var string
-     */
-    public $modelName = 'app\modules\adverts\models\ar\Advert';
-
-    /**
-     * @return array
-     */
-    public function actions()
-    {
-        return [
-            'bookmark' => [
-                'class' => 'app\modules\core\actions\BookmarkToggleAction',
-                'modelName' => Advert::className()
-            ],
-            'comment-add' => [
-                'class' => 'app\modules\core\actions\CommentAddAction',
-                'modelName' => Advert::className()
-            ],
-            'comment-delete' => [
-                'class' => 'app\modules\core\actions\CommentDeleteAction',
-                'modelName' => Advert::className()
-            ],
-            'file-upload' => [
-                'class' => 'app\modules\core\actions\FileUploadAction',
-                'modelName' => Yii::$app->request->get('owner'),
-            ],
-            'file-delete' => [
-                'class' => 'app\modules\core\actions\FileDeleteAction',
-                'modelName' => Yii::$app->request->get('owner'),
-            ],
-            'like' => [
-                'class' => 'app\modules\core\actions\LikeAction',
-                'modelName' => Advert::className()
-            ],
-        ];
-    }
-
     /**
      * @inheritdoc
      */
@@ -90,22 +51,6 @@ class AdvertController extends Controller
     }
 
     /**
-     * Adverts list.
-     * @return string
-     */
-    public function actionIndex()
-    {
-        $searchModel = new AdvertSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'withFilter' => true,
-        ]);
-    }
-
-    /**
      * List of the published adverts.
      * @return string
      */
@@ -114,7 +59,7 @@ class AdvertController extends Controller
         $searchModel = new AdvertSearch();
         $dataProvider = $searchModel->searchPublished();
 
-        return $this->render('index', [
+        return $this->renderIsAjax('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'withFilter' => false,
@@ -136,7 +81,7 @@ class AdvertController extends Controller
             ]]);
         }
 
-        return $this->render('index', [
+        return $this->renderIsAjax('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'withFilter' => false,
@@ -166,88 +111,7 @@ class AdvertController extends Controller
         $model->copyFromTemplet($templet->attributes);
         $model->validate();
 
-        return $this->render('create', compact('model', 'templet', 'directPopulating'));
-    }
-
-    /**
-     * Advert wiewing.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException
-     */
-    public function actionView($id)
-    {
-        $model = $this->findModel($id, self::MODE_READ);
-
-        $lookModelAttributes = [
-            'user_id' => Yii::$app->user->id,
-            'owner_id' => $model->id,
-            'owner_model_name' => Advert::shortClassName()
-        ];
-        if (!$lookModel = Look::findOne($lookModelAttributes)) {
-            $lookModel = new Look($lookModelAttributes);
-        }
-        $lookModel->plus();
-        $model->looksCount++;
-
-        return $this->render('view', [
-            'model' => $model
-        ]);
-    }
-
-    /**
-     * Advert updating.
-     * @param integer $id
-     * @return string|Response
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id, self::MODE_WRITE);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', true);
-            return $this->redirect('');
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Advert deleting.
-     * @param integer $id
-     * @return Response
-     */
-    public function actionDelete($id)
-    {
-        $model = $this->findModel($id, self::MODE_WRITE);
-        $model->delete();
-        return $this->redirect(Yii::$app->request->referrer);
-    }
-
-    /**
-     * Advert validating.
-     * @param integer|null $id
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function actionValidate($id = null)
-    {
-        $request = Yii::$app->getRequest();
-        if (!$request->isAjax) {
-            throw new NotFoundHttpException();
-        }
-
-        if ($id) {
-            $model = $this->findModel($id);
-        } else {
-            $model = new Advert();
-        }
-        $model->load($request->post());
-
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        return ActiveForm::validate($model);
+        return $this->renderIsAjax('create', compact('model', 'templet', 'directPopulating'));
     }
 
     /**

@@ -128,7 +128,9 @@
         // the URL for performing AJAX-based validation. If not set, it will use the the form's action
         validationUrl: undefined,
         // submitting form via ajax
-        ajaxSubmit: false
+        ajaxSubmit: false,
+        // whether server to send redirect header after form submitting
+        sendAjaxRedirectHeader: true
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
@@ -534,14 +536,16 @@
                 }
                 //
                 if (data.settings.ajaxSubmit) {
+                    var headers = {'Ajax-Data-Type': data.settings.ajaxDataType};
+                    if (!data.settings.sendAjaxRedirectHeader) {
+                        headers['X-Redirect-Disable'] = true;
+                    }
                     $.ajax({
                         url: $form.attr('action'),
                         type: $form.attr('method'),
                         data: $form.serialize(),
                         dataType: data.settings.ajaxDataType,
-                        headers: {
-                            'Ajax-Data-Type': data.settings.ajaxDataType
-                        },
+                        headers: headers,
                         complete: function (jqXHR, textStatus) {
                             $form.trigger(events.ajaxSubmitComplete, [jqXHR, textStatus]);
                         },

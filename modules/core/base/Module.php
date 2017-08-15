@@ -11,10 +11,10 @@ use yii\db\Exception;
  */
 class Module extends \yii\base\Module
 {
-    const BACKEND_PATH = 'back';
-    const FRONTEND_PATH = 'front';
-
-    const ENDSIDE_ADMIN_PARAM_NAME = '_like_admin';
+    /**
+     * @var string ajax layout file (does not required). If does not set then response would render without layout any file.
+     */
+    public $layoutAjax;
 
     /**
      * @inheritdoc
@@ -22,10 +22,10 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-        $path = Yii::$app->session->get(self::ENDSIDE_ADMIN_PARAM_NAME, false) ? '\admin' : '\front';
-        $this->controllerNamespace .= $path;
-        $this->viewPath .= $path;
-        Yii::setAlias('@mail', Yii::getAlias("@app/mail{$path}"));
+
+        if ($this->getBehavior('endSideBehavior')) {
+            $this->setEndSideFolders();
+        }
     }
 
     /**
@@ -38,6 +38,7 @@ class Module extends \yii\base\Module
      * @param string $language the language code (e.g. `en-US`, `en`). If this is null, the current
      * [[\yii\base\Application::language|application language]] will be used.
      * @return string the translated message.
+     * @throws Exception
      */
     public static function t($message, $category = null, $params = [], $language = null)
     {
