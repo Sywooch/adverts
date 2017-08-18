@@ -103,6 +103,7 @@ class AuthController extends \app\modules\users\controllers\AuthController
         $this->performAjaxValidation($model);
 
         if ($model->load(Yii::$app->request->post()) && $user = $model->registerUser()) {
+            // TODO: реализовать копирование закладок из сессий в БД
             $session->setFlash('registeredUserId', $user->id);
             return $this->redirect('');
         }
@@ -111,7 +112,7 @@ class AuthController extends \app\modules\users\controllers\AuthController
     }
 
     /**
-     * Form to recover password
+     * Password recover form.
      * @return string|\yii\web\Response
      */
     public function actionPasswordRestore()

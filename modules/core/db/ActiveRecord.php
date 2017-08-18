@@ -8,6 +8,7 @@ use app\modules\core\models\ar\Comment;
 use app\modules\core\models\ar\File;
 use app\modules\core\models\ar\Like;
 use app\modules\users\models\ar\User;
+use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 
@@ -184,6 +185,8 @@ class ActiveRecord extends \yii\db\ActiveRecord
      */
     public function  getIsBookmarkedCurrentUser()
     {
-        return $this->isBookmarkedCurrentUserInDb;
+        return !Yii::$app->user->isGuest
+            ? $this->isBookmarkedCurrentUserInDb
+            : Yii::$app->bookmarksManager->has($this::shortClassName(), $this->id);
     }
 }

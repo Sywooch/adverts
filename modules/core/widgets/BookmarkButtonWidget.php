@@ -4,20 +4,12 @@ namespace app\modules\core\widgets;
 
 use app\modules\core\actions\BookmarkToggleAction;
 use app\modules\core\db\ActiveRecord;
-use app\modules\core\models\ar\Like;
-use yii\base\Widget;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use Yii;
 use yii\helpers\Url;
 
 class BookmarkButtonWidget extends Widget
 {
-    /**
-     * @var bool
-     */
-    protected static $_initialized = false;
-
     /**
      * @var string
      */
@@ -72,7 +64,7 @@ class BookmarkButtonWidget extends Widget
 
         $options = [
             'class' => 'bookmark-button',
-            'title' => $this->model->isBookmarkedCurrentUserInDb ? $this->bookmarkedMessage : $this->bookmarkMessage,
+            'title' => $this->model->isBookmarkedCurrentUser ? $this->bookmarkedMessage : $this->bookmarkMessage,
             'data-action' => 'bookmark',
             'data-url' => Url::to([
                 '/adverts/advert/bookmark',
@@ -80,7 +72,7 @@ class BookmarkButtonWidget extends Widget
             ]),
             'data-pjax' => 0,
         ];
-        if ($this->model->isBookmarkedCurrentUserInDb) {
+        if ($this->model->isBookmarkedCurrentUser) {
             $options['class'] .= ' active';
         }
 
@@ -92,7 +84,7 @@ class BookmarkButtonWidget extends Widget
      */
     protected function registerClientScripts()
     {
-        if (!self::$_initialized && !Yii::$app->user->isGuest) {
+        if (!self::isInitialized()/* && !Yii::$app->user->isGuest*/) {
             $actionAdd = BookmarkToggleAction::ACTION_ADD;
             $actionDelete = BookmarkToggleAction::ACTION_DELETE;
             $js = <<<JS
@@ -127,8 +119,7 @@ jQuery('{$this->primaryContainerSelector}').on('click', '[data-action=bookmark]'
 });
 JS;
             $this->getView()->registerJs($js);
-
-            self::$_initialized = true;
+            self::initialize();
         }
     }
 }

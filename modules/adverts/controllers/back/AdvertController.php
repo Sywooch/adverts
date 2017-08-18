@@ -37,7 +37,7 @@ class AdvertController extends \app\modules\adverts\controllers\AdvertController
             ->withBookmarksCurrentUser()
             ->withLikesCurrentUser()
             ->with(['comments.user.profile'])
-            ->where([Advert::tableName() . '.id' => $id])
+            ->andWhere([Advert::tableName() . '.id' => $id])
             ->one();
 
         if (!$model) {

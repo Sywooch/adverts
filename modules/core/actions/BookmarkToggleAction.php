@@ -3,6 +3,7 @@
 namespace app\modules\core\actions;
 
 use app\modules\core\base\Action;
+use app\modules\core\components\BookmarksManager;
 use app\modules\core\models\ar\Bookmark;
 use app\modules\core\models\ar\Like;
 use Yii;
@@ -19,29 +20,24 @@ class BookmarkToggleAction extends Action
      */
     public function run()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
         $request = Yii::$app->request;
         $ownerId = $request->get('id');
-
         if (!$mainModel = $this->findModel($ownerId)) {
             throw new NotFoundHttpException();
         }
 
-        $attributes = [
-            'user_id' => Yii::$app->user->id,
-            'owner_id' => $ownerId,
-            'owner_model_name' => $mainModel::shortClassName(),
-        ];
-        ;
-        if (!$bookmarkModel = Bookmark::findOne($attributes)) {
-            $bookmarkModel = new Bookmark($attributes);
-            $bookmarkModel->save();
-            $action = self::ACTION_ADD;
-        } else {
-            $bookmarkModel->delete();
+        /** @var BookmarksManager $bookmarksManager */
+        $bookmarksManager = Yii::$app->bookmarksManager;
+        $ownerModelName = $mainModel::shortClassName();
+        if ($bookmarksManager->has($ownerModelName, $ownerId)) {
+            $bookmarksManager->delete($ownerModelName, $ownerId);
             $action = self::ACTION_DELETE;
+        } else {
+            $bookmarksManager->add($ownerModelName, $ownerId);
+            $action = self::ACTION_ADD;
         }
-
-        Yii::$app->response->format = Response::FORMAT_JSON;
 
         return [
             'success' => true,

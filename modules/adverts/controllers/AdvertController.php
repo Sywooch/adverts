@@ -68,7 +68,11 @@ class AdvertController extends Controller
     public function actionIndex()
     {
         $searchModel = new AdvertSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchParams = Yii::$app->request->queryParams;
+        if (Yii::$app->isEndSideFront) {
+            $searchParams['active'] = true;
+        }
+        $dataProvider = $searchModel->search($searchParams);
 
         return $this->renderIsAjax('index', [
             'searchModel' => $searchModel,

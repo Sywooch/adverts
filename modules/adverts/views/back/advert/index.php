@@ -11,6 +11,7 @@ use app\modules\adverts\models\ar\Advert;
 use app\modules\core\widgets\Modal;
 use yii\widgets\Pjax;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = AdvertsModule::t('Список объявлений');
 
@@ -82,6 +83,19 @@ $this->title = AdvertsModule::t('Список объявлений');
                     return $model->geography->title;
                 },
                 'format' => 'raw',
+            ],
+            [
+                'class' => 'app\modules\core\grid\StatusColumn',
+                'attribute' => 'status',
+                'toggleUrl' => Url::to(['/adverts/advert/update', 'id'=>'_id_']),
+                'optionsArray' => [
+                    [Advert::STATUS_NEW, $searchModel->getAttributeLabels('status', Advert::STATUS_NEW), 'success'],
+                    [Advert::STATUS_ACTIVE, $searchModel->getAttributeLabels('status', Advert::STATUS_ACTIVE), 'info'],
+                    [Advert::STATUS_BLOCKED, $searchModel->getAttributeLabels('status', Advert::STATUS_BLOCKED), 'warning'],
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control input-sm'
+                ]
             ],
             [
                 'class' => 'yii\grid\ActionColumn',

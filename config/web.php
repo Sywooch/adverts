@@ -12,7 +12,8 @@ $webConfig = [
         'assetManager' => [
             //'linkAssets' => true,
             'bundles' => [
-                'yii\web\YiiAsset' => [
+                'y
+                ii\web\YiiAsset' => [
                     'sourcePath' => '@app/modules/core/assets/src',
                     'js' => ['js/yii.js'],
                 ],
@@ -22,6 +23,9 @@ $webConfig = [
                 ],
             ]
         ],
+        'bookmarksManager' => [
+            'class' => 'app\modules\core\components\BookmarksManager',
+        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
@@ -30,6 +34,12 @@ $webConfig = [
         ],
         'response' => [
             'class' => 'app\modules\core\web\Response',
+        ],
+        'sphinx' => [
+            'class' => 'yii\sphinx\Connection',
+            'dsn' => 'mysql:host=127.0.0.1;port=9312',
+            'username' => 'root',
+            'password' => '',
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,

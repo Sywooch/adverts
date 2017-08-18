@@ -4,7 +4,6 @@ namespace app\modules\core\widgets;
 
 use app\modules\core\db\ActiveRecord;
 use app\modules\core\models\ar\Like;
-use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use Yii;
@@ -14,11 +13,6 @@ class LikeButtonWidget extends Widget
 {
     const ACTION_LIKE = 'like';
     const ACTION_DISLIKE = 'dislike';
-
-    /**
-     * @var bool
-     */
-    protected static $_initialized = false;
 
     /**
      * @var string
@@ -125,7 +119,7 @@ class LikeButtonWidget extends Widget
      */
     protected function registerClientScripts()
     {
-        if (!self::$_initialized && !Yii::$app->user->isGuest) {
+        if (!self::isInitialized() && !Yii::$app->user->isGuest) {
             $js = <<<JS
 var likeLoading = false;
 jQuery('{$this->primaryContainerSelector}').on('click', '[data-action=like], [data-action=dislike]', function(e) {
@@ -181,8 +175,7 @@ jQuery('{$this->primaryContainerSelector}').on('click', '[data-action=like], [da
 });
 JS;
             $this->getView()->registerJs($js);
-
-            self::$_initialized = true;
+            self::initialize();
         }
     }
 }

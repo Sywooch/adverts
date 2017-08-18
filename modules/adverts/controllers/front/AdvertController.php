@@ -34,14 +34,14 @@ class AdvertController extends \app\modules\adverts\controllers\AdvertController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'published', 'bookmarks'],
+                        'actions' => ['index', 'view', 'published', 'bookmarks', 'bookmark'],
                         'roles' => ['?', '@'],
                     ],
                     [
                         'allow' => true,
                         'actions' => [
                             'create', 'validate', 'save-templet', 'clear-templet', 'update', 'delete',
-                            'bookmark', 'like', 'comment-add', 'file-upload', 'file-delete'
+                            'like', 'comment-add', 'file-upload', 'file-delete'
                         ],
                         'roles' => ['@'],
                     ],
@@ -156,17 +156,17 @@ class AdvertController extends \app\modules\adverts\controllers\AdvertController
         }
 
         $model = Advert::find()
+            ->active()
             ->withDislikesCount()
             ->withLikesCount()
             ->withLooksCount()
             ->withBookmarksCurrentUser()
             ->withLikesCurrentUser()
             ->with(['comments.user.profile'])
-            ->where([Advert::tableName() . '.id' => $id])
+            ->andWhere([Advert::tableName() . '.id' => $id])
             ->one();
 
-        if (!$model || $model->status != Advert::STATUS_ACTIVE
-            || ($mode == self::MODE_WRITE && $model->user_id != Yii::$app->user->id)
+        if (!$model || ($mode == self::MODE_WRITE && $model->user_id != Yii::$app->user->id)
         ) {
             throw new NotFoundHttpException(Yii::t('app', 'Страница не найдена'));
         }

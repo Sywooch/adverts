@@ -42,7 +42,6 @@ use yii\helpers\ArrayHelper;
  * @property integer $looksCount
  * @property Geography $geography
  * @property AdvertCategory $category
- *
  */
 class Advert extends \app\modules\core\db\ActiveRecord
 {
@@ -132,9 +131,9 @@ class Advert extends \app\modules\core\db\ActiveRecord
     {
         return [
             'status' => [
-                self::STATUS_NEW,
-                self::STATUS_ACTIVE,
-                self::STATUS_BLOCKED
+                self::STATUS_NEW => 'Новый',
+                self::STATUS_ACTIVE => 'Активно',
+                self::STATUS_BLOCKED => 'Заблокировано',
             ]
         ];
     }

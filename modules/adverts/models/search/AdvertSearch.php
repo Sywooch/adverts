@@ -4,10 +4,14 @@ namespace app\modules\adverts\models\search;
 
 use app\modules\adverts\models\ar\Advert;
 use app\modules\adverts\models\ar\AdvertCategory;
+use app\modules\core\db\ActiveQuery;
 use Yii;
 use app\modules\core\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 
+/**
+ * @property boolean $active
+ */
 class AdvertSearch extends Advert
 {
     /**
@@ -26,18 +30,24 @@ class AdvertSearch extends Advert
     public $max_date;
 
     /**
-     * @var string
-     */
-    public $phrase;
-
-    /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
             ['pageSize', 'integer', 'integerOnly' => true, 'min' => 1],
+            [['active', 'phrase'], 'safe']
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function attributes()
+    {
+        return ArrayHelper::merge(parent::attributes(), [
+            'active', 'phrase'
+        ]);
     }
 
     /**
@@ -60,7 +70,6 @@ class AdvertSearch extends Advert
     public function search($params = [])
     {
         $query = Advert::find()
-            ->active()
             ->withCommentsCount()
             ->withDislikesCount()
             ->withLikesCount()
@@ -74,7 +83,7 @@ class AdvertSearch extends Advert
             'query' => $query,
             'pagination' => [
                 //'pageSize' => \roman444uk\yii\widgets\WidgetPageSize::getPageSize(),
-                'pageSize' => 5
+                'pageSize' => 20
             ],
             'sort' => [
                 'attributes' => [
@@ -117,25 +126,28 @@ class AdvertSearch extends Advert
     }
 
     /**
-     *
-     * @param type $query
-     * @param type $params
+     * @param ActiveQuery $query
+     * @param array $params
      */
     public function buildQuery($query, $params)
     {
         $tableAdvert = self::tableName();
 
+        if ($this->active) {
+            $query->active();
+        }
+
         if ($this->category_id) {
             $query->andWhere("{$tableAdvert}.category_id = :category", [':category' => $this->category_id]);
         }
 
-        /*if (!empty($this->phrase)) {
+        if (!empty($this->phrase)) {
             $ids = [];
             foreach ((new \yii\sphinx\Query)->from(self::tableName())->match($this->phrase)->all() as $row) {
                 array_push($ids, $row['id']);
             }
             $query->andWhere(["{$tableAdvert}.id" => $ids]);
-        }*/
+        }
 
 
         if (!empty($this->min_date)) {
