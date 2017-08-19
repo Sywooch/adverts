@@ -104,7 +104,7 @@ class AdvertController extends Controller
             $model->looksCount++;
         }
 
-        return $this->renderIsAjax('@app/modules/adverts/views/front/advert/view', [
+        return $this->renderIsAjax('view', [
             'model' => $model
         ]);
     }
@@ -116,14 +116,27 @@ class AdvertController extends Controller
      */
     public function actionUpdate($id)
     {
+        /** @var Advert $model */
         $model = $this->findModel($id, self::MODE_WRITE);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', true);
-            return $this->redirect('');
+            if (!$model->published && $model->status = Advert::STATUS_ACTIVE) {
+                Yii::$app->vkPublisher->publishAdvert($model);
+            }
+
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return [
+                    'success' => true,
+                    'redirect-url' => Url::to(''),
+                ];
+            } else {
+                $this->addFlashMessage('success', true);
+                return $this->redirect('');
+            }
         }
 
-        return $this->renderIsAjax('@app/modules/adverts/views/front/advert/update', [
+        return $this->renderIsAjax('update', [
             'model' => $model,
         ]);
     }

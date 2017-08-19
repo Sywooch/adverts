@@ -10,6 +10,7 @@
 
 use yii\helpers\Html;
 use app\modules\adverts\AdvertsModule;
+use app\modules\adverts\helpers\AdvertHelper;
 use app\modules\adverts\widgets\MultiGallery;
 use app\modules\core\widgets\ActiveForm;
 use app\modules\core\widgets\BookmarkButtonWidget;
@@ -67,21 +68,10 @@ use app\modules\core\widgets\LookButtonWidget;
             </span>
         <?php endif; ?>
 
-        <?php
-            $priceString = null;
-            if ($model->min_price && $model->max_price) {
-                $priceString = "{$model->min_price} - {$model->max_price}";
-            } else if ($model->min_price && !$model->max_price) {
-                $priceString = "от {$model->min_price}";
-            } else if (!$model->min_price && $model->max_price) {
-                $priceString = "до {$model->max_price}";
-            }
-        ?>
-
-        <?php if ($priceString): ?>
+        <?php if ($priceString = AdvertHelper::stringifyPrice($model)): ?>
             <span>|</span>
             <span class="price" title="<?= Yii::t('app', 'Цена'); ?>">
-                <?= $priceString; ?> <?= $model->currency->sign; ?>
+                <?= $priceString; ?>
             </span>
         <?php endif; ?>
     </div>

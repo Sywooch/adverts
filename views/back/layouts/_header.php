@@ -34,7 +34,7 @@ use yii\helpers\Url;
                     </a>
                     <ul class="dropdown-menu">
                         <li class="user-header">
-                            <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                            <!--<img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">-->
                             <p>
                                 <?= Yii::$app->user->identity->profile->fullName; ?>
                                 <small>Member since Nov. 2012</small>

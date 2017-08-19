@@ -28,7 +28,6 @@ use yii\web\View;
     'validateOnBlur' => true,
     'validationUrl' => Url::to(['validate', 'id' => $model->id]),
     'ajaxSubmit' => true, //Yii::$app->request->isAjax,
-    'sendAjaxRedirectHeader' => false,
     'options' => [
         'class' => 'advert-form'
     ],

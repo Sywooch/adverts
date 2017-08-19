@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\adverts\components;
+namespace app\modules\authclient\components;
 
 use app\modules\adverts\helpers\AdvertHelper;
 use app\modules\adverts\models\ar\Advert;
@@ -8,12 +8,12 @@ use app\modules\authclient\clients\VKontakte;
 use yii\base\Component;
 use Yii;
 
-class AdvertManager extends Component
+class VkPublisher extends Component
 {
     /**
      * @param Advert $model
      */
-    public function publish($model)
+    public function publishAdvert($model)
     {
         $collection = Yii::$app->get('authClientCollection');
         if (!$collection->hasClient('vkontakte')) {
@@ -31,5 +31,10 @@ class AdvertManager extends Component
             'from_group' => 1,
             'guid' => $model->id,
         ]);
+    }
+
+    public function publishPhotos($models)
+    {
+
     }
 }

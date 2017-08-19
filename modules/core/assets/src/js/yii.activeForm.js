@@ -17,7 +17,7 @@
          * The signature of the event handler should be:
          *     function (event, messages, deferreds)
          * where
-         *  - event: an Event object.
+         *  - event: an Evefnt object.
          *  - messages: an associative array with keys being attribute IDs and values being error message arrays
          *    for the corresponding attributes.
          *  - deferreds: an array of Deferred objects. You can use deferreds.add(callback) to add a new deferred validation.
@@ -129,8 +129,6 @@
         validationUrl: undefined,
         // submitting form via ajax
         ajaxSubmit: false,
-        // whether server to send redirect header after form submitting
-        sendAjaxRedirectHeader: true
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
@@ -537,9 +535,6 @@
                 //
                 if (data.settings.ajaxSubmit) {
                     var headers = {'Ajax-Data-Type': data.settings.ajaxDataType};
-                    if (!data.settings.sendAjaxRedirectHeader) {
-                        headers['X-Redirect-Disable'] = true;
-                    }
                     $.ajax({
                         url: $form.attr('action'),
                         type: $form.attr('method'),

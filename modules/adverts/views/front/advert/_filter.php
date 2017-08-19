@@ -103,7 +103,7 @@ use app\modules\geography\models\search\GeographySearch;
 
 
 <?php
-$js = <<<JS
+    $js = <<<JS
 jQuery('#filter-form').on('change.yiiActiveForm', function(event) {
     $.pjax.submit(event, '#adverts-list-pjax');
 });
@@ -121,6 +121,5 @@ jQuery(document).on('pjax:beforeSend', function(data, xhr, options) {
     }
 })
 JS;
-
-$this->registerJs($js);
+    $this->registerJs($js);
 ?>

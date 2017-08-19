@@ -6,6 +6,8 @@
  */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\web\View;
 
 ?>
 
@@ -16,8 +18,11 @@ use yii\helpers\Html;
         ]); ?>
     </div>
 
-    <?= Html::tag('div', $model->user->profile->fullName, [
-        'class' => 'fullname'
+    <?= Html::a($model->user->profile->fullName, Url::to(['/users/user/view', 'id' => $model->user->id]), [
+        'class' => 'fullname',
+        'data-action' => 'user-view',
+        'data-pjax' => 0,
+        'target' => '_blank',
     ]); ?>
 
     <div class="clear"></div>

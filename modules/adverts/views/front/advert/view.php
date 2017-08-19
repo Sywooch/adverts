@@ -9,8 +9,6 @@ $this->title = \app\modules\adverts\AdvertsModule::t('Просмотр объя�
 
 ?>
 
-<h2><?= $this->title; ?></h2>
-
 <div class="advert-view">
     <div class="advert-container">
         <?= $this->render('_advert', [

@@ -33,8 +33,9 @@ class Currency extends \app\modules\core\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'abbreviation', 'sign'], 'required'],
+            [['name', 'short_name', 'abbreviation', 'sign'], 'required'],
             [['name'], 'string', 'max' => 32],
+            [['short_name'], 'string', 'min' => 4, 'max' => 8],
             [['abbreviation'], 'string', 'length' => 3],
             [['sign'], 'string', 'max' => 12],
         ];
@@ -47,7 +48,8 @@ class Currency extends \app\modules\core\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Название',
+            'short_name' => 'Сокращенное название',
         ];
     }
 

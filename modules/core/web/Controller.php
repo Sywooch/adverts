@@ -43,6 +43,7 @@ class Controller extends \yii\web\Controller
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
                 if (isset($params['searchModel']) && isset($params['dataProvider'])) {
+                    $dataProvider = $params['dataProvider'];
                     return json_encode([
                         'list' => $this->_searchModel->buildModels(),
                         'pagination' => ($this->paginationAsHTML)
@@ -113,9 +114,7 @@ class Controller extends \yii\web\Controller
      */
     protected function addFlashMessage($key, $value)
     {
-        if (!Yii::$app->request->isAjax) {
-            Yii::$app->session->setFlash($key, $value);
-        }
+        Yii::$app->session->setFlash($key, $value);
     }
 
     /**

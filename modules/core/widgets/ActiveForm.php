@@ -20,11 +20,6 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
     public $ajaxSubmit = false;
 
     /**
-     * @var bool whether server to send redirect header after form submitting
-     */
-    public $sendAjaxRedirectHeader = true;
-
-    /**
      * Widget client event handlers list.
      */
     public $clientEvents;
@@ -70,7 +65,6 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
             'ajaxParam' => $this->ajaxParam,
             'ajaxDataType' => $this->ajaxDataType,
             'ajaxSubmit' => $this->ajaxSubmit,
-            'sendAjaxRedirectHeader' => $this->sendAjaxRedirectHeader,
         ];
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
@@ -86,7 +80,6 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
             'ajaxParam' => 'ajax',
             'ajaxDataType' => 'json',
             'ajaxSubmit' => false,
-            'sendAjaxRedirectHeader' => true,
         ]);
     }
 

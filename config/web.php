@@ -9,6 +9,9 @@ $webConfig = [
         'switch-end-side' => 'app\modules\core\controllers\SwitchEndSideController'
     ],
     'components' => [
+        'vkPublisher' => [
+            'class' => 'app\modules\authclient\components\VkPublisher'
+        ],
         'assetManager' => [
             //'linkAssets' => true,
             'bundles' => [
@@ -51,6 +54,9 @@ $webConfig = [
             'class' => 'app\modules\core\web\User',
             'loginUrl' => '/users/auth/login'
         ],
+        'view' => [
+            'class' => 'app\modules\core\web\View',
+        ]
     ],
     'modules' => [
         'adverts' => [

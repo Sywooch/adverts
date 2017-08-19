@@ -108,18 +108,6 @@ class AdvertTemplet extends Advert
     }
 
     /**
-     * @inheritdoc
-     */
-    public function save($runValidation = true, $attributeNames = null)
-    {
-        if ($this->validate($attributeNames)) {
-
-        }
-
-        return parent::save($runValidation = true, $attributeNames = null);
-    }
-
-    /**
      * Clears all attributes.
      * @return bool
      */

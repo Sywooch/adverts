@@ -12,6 +12,7 @@ class m170726_163951_create_currencies_tables extends Migration
         $this->createTable('currency', [
             'id'                    => 'pk',
             'name'                  => 'VARCHAR(32) NOT NULL',
+            'short_name'            => 'VARCHAR(8) NOT NULL',
             'abbreviation'          => 'CHAR(3) NOT NULL',
             'sign'                  => 'VARCHAR(12) NOT NULL',
         ], $this->tableOptions);

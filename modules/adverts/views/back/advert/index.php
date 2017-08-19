@@ -9,17 +9,18 @@
 use app\modules\adverts\AdvertsModule;
 use app\modules\adverts\models\ar\Advert;
 use app\modules\core\widgets\Modal;
-use yii\widgets\Pjax;
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 $this->title = AdvertsModule::t('Список объявлений');
 
 ?>
 
-<?php Pjax::begin(['id' => 'adverts-list-pjax']) ?>
+<?php Pjax::begin(['id' => 'advert-grid-pjax']) ?>
 
-    <?= \yii\grid\GridView::widget([
+    <?= GridView::widget([
         'id' => 'advert-grid',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -150,3 +151,32 @@ jQuery(document).on('ajaxSubmitComplete', '#advert-form', function(event, jqXHR)
 });
 JS;
     $this->registerJs($js);
+
+
+
+$status = Advert::STATUS_ACTIVE;
+$js = <<<JS
+jQuery(document).on('click', '[data-action=advert-publish]', function(e) {
+    var self = $(this);
+    var data = {
+        'status': '{$status}'
+    };
+    $.ajax({
+        url: self.attr('data-url'), 
+        method: 'POST',
+        dataType: 'json',
+        data: data,
+        success: function(data, textStatus, jqXHR) {
+            if (data.success) {
+                $.pjax.reload({container: '#advert-grid-pjax'});
+                $('#advert-grid-modal').modal('hide').find('.modal-body').html('');
+            }            
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Error! See firebug..');          
+        }
+    });
+    e.preventDefault();
+});
+JS;
+$this->registerJs($js);

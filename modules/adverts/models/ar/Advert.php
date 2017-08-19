@@ -15,6 +15,7 @@ use app\modules\geography\models\ar\Geography;
 use app\modules\users\models\ar\User;
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "user".
@@ -35,6 +36,8 @@ use yii\helpers\ArrayHelper;
  * @property float $max_price
  * @property string $cityName
  * @property integer $commentsCount
+ * @property string $url
+ * @property string $fullUrl
  * @property Comment[] $comments
  * @property Currency $currency
  * @property integer $dislikesCount
@@ -88,7 +91,7 @@ class Advert extends \app\modules\core\db\ActiveRecord
             [['content', 'user_id'], 'required'],
             [['user_id'], 'exist', 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id'],'skipOnError' => true],
             [['category_id'], 'exist', 'targetClass' => AdvertCategory::className(), 'targetAttribute' => ['category_id' => 'id'],'skipOnError' => true],
-            //[['geography_id'], 'exist', 'targetClass' => , 'targetAttribute' => ['geography_id' => 'id'],'skipOnError' => true],
+            [['geography_id'], 'exist', 'targetClass' => Geography::className(), 'targetAttribute' => ['geography_id' => 'id'],'skipOnError' => true],
             ['expiry_at', 'default', 'value' => Yii::$app->formatter->asDate(time() + 3600 * 24 * 30)],
             ['currency_id', 'default', 'value' => function() {
                 $currency = Currency::findOne(['abbreviation' => Currency::RUB]);
@@ -96,7 +99,8 @@ class Advert extends \app\modules\core\db\ActiveRecord
             }],
             //[['min_price', 'max_price'], 'integer', 'integerOnly' => false],
             [['min_price', 'max_price'], 'validatePrice'],
-            [['status', 'likesCount', 'dislikesCount', 'looksCount'], 'safe'],
+            [['status'], 'validateStatus'],
+            [['likesCount', 'dislikesCount', 'looksCount'], 'safe'],
         ];
     }
 
@@ -170,7 +174,7 @@ class Advert extends \app\modules\core\db\ActiveRecord
     public function getGeography()
     {
         return $this->hasOne(Geography::className(), ['id' => 'geography_id'])->onCondition([
-            Geography::className() . '.type' => Geography::TYPE_CITY
+            Geography::tableName() . '.type' => Geography::TYPE_CITY
         ]);
     }
 
@@ -180,6 +184,23 @@ class Advert extends \app\modules\core\db\ActiveRecord
     public function getCityName()
     {
         return isset($this->geography) ? $this->geography->title : null;
+    }
+
+    /**
+     * @param bool $scheme
+     * @return null|string
+     */
+    public function getUrl($scheme = false)
+    {
+        return !$this->isNewRecord ? Url::to(['/adverts/advert/view', 'id' => $this->id], $scheme) : null;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getFullUrl()
+    {
+        return $this->getUrl(true);
     }
 
     /**
@@ -203,6 +224,16 @@ class Advert extends \app\modules\core\db\ActiveRecord
         }
         if ($this->min_price && $this->max_price && $this->min_price > $this->max_price) {
             $this->addError($attribute, AdvertsModule::t('Минимальная цена должна быть меньше максимальной'));
+        }
+    }
+
+    /**
+     * @param string $attribute
+     */
+    public function validateStatus($attribute)
+    {
+        if ($this->isAttributeChanged('status') && !Yii::$app->user->isSuperadmin) {
+            $this->addError($attribute, AdvertsModule::t('Вы не можете изменить статус'));
         }
     }
 

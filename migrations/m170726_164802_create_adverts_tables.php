@@ -17,6 +17,7 @@ class m170726_164802_create_adverts_tables extends Migration
         ], $this->tableOptions);
         $this->addForeignKey('fk_advert_category_refs_advert_category', 'advert_category', 'parent_id', 'advert_category', 'id', 'NO ACTION', 'NO ACTION');
 
+        $statuses = array_keys(Advert::getAttributeLabels('status'));
         $this->createTable('advert', [
             'id'                    => 'pk',
             'user_id'               => 'INT(11) NOT NULL',
@@ -24,7 +25,7 @@ class m170726_164802_create_adverts_tables extends Migration
             'geography_id'          => 'INT(11)',
             'currency_id'           => 'INT(11)',
             'content'               => 'TEXT DEFAULT NULL',
-            'status'                => 'ENUM("'.implode('","', Advert::getAttributeLabels('status')).'") DEFAULT "'.Advert::STATUS_NEW.'"',
+            'status'                => 'ENUM("'.implode('","', $statuses).'") DEFAULT "'.Advert::STATUS_NEW.'"',
             'is_foreign'            => 'TINYINT(1) DEFAULT 0',
             'published'             => 'TINYINT(1) DEFAULT 0',
             'expiry_at'             => 'TIMESTAMP DEFAULT NULL',
