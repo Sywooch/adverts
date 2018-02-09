@@ -13,15 +13,12 @@ p {
     margin: 0 auto -60px;
     padding: 0 0 60px;
 }
-
 .wrap > .container {
     padding: 70px 15px 20px;
 }
-
 .container {
     width: 90% !important;
 }
-
 .footer {
     height: 60px;
     background-color: #f5f5f5;
@@ -45,6 +42,9 @@ p {
 }
 
 /* add sorting icons to gridview sort links */
+.sorter li {
+    display: inline-block;
+}
 a.asc:after, a.desc:after {
     position: relative;
     top: 1px;
@@ -57,11 +57,15 @@ a.asc:after, a.desc:after {
 }
 
 a.asc:after {
-    content: /*"\e113"*/ "\e151";
+    content: "\e093";
+    //content: "\e113";
+    //content: "\e151";
 }
 
 a.desc:after {
-    content: /*"\e114"*/ "\e152";
+    content: "\e094";
+    //content: "\e114";
+    //content: "\e152";
 }
 
 .sort-numerical a.asc:after {
@@ -137,24 +141,31 @@ a.desc:after {
 }
 
 /* advert list filter */
-@media (min-width: 768px) and (max-width: 991px) {
-    .adverts-list-container .left {
-        position: fixed;
-        width: 30%;
+@media (max-width: 767px) {
+
+}
+@media (min-width: 768px) {
+    .adverts-list {
+        width: 100%;
     }
-    .adverts-list-container .right {
-        width: 66.66%;
-        margin-left: 33.33%;
+    .adverts-list-filter {
+        position: fixed;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+    .adverts-list {
+        padding-left: 240px;
+    }
+    .adverts-list-filter {
+        width: 220px;
     }
 }
 @media (min-width: 992px) {
-    .adverts-list-container .left {
-        position: fixed;
-        width: 18%;
+    .adverts-list {
+        padding-left: 260px;
     }
-    .adverts-list-container .right {
-        width: 80%;
-        margin-left: 20%;
+    .adverts-list-filter {
+        width: 240px;
     }
 }
 

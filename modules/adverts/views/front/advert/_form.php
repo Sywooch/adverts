@@ -6,7 +6,8 @@ use app\modules\core\widgets\ActiveForm;
 use app\modules\core\widgets\FileUpload;
 use app\modules\core\widgets\Spaceless;
 use app\modules\core\models\search\CurrencySearch;
-use nkovacs\datetimepicker\DateTimePicker;
+use app\modules\core\widgets\DateTimePicker;
+use app\modules\geography\models\search\GeographySearch;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -51,58 +52,72 @@ use yii\web\View;
 ]); ?>
 
     <div class="row">
-        <?= $form->field($model, 'content', [
-            'options' => [
-                'class' => 'form-group col-sm-12 col-md-12 col-lg-12'
-            ]
-        ])->textarea([
-            'rows' => '10',
-        ]) ?>
+        <div class="col-sm-7 col-md-8 col-lg-9">
+            <?= $form->field($model, 'content', [
+                'options' => [
+                    'class' => 'form-group col-sm-12 col-md-12 col-lg-12'
+                ]
+            ])->textarea([
+                'rows' => '18',
+            ]) ?>
+        </div>
+
+        <div class="col-sm-5 col-md-4 col-lg-3">
+            <?= $form->field($model, 'geography_id', [
+                'options' => [
+                    'class' => 'form-group mb-0',
+                ],
+            ])->dropDownList(GeographySearch::getCityListGropedByRegion(), [
+                'emptyItem' => Yii::t('app', 'Не выбрано'),
+            ]); ?>
+
+            <?= $form->field($model, 'category_id', [
+                'options' => [
+                    'class' => 'form-group mb-0'
+                ]
+            ])->dropDownList(
+                ArrayHelper::map(AdvertCategorySearch::getList(), 'id', 'name')
+            ); ?>
+
+            <?= $form->field($model, 'expiry_at', [
+                'options' => [
+                    'class' => 'form-group mb-0'
+                ]
+            ])->widget(DateTimePicker::className(), [
+                'layout' => '{input}{picker}',
+                'options' => [
+                    'class' =>'form-control input-sm',
+                    'placeholder' => Yii::t('app', 'от'),
+                    'value' => $model->getFormattedDatetime('expiry_at'),
+                ],
+                'pluginOptions' => [
+                    'autoclose' => true,
+                ],
+            ]); ?>
+
+            <?= $form->field($model, 'currency_id', [
+                'options' => [
+                    'class' => 'form-group mb-0'
+                ]
+            ])->dropDownList(
+                ArrayHelper::map(CurrencySearch::getList(), 'id', 'name')
+            ); ?>
+
+            <?= $form->field($model, 'min_price', [
+                'options' => [
+                    'class' => 'form-group mb-0'
+                ]
+            ])->textInput(); ?>
+
+            <?= $form->field($model, 'max_price', [
+                'options' => [
+                    'class' => 'form-group mb-0'
+                ]
+            ])->textInput(); ?>
+        </div>
     </div>
 
-    <div class="row mt-10">
-        <?= $form->field($model, 'category_id', [
-            'options' => [
-                'class' => 'form-group col-sm-4 col-md-4 col-lg-4'
-            ]
-        ])->dropDownList(ArrayHelper::map(AdvertCategorySearch::getList(), 'id', 'name')); ?>
-
-        <?php $model->expiry_at = Yii::$app->formatter->asDate($model->expiry_at, Yii::$app->formatter->dateFormat); ?>
-        <?= $form->field($model, 'expiry_at', [
-            'options' => [
-                'class' => 'form-group col-sm-4 col-md-4 col-lg-4'
-            ]
-        ])->widget(DateTimePicker::className(), [
-            'format' => Yii::$app->formatter->dateFormat,
-            'locale' => Yii::$app->language,
-            'options' => [
-                'class' => 'form-control input-sm'
-            ]
-        ]); ?>
-    </div>
-
-    <div class="row mt-10">
-        <?= $form->field($model, 'currency_id', [
-            'options' => [
-                'class' => 'form-group col-sm-4 col-md-4 col-lg-4'
-            ]
-        ])->dropDownList(ArrayHelper::map(CurrencySearch::getList(), 'id', 'name')); ?>
-
-
-        <?= $form->field($model, 'min_price', [
-            'options' => [
-                'class' => 'form-group col-sm-4 col-md-4 col-lg-4'
-            ]
-        ])->textInput(); ?>
-
-        <?= $form->field($model, 'max_price', [
-            'options' => [
-                'class' => 'form-group col-sm-4 col-md-4 col-lg-4'
-            ]
-        ])->textInput(); ?>
-    </div>
-
-    <?php /*$form->field($model, 'city_id')->dropDownList(City::getList(), [
+<?php /*$form->field($model, 'city_id')->dropDownList(City::getList(), [
         'name' => ($directPopulating) ? 'city_id' : null,
         'label' => 'City',
         'emptyItem' => Yii::t('app', 'Empty city option'),
@@ -112,7 +127,7 @@ use yii\web\View;
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="files-list" data-action="files-list">
                 <?php
-                    $files = !$model->isNewRecord ? $model->files : $templet->files;
+                $files = !$model->isNewRecord ? $model->files : $templet->files;
                 ?>
                 <?php if ($files): ?>
                     <?php /** @var $file \app\modules\core\models\ar\File */ ?>
@@ -135,16 +150,16 @@ use yii\web\View;
 
     <div class="clear"></div>
 
-    <?php
-        $urlParam = Yii::$app->security->generateRandomString(8);
-        $deleteUrlParam = Yii::$app->security->generateRandomString(8);
-        $imgTemplate = Spaceless::widget([
-            'text' => $this->render('file/_file-container', [
-                'urlParam' => $urlParam,
-                'deleteUrlParam' => $deleteUrlParam
-            ])
-        ]);
-    ?>
+<?php
+$urlParam = Yii::$app->security->generateRandomString(8);
+$deleteUrlParam = Yii::$app->security->generateRandomString(8);
+$imgTemplate = Spaceless::widget([
+    'text' => $this->render('file/_file-container', [
+        'urlParam' => $urlParam,
+        'deleteUrlParam' => $deleteUrlParam
+    ])
+]);
+?>
 
     <div class="mt-20">
         <?= FileUpload::widget([
@@ -201,7 +216,15 @@ use yii\web\View;
     });
     alert('Ошибка загрузки файла. Пожалуйста, попробуйте еще раз');
 }",
-                'fileuploadprocessalways' => "function(e, data) {}",
+                'fileuploadprocess' => "function(e, data) {
+    $('.file-uploaded-fail').html('').hide();
+                }",
+                'fileuploadprocessfail' => "function(e, data) {
+    var file = data.files[0];
+    if (file.error) {
+        $('.file-uploaded-fail').html(file.error).show();
+    }
+                }",
             ],
         ]); ?>
 
@@ -216,8 +239,8 @@ use yii\web\View;
 
                 <?php
                 // TODO: взвесить и реализовать возможность добавления заметок в черновики
-                /*Html::a(AdvertsModule::t('Сохранить как черновик'), Url::to(['/advert/clear-templet']), [
-                    'class' => 'btn btn-success'
+                /*print Html::a(AdvertsModule::t('Сохранить как черновик'), Url::to(['/advert/clear-templet']), [
+                    'class' => 'btn btn-success btn-sm'
                 ]);*/
                 ?>
 
@@ -237,9 +260,9 @@ use yii\web\View;
 <?php ActiveForm::end(); ?>
 
 <?php
-    if (!Yii::$app->request->isAjax) {
-        $saveTempletUrl = Url::to('/adverts/advert/save-templet');
-        $js = <<<JS
+if (!Yii::$app->request->isAjax) {
+    $saveTempletUrl = Url::to('/adverts/advert/save-templet');
+    $js = <<<JS
 jQuery('#advert-form').on('ajaxComplete', function(data) {
     $.ajax({
         url: '{$saveTempletUrl}',
@@ -254,10 +277,10 @@ jQuery('#advert-form').on('ajaxComplete', function(data) {
     });    
 });
 JS;
-        $this->registerJs($js, View::POS_READY);
-    }
+    $this->registerJs($js, View::POS_READY);
+}
 
-    $js = <<<JS
+$js = <<<JS
 jQuery('#advert-form').on('click', '[data-action=file-delete]', function() {
     var self = $(this);
     var img = self.prev();
@@ -282,5 +305,5 @@ jQuery('#advert-form').on('click', '[data-action=file-delete]', function() {
     return false;
 })
 JS;
-    $this->registerJs($js, View::POS_READY);
+$this->registerJs($js, View::POS_READY);
 ?>

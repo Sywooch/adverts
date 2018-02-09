@@ -18,17 +18,18 @@ use Yii;
  * @property string $first_name
  * @property string $last_name
  * @property string $profile
+ * @property string $profile_url
  *
  * @property User $user
  */
-class AuthClientUser extends \app\modules\core\db\ActiveRecord
+class UserAuthClient extends \app\modules\core\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'auth_client_user';
+        return 'user_auth_client';
     }
 
     /**
@@ -56,11 +57,12 @@ class AuthClientUser extends \app\modules\core\db\ActiveRecord
             'client_user_id' => Yii::t('app', 'Client User ID'),
             'client_name' => Yii::t('app', 'Client Name'),
             'user_id' => Yii::t('app', 'User ID'),
-            'state' => Yii::t('app', 'State'),
-            'access_token' => Yii::t('app', 'Access Token'),
-            'client_status' => Yii::t('app', 'Client Status'),
-            'avatar_url' => Yii::t('app', 'Avatar Url'),
-            'profile' => Yii::t('app', 'Profile'),
+            'state' => Yii::t('app', 'Статус'),
+            'access_token' => Yii::t('app', 'Токен'),
+            'client_status' => Yii::t('app', 'Статус'),
+            'avatar_url' => Yii::t('app', 'Аватар'),
+            'profile' => Yii::t('app', 'Профиль'),
+            'profile_url' => Yii::t('app', 'Ссылка на профиль'),
         ];
     }
 

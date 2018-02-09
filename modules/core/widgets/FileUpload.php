@@ -11,6 +11,28 @@ class FileUpload extends \dosamigos\fileupload\FileUpload
     /**
      * @inheritdoc
      */
+    public $clientOptions = [];
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        if (empty($this->clientOptions['messages'])) {
+            $this->clientOptions['messages'] = [
+                'maxNumberOfFiles' => 'Загружено максимальное количество файлов',
+                'acceptFileTypes' => 'Нельзя загрузить файл такого типа',
+                'maxFileSize' => 'Слишком большой размер файла',
+                'minFileSize' => 'Слишком маленький размер файла'
+            ];
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function run()
     {
         $input = $this->hasModel()

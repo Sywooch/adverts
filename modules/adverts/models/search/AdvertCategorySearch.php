@@ -61,13 +61,22 @@ class AdvertCategorySearch extends AdvertCategory
     }
 
     /**
+     * @param array $options
      * @return array
      */
-    public static function getList()
+    public static function getList($options = [])
     {
-        return self::find()->select(['id', 'name'])
-            ->orderBy('name')
-            ->asArray()
-            ->all();
+        $query = self::find();
+
+        if ($options['select']) {
+            $query->select($options['select']);
+        }
+        if ($options['order']) {
+            $query->orderBy($options['order']);
+        } else {
+            $query->orderBy('name');
+        }
+
+        return $query->asArray()->all();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace app\modules\users\models\ar;
 
-use app\modules\authclient\models\ar\AuthClientUser;
+use app\modules\authclient\models\ar\UserAuthClient;
 use app\modules\core\validators\UrlValidator;
 use app\modules\users\UsersModule;
 use yii\helpers\Url;
@@ -25,7 +25,7 @@ use yii\helpers\Url;
  * @property string $avatarUrl
  * @property string $url
  *
- * @property AuthClientUser $authClientUser
+ * @property UserAuthClient $userAuthClient
  */
 class Profile extends \app\modules\core\db\ActiveRecord
 {
@@ -113,9 +113,9 @@ class Profile extends \app\modules\core\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAuthClientUser()
+    public function getUserAuthClient()
     {
-        return $this->hasOne(AuthClientUser::className(), ['user_id' => 'user_id']);
+        return $this->hasOne(UserAuthClient::className(), ['user_id' => 'user_id']);
     }
 
     /**
@@ -123,7 +123,7 @@ class Profile extends \app\modules\core\db\ActiveRecord
      */
     public function getAvatarUrl()
     {
-        return $this->authClientUser && $this->authClientUser->avatar_url ? $this->authClientUser->avatar_url : '/img/vk-default.png';
+        return $this->userAuthClient && $this->userAuthClient->avatar_url ? $this->userAuthClient->avatar_url : '/img/vk-default.png';
     }
     
     /**

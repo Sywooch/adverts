@@ -54,8 +54,12 @@ $commonConfig = [
         ],
         'db' => require(__DIR__ . '/db.php'),
         'formatter' => [
-            'dateFormat' => 'php:d.m.Y',
-            'timeFormat' => 'php:d.m.Y H:i',
+            'class' => 'app\modules\core\i18n\Formatter',
+            'defaultTimeZone' => 'Europe/Moscow',
+            'dateFormat' => 'php:j.m.Y',
+            'timeFormat' => 'php:H:i',
+            'datetimeFormat' => 'php:j M Y, H:i',
+            'nullDisplay' => '',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -71,7 +75,7 @@ $commonConfig = [
             'useFileTransport' => true,
         ],
         'vk' => [
-            'class' => 'jumper423\VK',
+            'class' => 'app\modules\authclient\clients\VKontakte',
             'clientId' => '11111',
             'clientSecret' => 'n9wsv98svSD867SA7dsda87',
             'delay' => 0.7, // Минимальная задержка между запросами

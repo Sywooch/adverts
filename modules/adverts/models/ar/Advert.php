@@ -4,7 +4,7 @@ namespace app\modules\adverts\models\ar;
 
 use app\modules\adverts\AdvertsModule;
 use app\modules\adverts\models\aq\AdvertQuery;
-use app\modules\core\behaviors\TimestampBehavior;
+use app\modules\core\behaviors\ar\DateTimeBehavior;
 use app\modules\core\models\ar\Comment;
 use app\modules\core\models\ar\File;
 use app\modules\core\models\ar\Like;
@@ -76,8 +76,9 @@ class Advert extends \app\modules\core\db\ActiveRecord
     public function behaviors()
     {
         return [
-            'timestamp' => [
-                'class' => TimestampBehavior::className(),
+            'datetime' => [
+                'class' => DateTimeBehavior::className(),
+                'datetimeAttributes' => ['expiry_at'],
             ],
         ];
     }
@@ -92,8 +93,9 @@ class Advert extends \app\modules\core\db\ActiveRecord
             [['user_id'], 'exist', 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id'],'skipOnError' => true],
             [['category_id'], 'exist', 'targetClass' => AdvertCategory::className(), 'targetAttribute' => ['category_id' => 'id'],'skipOnError' => true],
             [['geography_id'], 'exist', 'targetClass' => Geography::className(), 'targetAttribute' => ['geography_id' => 'id'],'skipOnError' => true],
-            ['expiry_at', 'default', 'value' => Yii::$app->formatter->asDate(time() + 3600 * 24 * 30)],
-            ['currency_id', 'default', 'value' => function() {
+            [['expiry_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+            [['expiry_at'], 'default', 'value' => Yii::$app->formatter->asDatetime(time() + 3600 * 24 * 30)],
+            [['currency_id'], 'default', 'value' => function() {
                 $currency = Currency::findOne(['abbreviation' => Currency::RUB]);
                 return $currency->id;
             }],
@@ -204,17 +206,6 @@ class Advert extends \app\modules\core\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
-     */
-    public function beforeValidate()
-    {
-        if ($this->expiry_at) {
-            $this->expiry_at = Yii::$app->formatter->asDate($this->expiry_at, 'php:Y-m-d H:i:s');
-        }
-        return parent::beforeValidate();
-    }
-
-    /**
      * @param string $attribute
      */
     public function validatePrice($attribute)
@@ -232,7 +223,7 @@ class Advert extends \app\modules\core\db\ActiveRecord
      */
     public function validateStatus($attribute)
     {
-        if ($this->isAttributeChanged('status') && !Yii::$app->user->isSuperadmin) {
+        if ($this->isAttributeChanged('status') && !Yii::$app->request->isConsoleRequest && !Yii::$app->user->isSuperadmin) {
             $this->addError($attribute, AdvertsModule::t('Вы не можете изменить статус'));
         }
     }

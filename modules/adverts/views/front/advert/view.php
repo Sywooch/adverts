@@ -11,7 +11,7 @@ $this->title = \app\modules\adverts\AdvertsModule::t('Просмотр объя�
 
 <div class="advert-view">
     <div class="advert-container">
-        <?= $this->render('_advert', [
+        <?= $this->render('advert/index', [
             'model' => $model,
             'renderPartial' => false,
         ]); ?>

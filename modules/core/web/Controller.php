@@ -6,7 +6,6 @@ use app\modules\core\db\ActiveRecord;
 use app\modules\core\widgets\ActiveForm;
 use Yii;
 use yii\base\Exception;
-use yii\web\Response;
 use yii\widgets\LinkPager;
 
 /**

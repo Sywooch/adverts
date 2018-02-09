@@ -69,7 +69,7 @@ $this->title = UsersModule::t('Список пользователей');
                 'attribute' => 'fullName',
                 'value' => function(User $model) {
                     return Html::a(
-                        $model->profile->fullName,
+                        $model->fullName,
                         ['view', 'id' => $model->id],
                         ['data-pjax' => 0]
                     );

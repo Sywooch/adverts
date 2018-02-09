@@ -64,7 +64,7 @@ $this->title = AdvertsModule::t('Список объявлений');
             [
                 'attribute' => 'user_id',
                 'value' => function(Advert $model) {
-                    return Html::a($model->user->profile->fullName, $model->user->profile->url, [
+                    return Html::a($model->user->fullName, $model->user->url, [
                         'data-action' => 'user-view',
                         'data-pjax' => 0
                     ]);

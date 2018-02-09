@@ -53,7 +53,9 @@ class ActiveQuery extends \yii\db\ActiveQuery
     public function init()
     {
         parent::init();
-        $this->tableName = ($this->modelClass)::tableName();
+
+        $modelClass = $this->modelClass;
+        $this->tableName = $modelClass::tableName();
     }
 
     /**

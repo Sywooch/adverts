@@ -2,12 +2,11 @@
 
 /**
  * @var $this yii\web\View
- * @var $model \app\modules\core\db\ActiveRecord
+ * @var $model \app\modules\core\models\ar\Comment
  */
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\web\View;
 
 ?>
 

@@ -1,7 +1,9 @@
 <?php
 
-/** @var \app\modules\core\widgets\FileUpload $this */
-/** @var string $input the code for the input */
+/**
+ * @var \app\modules\core\widgets\FileUpload $this
+ * @var string $input the code for the input
+ */
 
 ?>
 

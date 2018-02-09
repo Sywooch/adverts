@@ -43,7 +43,7 @@ class InitController extends \app\modules\core\console\Controller
 
         $adverts = require Yii::getAlias('@app/data/db/adverts.php');
         foreach ($adverts as $advertData) {
-            $advertData['user_id'] = rand(1, 3);
+            $advertData['user_id'] = 1;//rand(1, 3);
             $comments = ArrayHelper::remove($advertData,'comments', []);
             $advert = new Advert(array_merge($advertData, ['status' => Advert::STATUS_ACTIVE]));
             if (!$advert->save()) {
@@ -51,7 +51,7 @@ class InitController extends \app\modules\core\console\Controller
             }
             foreach ($comments as $commentData) {
                 $comment = new Comment(array_merge($commentData, [
-                    'user_id' => rand(1, 3),
+                    'user_id' => 1, //rand(1, 3),
                     'owner_id' => $advert->id,
                     'owner_model_name' => $advert::shortClassName()
                 ]));
@@ -165,17 +165,15 @@ class InitController extends \app\modules\core\console\Controller
      */
     public function actionGeography()
     {
-        $user = User::find()->with('authClientUser')->where([
-            'id' => 2
-        ])->one();
-
-        /** @var VKontakte $clientVk */
-        $clientVk = Yii::$app->authClientCollection->getClient('vkontakte');
-        $clientVk->setAccessToken(['token' => $user->authClientUser->access_token]);
+        /** @var VKontakte $client */
+        $client = Yii::$app->get('authClientCollection')->getClient('vkontakte');
+        $client->setAccessToken([
+            'token' => VKONTAKTE_ACCESS_TOKEN
+        ]);
 
         $regionsToBd = [];
         $citiesToBd = [];
-        $regions = $clientVk->post('database.getRegions', [
+        $regions = $client->post('database.getRegions', [
             'country_id' => 2,
         ]);
         foreach ($regions['response'] as $regionData) {
@@ -185,7 +183,7 @@ class InitController extends \app\modules\core\console\Controller
                     'service_id' => $regionData['region_id'],
                     'title' => $regionData['title']
                 ];
-                $cities = $clientVk->post('database.getCities', [
+                $cities = $client->post('database.getCities', [
                     'country_id' => 2,
                     'region_id' => $regionData['region_id']
                 ]);

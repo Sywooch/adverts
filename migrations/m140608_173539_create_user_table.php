@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\authclient\models\ar\AuthClientUser;
+use app\modules\authclient\models\ar\UserAuthClient;
 use app\modules\users\models\ar\AuthFail;
 use app\modules\users\models\ar\EmailConfirmToken;
 use app\modules\users\models\ar\Profile;
@@ -34,7 +34,7 @@ class m140608_173539_create_user_table extends Migration
             'lastvisit_at'      => 'TIMESTAMP',
         ], $tableOptions);
 
-        $this->createTable(AuthClientUser::tableName(), [
+        $this->createTable(UserAuthClient::tableName(), [
             'id'                => 'pk',
             'client_user_id'    => 'VARCHAR(32)',
             'client_name'       => 'ENUM("'.implode('","', Yii::$app->authClientComponent->getClientsNames()).'")',
@@ -48,8 +48,8 @@ class m140608_173539_create_user_table extends Migration
             'profile_url'       => 'VARCHAR(255)',
             'profile'           => 'TEXT',
         ], $tableOptions);
-        $this->addForeignKey('FK_auth_client_user_REFS_user', 'auth_client_user', 'user_id', 'user', 'id', 'NO ACTION', 'NO ACTION');
-        $this->createIndex('UI_auth_client_user', AuthClientUser::tableName(), ['client_name', 'client_user_id'], true);
+        $this->addForeignKey('FK_user_auth_client_REFS_user', UserAuthClient::tableName(), 'user_id', 'user', 'id', 'NO ACTION', 'NO ACTION');
+        $this->createIndex('UI_user_auth_client', UserAuthClient::tableName(), ['client_name', 'client_user_id'], true);
 
         $preferableConnectionTypeLabels = array_keys(Profile::getAttributeLabels('preferable_connection_type'));
         $this->createTable('user_profile', [
@@ -68,7 +68,7 @@ class m140608_173539_create_user_table extends Migration
             'phone_3'                    => 'VARCHAR(32)',
             'preferable_connection_type' => 'ENUM("'.implode('","', $preferableConnectionTypeLabels).'") DEFAULT "'.Profile::CONNECTION_TYPE_PHONE.'"',
         ], $tableOptions);
-        $this->addForeignKey('FK_user_profile_FK_user', 'user_profile', 'user_id', 'user', 'id', 'NO ACTION', 'NO ACTION');
+        $this->addForeignKey('FK_user_profile_FK_user', Profile::tableName(), 'user_id', User::tableName(), 'id', 'NO ACTION', 'NO ACTION');
 
         $this->createTable('user_settings', [
             'id'                 => 'pk',

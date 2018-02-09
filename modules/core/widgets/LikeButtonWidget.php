@@ -98,6 +98,7 @@ class LikeButtonWidget extends Widget
         ];
 
         if (!Yii::$app->user->isGuest) {
+            $model = $this->model;
             $linkOptions = ArrayHelper::merge($linkOptions, [
                 'data-url' => Url::to([
                     '/adverts/advert/like',
@@ -105,7 +106,7 @@ class LikeButtonWidget extends Widget
                     'value' => $this->action == self::ACTION_LIKE ? Like::LIKE_VALUE : Like::DISLIKE_VALUE
                 ]),
                 'data-action' => $this->action,
-                'data-owner' => ($this->model)::shortClassName(),
+                'data-owner' => $model::shortClassName(),
                 'data-owner-id' => $this->model->id,
                 'data-pjax' => 0,
             ]);

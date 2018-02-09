@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\form\ContactForm;
+use app\modules\core\widgets\WidgetPageSize;
 
 class SiteController extends Controller
 {
@@ -70,5 +71,15 @@ class SiteController extends Controller
         return $this->render('contact', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Set page size for widget
+     */
+    public function actionWidgetPageSize()
+    {
+        if ($pageSize = Yii::$app->request->get(WidgetPageSize::PAGE_SIZE_PARAM_NAME)) {
+            WidgetPageSize::setPageSize($pageSize, Yii::$app->request->get(WidgetPageSize::WIDGET_ID_PARAM_NAME));
+        }
     }
 }

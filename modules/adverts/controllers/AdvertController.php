@@ -5,12 +5,14 @@ namespace app\modules\adverts\controllers;
 use app\modules\adverts\models\ar\Advert;
 use app\modules\adverts\models\ar\AdvertTemplet;
 use app\modules\adverts\models\search\AdvertSearch;
+use app\modules\core\behaviors\controllers\WidgetPageSizeBehavior;
 use app\modules\core\models\ar\File;
 use app\modules\core\models\ar\Look;
 use app\modules\core\web\Controller;
 use Yii;
 use yii\db\Expression;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -29,7 +31,7 @@ class AdvertController extends Controller
     public $modelName = 'app\modules\adverts\models\ar\Advert';
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function actions()
     {
@@ -62,16 +64,24 @@ class AdvertController extends Controller
     }
 
     /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return ArrayHelper::merge(parent::behaviors(), [
+            'widgetPageSize' => WidgetPageSizeBehavior::className()
+        ]);
+    }
+
+    /**
      * Adverts list.
      * @return string
      */
     public function actionIndex()
     {
         $searchModel = new AdvertSearch();
+
         $searchParams = Yii::$app->request->queryParams;
-        if (Yii::$app->isEndSideFront) {
-            $searchParams['active'] = true;
-        }
         $dataProvider = $searchModel->search($searchParams);
 
         return $this->renderIsAjax('index', [
@@ -121,7 +131,7 @@ class AdvertController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             if (!$model->published && $model->status = Advert::STATUS_ACTIVE) {
-                Yii::$app->vkPublisher->publishAdvert($model);
+                Yii::$app->get('vkPublisher')->publishAdvert($model);
             }
 
             if (Yii::$app->request->isAjax) {

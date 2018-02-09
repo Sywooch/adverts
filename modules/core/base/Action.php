@@ -36,7 +36,8 @@ class Action extends \yii\base\Action
         if ($this->findModelCallback) {
             $model = call_user_func($this->findModelCallback, $id);
         } else {
-            $model = ($this->modelName)::findOne(intval($id));
+            $modelName = $this->modelName;
+            $model = $modelName::findOne(intval($id));
         }
 
         if ($model == null) {

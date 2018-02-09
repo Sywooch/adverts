@@ -194,15 +194,15 @@ class AuthController extends \app\modules\users\controllers\AuthController
     public function authSuccessCallback($authClient)
     {
         $attributes = $authClient->getUserAttributes();
-        if (!$user = User::findByAuthClientUserId($authClient->userId, $authClient->name)) {
+        if (!$user = User::findByUserAuthClientId($authClient->userId, $authClient->name)) {
             $user = new User([
                 'status' => User::STATUS_ACTIVE,
             ]);
-            $user->scenario = User::SCENARIO_NEW_AUTH_CLIENT_USER;
+            $user->scenario = User::SCENARIO_NEW_USER_AUTH_CLIENT;
             $user->register($authClient);
         }
-        $user->authClientUser->setClientAttributes($authClient);
-        $user->authClientUser->save();
+        $user->userAuthClient->setClientAttributes($authClient);
+        $user->userAuthClient->save();
         Yii::$app->user->login($user, 0);
     }
 }

@@ -37,7 +37,7 @@ class UserController extends Controller
         $model = $this->findModel($id);
 
         return $this->renderIsAjax('view', [
-            '$model' => $model
+            'model' => $model
         ]);
     }
 
@@ -63,7 +63,7 @@ class UserController extends Controller
     public function findModel($id, $mode = self::MODE_READ)
     {
         $model = User::find()
-            ->with(['profile.authClientUser'])
+            ->with(['profile.userAuthClient'])
             ->where([User::tableName() . '.id' => $id])
             ->one();
 

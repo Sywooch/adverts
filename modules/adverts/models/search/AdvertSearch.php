@@ -2,12 +2,15 @@
 
 namespace app\modules\adverts\models\search;
 
+use app\modules\adverts\data\AdvertSort;
 use app\modules\adverts\models\ar\Advert;
 use app\modules\adverts\models\ar\AdvertCategory;
+use app\modules\core\behaviors\ar\DateTimeBehavior;
+use app\modules\core\data\ActiveDataProvider;
 use app\modules\core\db\ActiveQuery;
 use Yii;
-use app\modules\core\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
+use app\modules\core\widgets\WidgetPageSize;
 
 /**
  * @property boolean $active
@@ -20,14 +23,17 @@ class AdvertSearch extends Advert
     public $pageSize;
 
     /**
-     * @var
+     * @inheritdoc
      */
-    public $min_date;
-
-    /**
-     * @var
-     */
-    public $max_date;
+    public function behaviors()
+    {
+        return [
+            'datetime' => [
+                'class' => DateTimeBehavior::className(),
+                'datetimeAttributes' => ['min_date', 'max_date'],
+            ],
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -35,8 +41,10 @@ class AdvertSearch extends Advert
     public function rules()
     {
         return [
-            ['pageSize', 'integer', 'integerOnly' => true, 'min' => 1],
-            [['active', 'phrase'], 'safe']
+            [['pageSize', 'currency_id', 'geography_id', 'category_id'], 'number', 'integerOnly' => true],
+            [['min_price', 'max_price'], 'number'],
+            [['min_date', 'max_date'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+            [['phrase'], 'safe']
         ];
     }
 
@@ -46,7 +54,7 @@ class AdvertSearch extends Advert
     public function attributes()
     {
         return ArrayHelper::merge(parent::attributes(), [
-            'active', 'phrase'
+            'phrase', 'min_date', 'max_date'
         ]);
     }
 
@@ -56,8 +64,8 @@ class AdvertSearch extends Advert
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-            'max_date' => Yii::t('app', 'Минимальная дата'),
-            'min_date' => Yii::t('app', 'Максимальная дата'),
+            'max_date' => Yii::t('app', 'Максимальная дата'),
+            'min_date' => Yii::t('app', 'Минимальная дата'),
             'phrase' => Yii::t('app', 'Фраза'),
         ]);
     }
@@ -76,30 +84,37 @@ class AdvertSearch extends Advert
             ->withLooksCount()
             ->withBookmarksCurrentUser()
             ->withLikesCurrentUser()
-            ->with(['user.profile.authClientUser', 'category', 'files', 'geography', 'currency'])
+            ->with(['user.profile.userAuthClient', 'category', 'files', 'geography', 'currency'])
             ->groupBy(['advert.id']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                //'pageSize' => \roman444uk\yii\widgets\WidgetPageSize::getPageSize(),
-                'pageSize' => 20
+                'defaultPageSize' => WidgetPageSize::getPageSize('adverts-list'),
+                'pageSize' => WidgetPageSize::getPageSize('adverts-list'),
             ],
-            'sort' => [
-                'attributes' => [
-                    'asc' => [
-                        'created_at', 'min_price', 'max_price'
-                    ]
-                ]
-            ]
+            'sort' => new AdvertSort(),
         ]);
 
         if ($params && !($this->load($params) && $this->validate())) {
+            $query->andWhere('1 = 0');
             return $dataProvider;
         }
 
         $this->buildQuery($query, $params);
 
+        return $dataProvider;
+    }
+
+    /**
+     * Returns all active adverts.
+     * @param array $params
+     * @return ActiveDataProvider|\yii\data\DataProviderInterface
+     */
+    public function searchActive($params = [])
+    {
+        $dataProvider = $this->search($params);
+        $dataProvider->query->active();
         return $dataProvider;
     }
 
@@ -133,8 +148,8 @@ class AdvertSearch extends Advert
     {
         $tableAdvert = self::tableName();
 
-        if ($this->active) {
-            $query->active();
+        if ($this->status) {
+            $query->andWhere(['in', "{$tableAdvert}.status", $this->status]);
         }
 
         if ($this->category_id) {
@@ -155,17 +170,15 @@ class AdvertSearch extends Advert
         }
 
         if (!empty($this->max_date)) {
-            $query->andWhere("{$tableAdvert}.created_at >= :maxDate", [':minDate' => $this->max_date]);
+            $query->andWhere("{$tableAdvert}.created_at <= :maxDate", [':maxDate' => $this->max_date]);
         }
 
         if (!empty($this->min_price)) {
-            $query->andWhere("{$tableAdvert}.min_price = :minPrice", [':minprice' => $this->min_price]);
+            $query->andWhere("{$tableAdvert}.min_price >= :minPrice OR min_price IS NULL", [':minPrice' => $this->min_price]);
         }
 
         if (!empty($this->max_price)) {
-            $query->andWhere("{$tableAdvert}.max_price = :maxPrice", [':maxPrice' => $this->max_price]);
+            $query->andWhere("{$tableAdvert}.max_price <= :maxPrice OR max_price IS NULL", [':maxPrice' => $this->max_price]);
         }
-
-        $query->orderBy(self::tableName() . '.created_at desc');
     }
 }

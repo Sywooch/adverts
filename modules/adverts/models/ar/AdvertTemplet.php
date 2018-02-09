@@ -2,10 +2,11 @@
 
 namespace app\modules\adverts\models\ar;
 
-use app\modules\users\models\ar\User;
-use Yii;
-use yii\helpers\ArrayHelper;
+use app\modules\core\behaviors\ar\DateTimeBehavior;
 use app\modules\core\models\ar\File;
+use app\modules\users\models\ar\User;
+
+use Yii;
 
 /**
  * This is the model class for table "advert_templet".
@@ -46,7 +47,12 @@ class AdvertTemplet extends Advert
      */
     public function behaviors()
     {
-        return [];
+        return [
+            'datetime' => [
+                'class' => DateTimeBehavior::className(),
+                'datetimeAttributes' => ['expiry_at'],
+            ],
+        ];
     }
 
     /**
@@ -55,9 +61,12 @@ class AdvertTemplet extends Advert
     public function rules()
     {
         return [
-            [[
-                'content', 'category_id', 'currency_id', 'geography_id', 'content', 'status', 'expiry_at', 'min_price', 'max_price'
-            ], 'safe']
+            [['expiry_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+            [['expiry_at'], 'default', 'value' => Yii::$app->formatter->asDatetime(time() + 3600 * 24 * 30)],
+            [
+                ['content', 'category_id', 'currency_id', 'geography_id', 'content', 'status', 'expiry_at', 'min_price', 'max_price'],
+                'safe'
+            ]
         ];
     }
 

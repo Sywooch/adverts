@@ -17,6 +17,9 @@ use app\modules\core\validators\FilesLimitValidator;
  * @property string $file_name
  * @property string $origin_file_name
  * @property string $deleted_at
+ * @property string $vk_server
+ * @property string $vk_photo
+ * @property string $vk_hashs
  *
  * @property string $fullName
  * @property string $path
@@ -42,7 +45,7 @@ class File extends \app\modules\core\db\ActiveRecord
             [['owner_model_name', 'file_name', 'origin_file_name'], 'required'],
             [['deleted_at'], 'safe'],
             [['owner_model_name'], 'string', 'max' => 32],
-            [['file_name', 'origin_file_name'], 'string', 'max' => 128],
+            [['file_name', 'origin_file_name', 'vk_server', 'vk_photo', 'vk_hash'], 'string', 'max' => 128],
             ['owner_id', 'validateFilesLimit'],
         ];
     }
@@ -58,6 +61,9 @@ class File extends \app\modules\core\db\ActiveRecord
             'file_name' => Yii::t('app', 'File Name'),
             'origin_file_name' => Yii::t('app', 'Origin File Name'),
             'deleted_at' => Yii::t('app', 'Deleted At'),
+            'vk_server' => Yii::t('app', 'VK сервер'),
+            'vk_photo' => Yii::t('app', 'VK фото'),
+            'vk_hash' => Yii::t('app', 'VK хеш'),
         ];
     }
 

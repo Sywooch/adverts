@@ -28,8 +28,22 @@
 .pagination li.active a:hover, .pagination li.active a:focus {
     background: #eee !important;
 }
-.summary {
-    line-height: 38px;
+.sorter, .summary, .widget-page-size {
+    line-height: 30px;
+}
+
+.form-group label.control-label {
+    margin-bottom: 0 !important;
+}
+
+/* widget-page-size */
+.widget-page-size select {
+    width: 75px;
+}
+
+/* datetimepicker */
+input[data-krajee-datetimepicker] {
+    cursor: pointer;
 }
 
 /* user header section */
@@ -96,7 +110,7 @@
     height: 3px;
     border: none;
 }
-.advert-form .file-uploaded-success, .file-uploaded-fail {
+.advert-form .file-uploaded-success, .advert-form .file-uploaded-fail {
     display: none;
 }
 .advert-form .file-uploaded-success {

@@ -21,6 +21,8 @@ class UsersModule extends \app\modules\core\base\Module
                 'basePath'       => '@app/modules/users/messages',
                 'fileMap'        => [
                     'app/modules/users/main' => 'main.php',
+                    'app/modules/users/front' => 'front.php',
+                    'app/modules/users/back' => 'back.php',
                 ],
             ];
         }

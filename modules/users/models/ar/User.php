@@ -4,7 +4,7 @@ namespace app\modules\users\models\ar;
 
 use app\modules\authclient\clients\ClientInterface;
 use app\modules\authclient\clients\ClientTrait;
-use app\modules\authclient\models\ar\AuthClientUser;
+use app\modules\authclient\models\ar\UserAuthClient;
 use app\modules\core\behaviors\TimestampBehavior;
 use app\modules\users\components\UserIdentity;
 use app\modules\users\models\aq\UserQuery;
@@ -30,7 +30,11 @@ use yii\helpers\ArrayHelper;
  * @property integer $created_at
  * @property integer $updated_at
  *
- * @property AuthClientUser $authClientUser
+ * @property string $fullName
+ * @property bool $isAuthClient
+ * @property string $url
+ *
+ * @property UserAuthClient $userAuthClient
  * @property Profile $profile
  */
 class User extends UserIdentity
@@ -40,7 +44,7 @@ class User extends UserIdentity
     const STATUS_BANNED = -1;
     
     const SCENARIO_NEW_USER = 'newUser';
-    const SCENARIO_NEW_AUTH_CLIENT_USER = 'newAuthClientUser';
+    const SCENARIO_NEW_USER_AUTH_CLIENT = 'newUserAuthClient';
     const SCENARIO_CHANGE_PASSWORD = 'changePassword';
 
     /**
@@ -74,7 +78,7 @@ class User extends UserIdentity
     public function scenarios()
     {
         return ArrayHelper::merge(parent::scenarios(), [
-            self::SCENARIO_NEW_AUTH_CLIENT_USER => []
+            self::SCENARIO_NEW_USER_AUTH_CLIENT => []
         ]);
     }
 
@@ -176,12 +180,12 @@ class User extends UserIdentity
             $profile = new Profile($attributes);
             $success = $profile->save();
         }
-        if ($success && $this->scenario == self::SCENARIO_NEW_AUTH_CLIENT_USER) {
-            $authClientUser = new AuthClientUser;
-            $authClientUser->setClientAttributes($authClient);
-            $authClientUser->user_id = $this->id;
-            $success = $authClientUser->save();
-            $this->populateRelation('authClientUser', $authClientUser);
+        if ($success && $this->scenario == self::SCENARIO_NEW_USER_AUTH_CLIENT) {
+            $userAuthClient = new UserAuthClient;
+            $userAuthClient->setClientAttributes($authClient);
+            $userAuthClient->user_id = $this->id;
+            $success = $userAuthClient->save();
+            $this->populateRelation('userAuthClient', $userAuthClient);
         }
 
         $success ? $transaction->commit() : $transaction->rollBack();
@@ -207,8 +211,32 @@ class User extends UserIdentity
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAuthClientUser()
+    public function getUserAuthClient()
     {
-        return $this->hasOne(AuthClientUser::className(), ['user_id' => 'id']);
+        return $this->hasOne(UserAuthClient::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        return $this->profile->fullName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->profile->url;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsAuthClient()
+    {
+        return !$this->email && $this->userAuthClient;
     }
 }

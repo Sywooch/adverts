@@ -15,8 +15,7 @@ $webConfig = [
         'assetManager' => [
             //'linkAssets' => true,
             'bundles' => [
-                'y
-                ii\web\YiiAsset' => [
+                'yii\web\YiiAsset' => [
                     'sourcePath' => '@app/modules/core/assets/src',
                     'js' => ['js/yii.js'],
                 ],
@@ -24,6 +23,9 @@ $webConfig = [
                     'sourcePath' => '@app/modules/core/assets/src',
                     'js' => ['js/yii.activeForm.js'],
                 ],
+                'kartik\datetime\DateTimePickerAsset' => [
+                    'class' => 'app\modules\core\widgets\DateTimePickerAsset'
+                ]
             ]
         ],
         'bookmarksManager' => [

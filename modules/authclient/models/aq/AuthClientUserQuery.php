@@ -5,7 +5,7 @@ namespace app\modules\authclient\models\aq;
 /**
  * This is the ActiveQuery class for [[\app\modules\authclient\models\ar\AuthClientUser]].
  *
- * @see \app\modules\authclient\models\ar\AuthClientUser
+ * @see \app\modules\authclient\models\ar\UserAuthClient
  */
 class AuthClientUserQuery extends \app\modules\core\db\ActiveQuery
 {
@@ -16,7 +16,7 @@ class AuthClientUserQuery extends \app\modules\core\db\ActiveQuery
 
     /**
      * @inheritdoc
-     * @return \app\modules\authclient\models\ar\AuthClientUser[]|array
+     * @return \app\modules\authclient\models\ar\UserAuthClient[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class AuthClientUserQuery extends \app\modules\core\db\ActiveQuery
 
     /**
      * @inheritdoc
-     * @return \app\modules\authclient\models\ar\AuthClientUser|array|null
+     * @return \app\modules\authclient\models\ar\UserAuthClient|array|null
      */
     public function one($db = null)
     {

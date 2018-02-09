@@ -5,12 +5,14 @@ namespace app\modules\adverts\controllers\front;
 use app\modules\adverts\models\ar\Advert;
 use app\modules\adverts\models\ar\AdvertTemplet;
 use app\modules\adverts\models\search\AdvertSearch;
+use app\modules\core\behaviors\WidgetPageSizeBehavior;
 use app\modules\core\models\ar\File;
 use app\modules\core\models\ar\Look;
 use app\modules\core\web\Controller;
 use Yii;
 use yii\db\Expression;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -28,7 +30,7 @@ class AdvertController extends \app\modules\adverts\controllers\AdvertController
      */
     public function behaviors()
     {
-        return [
+        return ArrayHelper::merge(parent::behaviors(), [
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
@@ -47,7 +49,25 @@ class AdvertController extends \app\modules\adverts\controllers\AdvertController
                     ],
                 ],
             ],
-        ];
+        ]);
+    }
+
+    /**
+     * Adverts list.
+     * @return string
+     */
+    public function actionIndex()
+    {
+        $searchModel = new AdvertSearch();
+
+        $searchParams = Yii::$app->request->queryParams;
+        $dataProvider = $searchModel->searchActive($searchParams);
+
+        return $this->renderIsAjax('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'withFilter' => true,
+        ]);
     }
 
     /**

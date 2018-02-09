@@ -2,7 +2,7 @@
 
 namespace app\modules\users\components;
 
-use app\modules\authclient\models\ar\AuthClientUser;
+use app\modules\authclient\models\ar\UserAuthClient;
 use app\modules\core\db\ActiveRecord;
 use app\modules\users\models\ar\EmailConfirmToken;
 use app\modules\users\models\ar\PasswordRestoreToken;
@@ -152,11 +152,11 @@ abstract class UserIdentity extends ActiveRecord implements IdentityInterface
      * @param string $clientName
      * @return static|null|User
      */
-    public static function findByAuthClientUserId($clientUserId, $clientName)
+    public static function findByUserAuthClientId($clientUserId, $clientName)
     {
-        return static::find()->innerJoinWith('authClientUser')->where([
-            AuthClientUser::tableName() . '.client_user_id' => $clientUserId,
-            AuthClientUser::tableName() . '.client_name' => $clientName,
+        return static::find()->innerJoinWith('userAuthClient')->where([
+            UserAuthClient::tableName() . '.client_user_id' => $clientUserId,
+            UserAuthClient::tableName() . '.client_name' => $clientName,
         ])->one();
     }
 

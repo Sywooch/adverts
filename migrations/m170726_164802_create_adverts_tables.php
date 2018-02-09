@@ -2,6 +2,7 @@
 
 use app\modules\adverts\models\ar\Advert;
 use app\modules\core\db\Migration;
+use app\modules\adverts\models\ar\AdvertCategory;
 
 class m170726_164802_create_adverts_tables extends Migration
 {
@@ -10,7 +11,7 @@ class m170726_164802_create_adverts_tables extends Migration
      */
     public function up()
     {
-        $this->createTable('advert_category', [
+        $this->createTable(AdvertCategory::tableName(), [
             'id'                    => 'pk',
             'name'                  => 'VARCHAR(32) NOT NULL',
             'parent_id'             => 'INT(4) DEFAULT NULL'

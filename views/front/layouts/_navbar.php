@@ -19,7 +19,10 @@ use app\modules\users\UsersModule;
         ],
     ]);
         echo Nav::widget([
-            'options' => ['class' => 'navbar-nav navbar-right'],
+            'options' => [
+                'class' => 'navbar-nav navbar-right'
+            ],
+            'encodeLabels' => false,
             'items' => [
                 [
                     'label' => Yii::t('app', 'Объявления'),
@@ -36,7 +39,7 @@ use app\modules\users\UsersModule;
                     'visible' => Yii::$app->user->isGuest
                 ],
                 [
-                    'label' => Yii::t('app', 'Профиль'),
+                    'label' => '<span class="glyphicon glyphicon-user" aria-hidden="true"></span>',
                     'url' => ['/users/user/index'],
                     'visible' => !Yii::$app->user->isGuest,
                     'items' => [
@@ -60,13 +63,19 @@ use app\modules\users\UsersModule;
                     ]
                 ],
                 [
-                    'label' => Yii::t('app', 'Контакты'),
+                    'label' => 'Контакты <span class="glyphicon glyphicon-phone-alt" aria-hidden="true"></span>',
                     'url' => ['/site/contact'],
                 ],
                 Yii::$app->user->isGuest ? (
-                    ['label' => UsersModule::t('Войти', 'front'), 'url' => ['/users/auth/login']]
+                    [
+                        'label' => '<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>',
+                        'url' => ['/users/auth/login'],
+                    ]
                 ) : (
-                    ['label' => UsersModule::t('Выйти', 'front'), 'url' => ['/users/auth/logout']]
+                    [
+                        'label' => 'Выйти <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>',
+                        'url' => ['/users/auth/logout']
+                    ]
                 )
             ],
         ]);

@@ -3,7 +3,7 @@
 namespace app\modules\authclient\components;
 
 use app\modules\authclient\clients\ClientInterface;
-use app\modules\authclient\models\ar\AuthClientUser;
+use app\modules\authclient\models\ar\UserAuthClient;
 use yii\authclient\BaseClient;
 
 class AuthClientComponent extends \yii\base\Component

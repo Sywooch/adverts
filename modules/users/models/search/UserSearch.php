@@ -30,7 +30,7 @@ class UserSearch extends User
     {
         $query = self::find();
 
-        $query->with(['profile.authClientUser']);
+        $query->with(['profile.userAuthClient']);
 
         if (!Yii::$app->user->isSuperadmin) {
             $query->where(['superadmin' => 0]);

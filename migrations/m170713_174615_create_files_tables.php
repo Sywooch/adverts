@@ -20,7 +20,10 @@ class m170713_174615_create_files_tables extends Migration
             'owner_model_name' => 'ENUM("'.implode('","', $modelNames).'") NOT NULL',
             'file_name'        => 'VARCHAR(128) NOT NULL',
             'origin_file_name' => 'VARCHAR(128) NOT NULL',
-            'deleted_at'       => 'TIMESTAMP DEFAULT NULL',
+            //'deleted_at'       => 'TIMESTAMP DEFAULT NULL',
+            'vk_server'        => 'VARCHAR(128) DEFAULT NULL',
+            'vk_photo'         => 'VARCHAR(128) DEFAULT NULL',
+            'vk_hash'          => 'VARCHAR(128) DEFAULT NULL',
         ], $this->tableOptions);
         $this->createIndex('UI_owner_id', File::tableName(), 'owner_id');
         $this->createIndex('UI_owner_model_name_AND_owner_id', File::tableName(), ['owner_model_name', 'owner_id']);

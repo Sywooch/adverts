@@ -25,8 +25,9 @@ class AdvertManager extends Component
         $client->setAccessToken([
             'token' => VKONTAKTE_ACCESS_TOKEN
         ]);
+
         $client->post('wall.post', [
-            'owner_id' => VKONTAKTE_GROUP_ID,
+            'owner_id' => VKONTAKTE_GROUP_ID_NEGATIVE,
             'message' => AdvertHelper::getPostContent($model),
             'from_group' => 1,
             'guid' => $model->id,
