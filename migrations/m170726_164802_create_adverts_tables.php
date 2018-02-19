@@ -29,7 +29,7 @@ class m170726_164802_create_adverts_tables extends Migration
             'status'                => 'ENUM("'.implode('","', $statuses).'") DEFAULT "'.Advert::STATUS_NEW.'"',
             'is_foreign'            => 'TINYINT(1) DEFAULT 0',
             'published'             => 'TINYINT(1) DEFAULT 0',
-            'expiry_at'             => 'TIMESTAMP DEFAULT NULL',
+            'expiry_at'             => 'TIMESTAMP',
             'created_at'            => 'TIMESTAMP DEFAULT NOW()',
             'updated_at'            => 'TIMESTAMP DEFAULT NOW()',
             'min_price'             => 'DECIMAL(10,2)',
