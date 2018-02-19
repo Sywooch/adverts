@@ -49,7 +49,7 @@ class m170726_164802_create_adverts_tables extends Migration
             'currency_id'           => 'INT(11)',
             'content'               => 'TEXT DEFAULT NULL',
             'expiry_at'             => 'TIMESTAMP',
-            'updated_at'            => 'TIMESTAMP',
+            'updated_at'            => 'TIMESTAMP NULL DEFAULT NULL',
             'min_price'             => 'DECIMAL(10,2)',
             'max_price'             => 'DECIMAL(10,2)',
         ], $this->tableOptions);
