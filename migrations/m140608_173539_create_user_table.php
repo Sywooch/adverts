@@ -30,8 +30,8 @@ class m140608_173539_create_user_table extends Migration
             'status'            => 'INT NOT NULL DEFAULT 1',
             'superadmin'        => 'TINYINT(1) DEFAULT 0',
             'created_at'        => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
-            'updated_at'        => 'TIMESTAMP NULL DEFAULT NULL',
-            'lastvisit_at'      => 'TIMESTAMP NULL DEFAULT NULL',
+            'updated_at'        => 'TIMESTAMP',
+            'lastvisit_at'      => 'TIMESTAMP',
         ], $tableOptions);
 
         $this->createTable(UserAuthClient::tableName(), [

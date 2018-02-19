@@ -48,8 +48,8 @@ class m170726_164802_create_adverts_tables extends Migration
             'geography_id'          => 'INT(11)',
             'currency_id'           => 'INT(11)',
             'content'               => 'TEXT DEFAULT NULL',
-            'expiry_at'             => 'timestamp',
-            'updated_at'            => 'timestamp',
+            'expiry_at'             => 'TIMESTAMP',
+            'updated_at'            => 'TIMESTAMP',
             'min_price'             => 'DECIMAL(10,2)',
             'max_price'             => 'DECIMAL(10,2)',
         ], $this->tableOptions);
