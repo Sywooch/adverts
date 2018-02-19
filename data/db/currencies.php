@@ -2,27 +2,23 @@
 
 return [
     [
-        'name' => 'Гривна',
+        'code' => 'UAH',
+        'sign' => '₴',
         'short_name' => 'грн.',
-        'abbreviation' => 'grn',
-        'sign' => '₴'
     ],
     [
-        'name' => 'Доллар',
-        'short_name' => 'долл.',
-        'abbreviation' => 'dol',
-        'sign' => '$'
+        'code' => 'USD',
+        'sign' => '$',
+        'short_name' => 'дол.',
     ],
     [
-        'name' => 'Евро',
-        'short_name' => 'евр.',
-        'abbreviation' => 'eur',
-        'sign' => '€' // &#8364;
+        'code' => 'EUR',
+        'sign' => '€', // &#8364;
+        'short_name' => 'евро',
     ],
     [
-        'name' => 'Рубль',
+        'code' => 'RUB',
+        'sign' => '₽', // &#8381; &#x20bd;
         'short_name' => 'руб.',
-        'abbreviation' => 'rub',
-        'sign' => '₽' // &#8381; &#x20bd;
     ],
 ];

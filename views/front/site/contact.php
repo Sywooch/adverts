@@ -65,7 +65,7 @@ $isGuest = Yii::$app->user->isGuest;
 
                     <div class="form-group">
                         <?= Html::submitButton(Yii::t('app', 'Отправить сообщение'), [
-                            'class' => 'btn btn-primary',
+                            'class' => 'btn btn-default',
                             'name' => 'contact-button'
                         ]); ?>
                     </div>

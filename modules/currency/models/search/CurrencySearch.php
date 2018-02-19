@@ -1,8 +1,8 @@
 <?php
 
-namespace app\modules\core\models\search;
+namespace app\modules\currency\models\search;
 
-use app\modules\core\models\ar\Currency;
+use app\modules\currency\models\ar\Currency;
 use Yii;
 use yii\data\ActiveDataProvider;
 
@@ -40,7 +40,7 @@ class CurrencySearch extends Currency
      */
     public function search($params = [])
     {
-        $query = self::find();
+        $query = Currency::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -63,8 +63,8 @@ class CurrencySearch extends Currency
      */
     public static function getList()
     {
-        return self::find()->select(['id', 'name'])
-            ->orderBy('name')
+        return Currency::find()
+            ->orderBy('short_name')
             ->asArray()
             ->all();
     }

@@ -5,9 +5,15 @@ namespace app\modules\adverts\widgets;
 use app\modules\core\db\ActiveRecord;
 use app\modules\core\widgets\WidgetPageSize;
 use app\modules\core\widgets\Wps;
+use app\modules\currency\models\ar\Currency;
+use app\modules\currency\models\search\CurrencySearch;
+use app\modules\currency\widgets\UiCurrency;
 use yii\helpers\ArrayHelper;
 use app\modules\adverts\widgets\AdvertListWidgetPageSize;
+use yii\helpers\Html;
 use yii\widgets\LinkSorter;
+use yii\web\Request;
+use Yii;
 
 class AdvertList extends \yii\widgets\ListView
 {
@@ -33,6 +39,18 @@ class AdvertList extends \yii\widgets\ListView
         'tag' => 'span',
         'class' => 'summary',
     ];
+
+    /**
+     * @inheritdoc
+     */
+    public $pager = [
+        'disableCurrentPageButton' => false
+    ];
+
+    /**
+     * @inheritdoc
+     */
+    public $showOnEmpty = false;
 
     /**
      * @inheritdoc
@@ -63,6 +81,8 @@ class AdvertList extends \yii\widgets\ListView
         switch ($name) {
             case '{widgetPageSize}':
                 return $this->renderWidgetPageSize();
+            case '{uiCurrency}':
+                return $this->renderUiCurrency();
             default:
                 return parent::renderSection($name);
         }
@@ -79,5 +99,24 @@ class AdvertList extends \yii\widgets\ListView
             'independentChanging' => true,
         ]);
 
+    }
+    /**
+     * @return string
+     */
+    public function renderUiCurrency()
+    {
+        return UiCurrency::widget([]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function renderEmpty()
+    {
+        return $this->render('advert-list/empty', [
+            'widget' => $this,
+            'tag' => ArrayHelper::remove($this->options, 'tag', 'div'),
+            'text' => $this->emptyText
+        ]);
     }
 }

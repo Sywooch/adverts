@@ -1,21 +1,23 @@
 <?php
 
-/**
- * @var \yii\web\View $this
- * @var \yii\data\ActiveDataProvider $dataProvider
- * @var \app\modules\adverts\models\search\AdvertSearch $searchModel
- * @var boolean $withFilter
- */
-
 use app\modules\adverts\widgets\AdvertList;
 use yii\widgets\Pjax;
 use app\modules\adverts\widgets\AdvertListLinkSorter;
 
+/**
+ * @var \yii\web\View $this
+ * @var \yii\data\ActiveDataProvider $dataProvider
+ * @var \app\modules\adverts\models\search\AdvertSearch $searchModel
+ * @var bool $renderFilter
+ */
+
 ?>
 
-<?= $this->render('_filter', [
-    'model' => $searchModel,
-]); ?>
+<?php if ($renderFilter): ?>
+    <?= $this->render('filter/index', [
+        'model' => $searchModel,
+    ]); ?>
+<?php endif; ?>
 
 <?php Pjax::begin(['id' => 'adverts-list-pjax']); ?>
 
@@ -23,7 +25,6 @@ use app\modules\adverts\widgets\AdvertListLinkSorter;
         'id' => 'adverts-list',
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'showOnEmpty' => true,
         'options' => [
             'class' => 'adverts-list'
         ],

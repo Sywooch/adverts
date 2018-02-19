@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\core\widgets;
+namespace app\modules\core\widgets\inputs\dateTimePicker;
 
 use yii\helpers\Html;
 use yii\helpers\Json;

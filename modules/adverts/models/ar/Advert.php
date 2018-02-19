@@ -8,7 +8,7 @@ use app\modules\core\behaviors\ar\DateTimeBehavior;
 use app\modules\core\models\ar\Comment;
 use app\modules\core\models\ar\File;
 use app\modules\core\models\ar\Like;
-use app\modules\core\models\ar\Currency;
+use app\modules\currency\models\ar\Currency;
 use app\modules\core\models\ar\Look;
 use app\modules\core\validators\FilesLimitValidator;
 use app\modules\geography\models\ar\Geography;
@@ -96,7 +96,7 @@ class Advert extends \app\modules\core\db\ActiveRecord
             [['expiry_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
             [['expiry_at'], 'default', 'value' => Yii::$app->formatter->asDatetime(time() + 3600 * 24 * 30)],
             [['currency_id'], 'default', 'value' => function() {
-                $currency = Currency::findOne(['abbreviation' => Currency::RUB]);
+                $currency = Currency::findOne(['code' => Currency::RUB]);
                 return $currency->id;
             }],
             //[['min_price', 'max_price'], 'integer', 'integerOnly' => false],

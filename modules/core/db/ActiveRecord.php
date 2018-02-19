@@ -87,6 +87,14 @@ class ActiveRecord extends \yii\db\ActiveRecord
     {
         return array_merge(parent::attributes(), static::virtualAttributes());
     }
+    /**
+     * @inheritdoc
+     */
+    public function realAttributes()
+    {
+        return parent::attributes();
+    }
+
 
     /**
      * @param string $attribute

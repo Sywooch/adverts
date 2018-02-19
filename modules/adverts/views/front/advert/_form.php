@@ -5,8 +5,8 @@ use app\modules\adverts\models\search\AdvertCategorySearch;
 use app\modules\core\widgets\ActiveForm;
 use app\modules\core\widgets\FileUpload;
 use app\modules\core\widgets\Spaceless;
-use app\modules\core\models\search\CurrencySearch;
-use app\modules\core\widgets\DateTimePicker;
+use app\modules\core\widgets\inputs\dateTimePicker\DateTimePicker;
+use app\modules\currency\models\search\CurrencySearch;
 use app\modules\geography\models\search\GeographySearch;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -67,8 +67,8 @@ use yii\web\View;
                 'options' => [
                     'class' => 'form-group mb-0',
                 ],
-            ])->dropDownList(GeographySearch::getCityListGropedByRegion(), [
-                'emptyItem' => Yii::t('app', 'Не выбрано'),
+            ])->dropDownList(GeographySearch::getCityListGroupedByRegion(), [
+                //'emptyItem' => Yii::t('app', 'Не выбрано'),
             ]); ?>
 
             <?= $form->field($model, 'category_id', [

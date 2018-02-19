@@ -66,7 +66,7 @@ class AdvertController extends \app\modules\adverts\controllers\AdvertController
         return $this->renderIsAjax('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'withFilter' => true,
+            'renderFilter' => true,
         ]);
     }
 
@@ -82,7 +82,7 @@ class AdvertController extends \app\modules\adverts\controllers\AdvertController
         return $this->renderIsAjax('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'withFilter' => false,
+            'renderFilter' => false,
         ]);
     }
 
@@ -104,7 +104,7 @@ class AdvertController extends \app\modules\adverts\controllers\AdvertController
         return $this->renderIsAjax('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'withFilter' => false,
+            'renderFilter' => false,
         ]);
     }
 

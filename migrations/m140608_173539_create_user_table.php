@@ -29,9 +29,9 @@ class m140608_173539_create_user_table extends Migration
             'password'          => 'VARCHAR(128)',
             'status'            => 'INT NOT NULL DEFAULT 1',
             'superadmin'        => 'TINYINT(1) DEFAULT 0',
-            'created_at'        => 'TIMESTAMP',
-            'updated_at'        => 'TIMESTAMP',
-            'lastvisit_at'      => 'TIMESTAMP',
+            'created_at'        => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+            'updated_at'        => 'TIMESTAMP DEFAULT NULL',
+            'lastvisit_at'      => 'TIMESTAMP DEFAULT NULL',
         ], $tableOptions);
 
         $this->createTable(UserAuthClient::tableName(), [

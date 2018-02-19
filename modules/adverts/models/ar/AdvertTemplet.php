@@ -4,6 +4,7 @@ namespace app\modules\adverts\models\ar;
 
 use app\modules\core\behaviors\ar\DateTimeBehavior;
 use app\modules\core\models\ar\File;
+use app\modules\geography\models\ar\Geography;
 use app\modules\users\models\ar\User;
 
 use Yii;
@@ -24,6 +25,8 @@ use Yii;
  */
 class AdvertTemplet extends Advert
 {
+    const DEFAULT_GEOGRAPHY_ID = 129;
+
     /**
      * @inheritdoc
      */
@@ -68,6 +71,18 @@ class AdvertTemplet extends Advert
                 'safe'
             ]
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterFind()
+    {
+        parent::afterFind();
+
+        if (!$this->geography_id) {
+            $this->geography_id = self::DEFAULT_GEOGRAPHY_ID;
+        }
     }
 
     /**

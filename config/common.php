@@ -60,6 +60,7 @@ $commonConfig = [
             'timeFormat' => 'php:H:i',
             'datetimeFormat' => 'php:j M Y, H:i',
             'nullDisplay' => '',
+            'currencyCode' => null,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

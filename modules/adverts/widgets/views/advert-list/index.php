@@ -23,6 +23,9 @@ use yii\helpers\Html;
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 text-center-xs text-center-sm text-center-md text-right-lg">
             {widgetPageSize}
         </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-left">
+            {uiCurrency}
+        </div>
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
             {summary}
         </div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\core\widgets;
+namespace app\modules\core\widgets\inputs\dateTimePicker;
 
 use kartik\base\AssetBundle;
 
@@ -11,7 +11,7 @@ class DateTimePickerAsset extends AssetBundle
      */
     public function init()
     {
-        $this->setSourcePath(__DIR__ . '/assets/src/datetimepicker');
+        $this->setSourcePath(__DIR__ . '/src');
         $this->setupAssets('css', ['css/bootstrap-datetimepicker', 'css/datetimepicker-kv']);
         $this->setupAssets('js', ['js/bootstrap-datetimepicker']);
 

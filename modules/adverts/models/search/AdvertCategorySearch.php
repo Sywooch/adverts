@@ -4,6 +4,7 @@ namespace app\modules\adverts\models\search;
 
 use app\modules\adverts\AdvertsModule;
 use app\modules\adverts\models\ar\AdvertCategory;
+
 use Yii;
 use yii\data\ActiveDataProvider;
 
@@ -61,22 +62,24 @@ class AdvertCategorySearch extends AdvertCategory
     }
 
     /**
+     * @param $conditions
      * @param array $options
      * @return array
      */
-    public static function getList($options = [])
+    public static function getList($conditions = [], $options = [])
     {
         $query = self::find();
 
-        if ($options['select']) {
+        if (isset($options['select'])) {
             $query->select($options['select']);
         }
-        if ($options['order']) {
+
+        if (isset($options['order'])) {
             $query->orderBy($options['order']);
         } else {
             $query->orderBy('name');
         }
 
-        return $query->asArray()->all();
+        return $query->andWhere($conditions)->asArray()->all();
     }
 }

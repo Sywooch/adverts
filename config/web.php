@@ -19,12 +19,16 @@ $webConfig = [
                     'sourcePath' => '@app/modules/core/assets/src',
                     'js' => ['js/yii.js'],
                 ],
+                'yii\bootstrap\BootstrapAsset' => [
+                    'sourcePath' => null,
+                    'baseUrl' => '@web/libs/bootstrap/dist',
+                ],
                 'yii\widgets\ActiveFormAsset' => [
                     'sourcePath' => '@app/modules/core/assets/src',
                     'js' => ['js/yii.activeForm.js'],
                 ],
                 'kartik\datetime\DateTimePickerAsset' => [
-                    'class' => 'app\modules\core\widgets\DateTimePickerAsset'
+                    'class' => 'app\modules\core\widgets\inputs\dateTimePicker\DateTimePickerAsset'
                 ]
             ]
         ],

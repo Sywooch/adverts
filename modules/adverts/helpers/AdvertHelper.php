@@ -3,6 +3,7 @@
 namespace app\modules\adverts\helpers;
 
 use app\modules\adverts\models\ar\Advert;
+use Yii;
 
 class AdvertHelper
 {
@@ -21,21 +22,5 @@ class AdvertHelper
         $content .= "{$model->content}\n\n";
         $content .= "Ссылка: {$model->fullUrl}";
         return $content;
-    }
-
-    /**
-     * @param Advert $model
-     * @return string
-     */
-    public static function stringifyPrice($model)
-    {
-        if ($model->min_price && $model->max_price) {
-            $return = "{$model->min_price} - {$model->max_price}";
-        } else if ($model->min_price && !$model->max_price) {
-            $return = "от {$model->min_price}";
-        } else if (!$model->min_price && $model->max_price) {
-            $return = "до {$model->max_price}";
-        }
-        return isset($return) ? $return . ' ' . $model->currency->short_name : '';
     }
 }

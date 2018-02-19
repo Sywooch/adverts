@@ -1,6 +1,7 @@
 /* common styling */
 html, body {
     height: 100%;
+    color: #888;
 }
 p {
     text-indent: 10px !important;
@@ -19,6 +20,7 @@ p {
 .container {
     width: 90% !important;
 }
+
 .footer {
     height: 60px;
     background-color: #f5f5f5;
@@ -41,11 +43,43 @@ p {
     font-style: italic;
 }
 
+/* bootstrap styles */
+.input-group input:first-child {
+    border-right: 0;
+}
+.input-group input:last-child {
+    border-left: 0;
+}
+.input-group .input-group-addon {
+    background: #fff;
+}
+.input-group .input-group-addon {
+    padding: 6px;
+}
+.input-group .input-group-addon:not(:first-child):not(:last-child) {
+    border-left: 0;
+    border-right: 0;
+}
+.form-control {
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 0px;
+}
+/*.input-group input:first-child:focus {
+    clip-path: inset(-5px 0px -5px -5px);
+}
+.input-group input:last-child:focus {
+    clip-path: inset(-5px -5px -5px 0px);
+}*/
+
 /* add sorting icons to gridview sort links */
 .sorter li {
     display: inline-block;
 }
-a.asc:after, a.desc:after {
+a.asc:after, a.desc:after, a.collapsed:after, a.expanded:after,
+span.asc:after, span.desc:after, span.collapsed:after, span.expanded:after {
     position: relative;
     top: 1px;
     display: inline-block;
@@ -55,17 +89,17 @@ a.asc:after, a.desc:after {
     line-height: 1;
     padding-left: 5px;
 }
-
-a.asc:after {
+a.asc:after, span.asc:after {
     content: "\e093";
-    //content: "\e113";
-    //content: "\e151";
 }
-
-a.desc:after {
+a.desc:after, span.desc:after {
     content: "\e094";
-    //content: "\e114";
-    //content: "\e152";
+}
+a.collapsed:after, span.collapsed:after, i.collapsed:after {
+    content: "\e114";
+}
+a.expanded:after, span.expanded:after, i.expanded:after {
+    content: "\e113";
 }
 
 .sort-numerical a.asc:after {
@@ -168,6 +202,38 @@ a.desc:after {
         width: 240px;
     }
 }
+
+.adverts-list-filter {
+    background: #f8f8f8;
+    padding: 10px;
+}
+.adverts-list-filter .title {
+    margin-top: 10px;
+}
+.adverts-list-filter div.form-group {
+    padding-bottom: 15px;
+}
+.adverts-list-filter label {
+    display: block;
+    padding: 5px;
+    color: #555;
+}
+.adverts-list-filter label:hover {
+    background: #eee;
+}
+.adverts-list-filter label .collapsed {
+    display: none;
+}
+.adverts-list-filter label .expanded {
+    display: block;
+}
+.adverts-list-filter label.collapsed .collapsed {
+    display: block;
+}
+.adverts-list-filter label.collapsed .expanded {
+    display: none;
+}
+
 
 /* social icons */
 .icon {

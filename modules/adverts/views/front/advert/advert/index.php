@@ -18,6 +18,7 @@ use app\modules\core\widgets\CommentButtonWidget;
 use app\modules\core\models\ar\Comment;
 use app\modules\core\widgets\LikeButtonWidget;
 use app\modules\core\widgets\LookButtonWidget;
+use app\modules\currency\components\CurrencyHelper;
 
 ?>
 
@@ -68,7 +69,12 @@ if ($model->files) {
             </span>
             <?php endif; ?>
 
-            <?php if ($priceString = AdvertHelper::stringifyPrice($model)): ?>
+            <?php if ($model->min_price || $model->max_price): ?>
+                <?php
+                    $priceString = Yii::$app->formatter->asCurrencyRange(
+                        $model->min_price, $model->max_price, $model->currency->code
+                    );
+                ?>
                 <span>|</span>
                 <span class="price" title="<?= Yii::t('app', 'Цена'); ?>">
                 <?= $priceString; ?>

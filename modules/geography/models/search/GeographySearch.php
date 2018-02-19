@@ -6,6 +6,7 @@ use app\modules\geography\models\ar\Geography;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 
 class GeographySearch extends Geography
 {
@@ -60,45 +61,62 @@ class GeographySearch extends Geography
     }
 
     /**
+     * @param $conditions
+     * @param array $options
      * @return array
      */
-    public static function getList()
+    public static function getList($conditions = [], $options = [])
     {
-        return self::find()->select(['id', 'name'])
-            ->orderBy('name')
-            ->asArray()
-            ->all();
+        $query = self::find();
+
+        if (isset($options['select'])) {
+            $query->select($options['select']);
+        }
+
+        if (isset($options['order'])) {
+            $query->orderBy($options['order']);
+        } else {
+            $query->orderBy('title');
+        }
+
+        return $query->andWhere($conditions)->asArray()->all();
     }
 
     /**
      * @return array
      */
-    public static function getCityListGropedByRegion()
+    public static function getCityListGroupedByRegion()
     {
-        $cities = self::find()
-            ->alias('city')
+        $entities = self::find()
+            ->alias('entity')
             ->select([
-                'id' => 'city.id',
-                'title' => 'city.title',
-                'region_title' => 'region.title',
+                'id' => 'entity.service_id',
+                'title' => 'entity.title',
+                'type' => 'entity.type',
+                'parent_id' => 'parent.service_id',
+                'parent_title' => 'parent.title',
             ])
-            ->innerJoin(['region' => self::tableName()], [
-                'region.type' => Geography::TYPE_REGION,
-                'region.service_id' => new Expression('city.parent_id')
+            ->leftJoin(['parent' => self::tableName()], [
+                'parent.type' => Geography::TYPE_REGION,
+                'parent.service_id' => new Expression('entity.parent_id')
             ])
-            ->where([
-                'city.type' => Geography::TYPE_CITY
-            ])
-            ->orderBy(['region.title' => SORT_ASC, 'city.title' => SORT_ASC])
+            ->orderBy(['parent.title' => SORT_ASC, 'entity.title' => SORT_ASC])
             ->asArray()
             ->all();
+
         $return = [];
-        foreach ($cities as $city) {
-            if (!isset($return[$city['region_title']])) {
-                $return[$city['region_title']] = [];
+        foreach ($entities as $entity) {
+            if ($entity['type'] == Geography::TYPE_REGION) {
+                $return[$entity['id']]['title'] = $entity['title'];
+            } else if ($entity['type'] == Geography::TYPE_CITY) {
+                if (!isset($return[$entity['parent_id']])) {
+                    $return[$entity['parent_id']] = [];
+                    $return[$entity['parent_id']]['items'] = [];
+                }
+                $return[$entity['parent_id']]['items'][$entity['id']] = $entity['title'];
             }
-            $return[$city['region_title']][$city['id']] = $city['title'];
         }
+
         return $return;
     }
 }

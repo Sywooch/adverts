@@ -149,11 +149,17 @@ class WidgetPageSize extends \yii\bootstrap\Widget
     {
         $links = [];
         foreach ($this->sizes as $size) {
-            $links[] = Html::a($size, '', [
-                'class' => self::getPageSize($this->widgetId) == $size ? ' active text-bold' : '',
-                'data-widget-page-size' => $size,
-                'data-widget-id' => $this->widgetId,
-            ]);
+            $isActive = self::getPageSize($this->widgetId) == $size ? true : false;
+            if ($isActive) {
+                $links[] = Html::tag('span', $size, [
+                    'class' => 'active',
+                ]);
+            } else {
+                $links[] = Html::a($size, '', [
+                    'data-widget-page-size' => $size,
+                    'data-widget-id' => $this->widgetId,
+                ]);
+            }
         }
         return $links;
     }
