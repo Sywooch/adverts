@@ -54,11 +54,11 @@ class MultiselectPopup extends InputWidget
 
         $this->id = $this->options['id'];
 
-        if (!$this->clientOptions['inputName']) {
+        if (!isset($this->clientOptions['inputName'])) {
             $this->clientOptions['inputName'] = Html::getInputName($this->model, $this->attribute);
         }
 
-        if (!$this->clientOptions['selectedValues']) {
+        if (!isset($this->clientOptions['selectedValues'])) {
             $this->clientOptions['selectedValues'] = $this->model->{$this->attribute};
         }
 
