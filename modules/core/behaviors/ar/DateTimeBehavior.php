@@ -50,7 +50,7 @@ class DateTimeBehavior extends Behavior
         /* @var $owner \yii\db\ActiveRecord */
         $owner = $event->sender;
 
-        $this->formatToDb($owner, $this->datetimeAttributes, 'Y-m-d H:i:s'); // P - метка временной зоны
+        $this->formatToDb($owner, $this->datetimeAttributes, 'Y-m-d H:i:s'); //  TODO: P - метка временной зоны
         $this->formatToDb($owner, $this->dateAttributes, 'Y-m-d');
     }
 
