@@ -19,6 +19,7 @@ class m170726_163757_create_geography_tables extends Migration
             'parent_id'             => 'INT(11)',
             'active'                => 'TINYINT(1) DEFAULT 1',
         ], $this->tableOptions);
+        $this->createIndex('UK_service_id', Geography::tableName(), 'service_id', true);
         // TODO add constraint
         //$this->addForeignKey('KF_geography_REFS_geography', Geography::tableName(), 'parent_id', Geography::tableName(), 'service_id', 'NO ACTION', 'NO ACTION');
     }

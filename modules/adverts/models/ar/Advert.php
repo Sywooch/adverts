@@ -94,7 +94,7 @@ class Advert extends \app\modules\core\db\ActiveRecord
             [['category_id'], 'exist', 'targetClass' => AdvertCategory::className(), 'targetAttribute' => ['category_id' => 'id'],'skipOnError' => true],
             [['geography_id'], 'exist', 'targetClass' => Geography::className(), 'targetAttribute' => ['geography_id' => 'id'],'skipOnError' => true],
             [['expiry_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
-            [['expiry_at'], 'default', 'value' => Yii::$app->formatter->asDatetime(time() + 3600 * 24 * 30)],
+            [['expiry_at'], 'default', 'value' => date('Y-m-d H:i:s', time() + 3600 * 24 * 30)],
             [['currency_id'], 'default', 'value' => function() {
                 $currency = Currency::findOne(['code' => Currency::RUB]);
                 return $currency->id;

@@ -30,14 +30,14 @@ class m170726_164802_create_adverts_tables extends Migration
             'is_foreign'            => 'TINYINT(1) DEFAULT 0',
             'published'             => 'TINYINT(1) DEFAULT 0',
             'expiry_at'             => 'TIMESTAMP NOT NULL',
-            'created_at'            => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+            'created_at'            => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
             'updated_at'            => 'TIMESTAMP NULL DEFAULT NULL',
             'min_price'             => 'DECIMAL(10,2)',
             'max_price'             => 'DECIMAL(10,2)',
         ], $this->tableOptions);
         $this->addForeignKey('fk_advert_refs_user', 'advert', 'user_id', 'user', 'id', 'NO ACTION', 'NO ACTION');
         $this->addForeignKey('fk_advert_refs_advert_category', 'advert', 'category_id', 'advert_category', 'id', 'NO ACTION', 'NO ACTION');
-        $this->addForeignKey('fk_advert_refs_geography', 'advert', 'geography_id', 'geography', 'id', 'NO ACTION', 'NO ACTION');
+        $this->addForeignKey('fk_advert_refs_geography', 'advert', 'geography_id', 'geography', 'service_id', 'NO ACTION', 'NO ACTION');
         $this->addForeignKey('fk_advert_refs_currency', 'advert', 'currency_id', 'currency', 'id', 'NO ACTION', 'NO ACTION');
         //$this->createIndex();
 
@@ -48,14 +48,14 @@ class m170726_164802_create_adverts_tables extends Migration
             'geography_id'          => 'INT(11)',
             'currency_id'           => 'INT(11)',
             'content'               => 'TEXT DEFAULT NULL',
-            'expiry_at'             => 'TIMESTAMP NULL DEFAULT NULL',
-            'updated_at'            => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+            'expiry_at'             => 'TIMESTAMP NOT NULL',
+            'updated_at'            => 'TIMESTAMP NULL DEFAULT NULL',
             'min_price'             => 'DECIMAL(10,2)',
             'max_price'             => 'DECIMAL(10,2)',
         ], $this->tableOptions);
         $this->addForeignKey('fk_advert_templet_refs_user', 'advert_templet', 'user_id', 'user', 'id', 'NO ACTION', 'NO ACTION');
         $this->addForeignKey('fk_advert_templet_refs_advert_category', 'advert_templet', 'category_id', 'advert_category', 'id', 'NO ACTION', 'NO ACTION');
-        $this->addForeignKey('fk_advert_templet_refs_geography', 'advert_templet', 'geography_id', 'geography', 'id', 'NO ACTION', 'NO ACTION');
+        $this->addForeignKey('fk_advert_templet_refs_geography', 'advert_templet', 'geography_id', 'geography', 'service_id', 'NO ACTION', 'NO ACTION');
     }
 
     /**

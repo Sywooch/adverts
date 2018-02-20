@@ -2,12 +2,14 @@
 
 use app\modules\adverts\AdvertsModule;
 use app\modules\adverts\models\search\AdvertCategorySearch;
+use app\modules\currency\models\search\CurrencySearch;
 use app\modules\core\widgets\ActiveForm;
 use app\modules\core\widgets\FileUpload;
 use app\modules\core\widgets\Spaceless;
 use app\modules\core\widgets\inputs\dateTimePicker\DateTimePicker;
-use app\modules\currency\models\search\CurrencySearch;
+use app\modules\core\widgets\inputs\multiSelect\MultiselectPopup;
 use app\modules\geography\models\search\GeographySearch;
+
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -63,21 +65,60 @@ use yii\web\View;
         </div>
 
         <div class="col-sm-5 col-md-4 col-lg-3">
-            <?= $form->field($model, 'geography_id', [
-                'options' => [
-                    'class' => 'form-group mb-0',
+            <?= $form->field($model, 'geography_id')->widget(MultiselectPopup::className(), [
+                'model' => $model,
+                'addonGlyphiconClass' => 'glyphicon-list',
+                'attribute' => 'geography_id',
+                'emptyText' => 'Указать',
+                'notEmptyText' => 'Изменить',
+                'likeInput' => true,
+                'clientOptions' => [
+                    'title' => 'Выбор месторасположения',
+                    'dataUrl' => Url::to(['/geography/geography/index']),
+                    'itemsChildEagerDisplaying' => true,
+                    /*'items' => GeographySearch::getList([
+                        'select' => ['id', 'title', 'items' => new \yii\db\Expression('1')],
+                        'type' => Geography::TYPE_REGION,
+                    ]),*/
+                    'items' => GeographySearch::getCityListGroupedByRegion(),
+                    'selectedValues' => $model->geography_id ? ArrayHelper::map(
+                        GeographySearch::getList(['in', 'service_id', $model->geography_id], ['select' => ['service_id', 'title']]), 'service_id', 'title'
+                    ) : [],
+                    'selectedValuesContainerSelector' => '',
+                    'showSelectedItems' => true,
+                    'showSelectedInputs' => false,
+                    'likeInput'
                 ],
-            ])->dropDownList(GeographySearch::getCityListGroupedByRegion(), [
-                //'emptyItem' => Yii::t('app', 'Не выбрано'),
-            ]); ?>
-
-            <?= $form->field($model, 'category_id', [
                 'options' => [
-                    'class' => 'form-group mb-0'
+
                 ]
-            ])->dropDownList(
-                ArrayHelper::map(AdvertCategorySearch::getList(), 'id', 'name')
-            ); ?>
+            ]); ?>
+        </div>
+
+        <div class="col-sm-5 col-md-4 col-lg-3">
+            <?= $form->field($model, 'category_id')->widget(MultiselectPopup::className(), [
+                'model' => $model,
+                'attribute' => 'category_id',
+                'emptyText' => 'Указать',
+                'notEmptyText' => 'Изменить',
+                'clientOptions' => [
+                    'title' => 'Выбор категории',
+                    'itemsDisplayMode' => MultiselectPopup::ITEMS_DISPLAY_MODE_INLINE,
+                    'items' => ArrayHelper::map(
+                        AdvertCategorySearch::getList([], ['select' => ['id', 'name']]), 'id', 'name'
+                    ),
+                    'selectedValues' => !empty($model->category_id) ? ArrayHelper::map(
+                        AdvertCategorySearch::getList(['in', 'id', $model->category_id], ['select' => ['id', 'name']]), 'id', 'name'
+                    ) : [],
+                    'showSelectedItems' => true,
+                    'showSelectedInputs' => false,
+                    'showNavigation' => false,
+                ],
+                'options' => [
+                    'tag' => 'span',
+                    'class' => 'pl-5 cursor-pointer',
+                ]
+            ]); ?>
 
             <?= $form->field($model, 'expiry_at', [
                 'options' => [

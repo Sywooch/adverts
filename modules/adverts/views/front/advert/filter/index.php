@@ -3,13 +3,10 @@
 use app\modules\adverts\models\ar\AdvertTemplet;
 use app\modules\adverts\models\search\AdvertSearch;
 use app\modules\adverts\models\search\AdvertCategorySearch;
-
 use app\modules\core\widgets\ActiveForm;
 use app\modules\core\widgets\inputs\dateTimePicker\DateTimePicker;
 use app\modules\core\widgets\inputs\multiSelect\MultiselectPopup;
-
 use app\modules\currency\models\search\CurrencySearch;
-
 use app\modules\geography\models\ar\Geography;
 use app\modules\geography\models\search\GeographySearch;
 

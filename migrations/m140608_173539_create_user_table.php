@@ -29,7 +29,7 @@ class m140608_173539_create_user_table extends Migration
             'password'          => 'VARCHAR(128)',
             'status'            => 'INT NOT NULL DEFAULT 1',
             'superadmin'        => 'TINYINT(1) DEFAULT 0',
-            'created_at'        => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+            'created_at'        => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
             'updated_at'        => 'TIMESTAMP NULL DEFAULT NULL',
             'lastvisit_at'      => 'TIMESTAMP NULL DEFAULT NULL',
         ], $tableOptions);
@@ -119,7 +119,7 @@ class m140608_173539_create_user_table extends Migration
             'ip'                 => 'CHAR(15)',
             'email'              => 'VARCHAR(128) NOT NULL',
             'action'             => "ENUM({$actionLabels}) DEFAULT 'login'",
-            'created_at'         => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+            'created_at'         => 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
         ], $tableOptions);
     }
 
