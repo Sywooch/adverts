@@ -1,0 +1,107 @@
+.mp-dialog, .mp-dialog .modal-content {
+    height: 95%;
+}
+.mp-dialog .modal-mp-navigation {
+    padding: 15px 15px 0;
+}
+.mp-dialog .modal-body {
+    height: calc(100% - 117px);
+    padding: 0 15px;
+}
+.mp-dialog .modal-mp-navigation + .modal-body {
+    height: calc(100% - 162px);
+}
+.mp-dialog .mp-items {
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.modal-header .close.btn {
+    opacity: 1 !important;
+    padding: 4px 9px !important;
+}.multiselect-popup .title {
+     font-size: 16px;
+     font-weight: bold;
+     margin-bottom: 15px;
+ }
+.multiselect-popup .count {
+    display: inline-block;
+    margin-top: 11px;
+}
+
+.multiselect-popup .mp-items ul {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+
+}
+.multiselect-popup .mp-items > ul {
+    margin: 20px 0 0 0;
+
+}
+.multiselect-popup li.ui-selectee:nth-of-type(2n+1):not(.mp-selected) {
+    background: #F5F6FA;
+}
+
+.ui-multiselect .selected .actions {
+    border-right: 1px solid silver;
+}
+
+.multiselect-popup ul .ui-selecting {
+    background: #F4F4F4 !important;
+}
+
+.multiselect-popup ul .ui-selected {
+    background: #c5d9f0;
+}
+
+.multiselect-popup .modal-mp-navigation .input-group {
+
+}
+
+.multiselect-popup ul li {
+    cursor: pointer;
+    font-size: 12px;
+    margin: 2px;
+    overflow: hidden;
+    padding: 3px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.multiselect-popup ul li.mp-selected {
+    background: #c5d9f0;
+    position: relative;
+}
+.multiselect-popup ul li.mp-selected:after {
+    content: "✓";
+    font-size: 15px;
+    position: absolute;
+    right: 25px;
+    top: 0;
+}
+.multiselect-popup ul li.mp-selected.ui-selecting {
+    background: #e8e8e8;
+}
+
+.mp-selected-labels > span {
+    display: block;
+    padding-left: 5px;
+}
+.mp-selected-labels span:hover {
+    background-color: #eee;
+    cursor: default;
+}
+.mp-selected-labels span i {
+    display: none;
+}
+.mp-selected-labels span:hover i {
+    display: inline;
+}
+
+.mp-selected-count {
+    display: none;
+    color: #009323;
+    padding: 5px 0 0 20px;
+    margin: 0 5px 0 5px;
+
+}
