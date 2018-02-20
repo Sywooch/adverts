@@ -37,7 +37,7 @@ class FileUpload extends \dosamigos\fileupload\FileUpload
     public function run()
     {
         $input = $this->hasModel()
-            ? Html::activeFileInput($this->model, $this->attribute, ArrayHelper::merge($this->options, ['value' => null]))
+            ? Html::activeFileInput($this->model, $this->attribute, ArrayHelper::merge($this->options, ['value' => '']))
             : Html::fileInput($this->name, $this->value, $this->options);
 
         echo $this->useDefaultButton
