@@ -22,7 +22,10 @@ class DateTimeHelper extends BaseArrayHelper
         'ru' => [
             'monthsShort' => [
                 'янв.', 'февр.', 'мар.', 'апр.', 'мая', 'июн.', 'июл.', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.',
-            ]
+            ],
+            'monthsFull' => [
+                'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
+            ],
         ]
     ];
 
@@ -46,6 +49,7 @@ class DateTimeHelper extends BaseArrayHelper
     public static function convertNamesFromSystem($datetime)
     {
         $datetime = str_replace(self::$system['ru']['monthsShort'], self::$ui['ru']['monthsShort'], $datetime);
+        $datetime = str_replace(self::$system['ru']['monthsFull'], self::$ui['ru']['monthsShort'], $datetime);
         return $datetime;
     }
 
