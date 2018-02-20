@@ -2,6 +2,7 @@
 
 namespace app\modules\core\widgets;
 
+use app\modules\core\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -36,7 +37,7 @@ class FileUpload extends \dosamigos\fileupload\FileUpload
     public function run()
     {
         $input = $this->hasModel()
-            ? Html::activeFileInput($this->model, $this->attribute, $this->options)
+            ? Html::activeFileInput($this->model, $this->attribute, ArrayHelper::merge($this->options, ['value' => null]))
             : Html::fileInput($this->name, $this->value, $this->options);
 
         echo $this->useDefaultButton
